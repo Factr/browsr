@@ -19863,6 +19863,7 @@
 	
 	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(LoginPage).call(this, props));
 	
+	        _this2.state = { loading: false };
 	        _this2.submitLoginForm = _this2.submitLoginForm.bind(_this2);
 	        _this2.onChange = _this2.onChange.bind(_this2);
 	        return _this2;
@@ -19885,7 +19886,8 @@
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'input-field' },
-	                        _react2.default.createElement('input', { placeholder: 'Email Address', ref: 'email', type: 'text', name: 'email', defaultValue: kango.storage.getItem('last_used_email') })
+	                        _react2.default.createElement('input', { placeholder: 'Email Address', ref: 'email', type: 'text', name: 'email',
+	                            defaultValue: kango.storage.getItem('last_used_email') })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -19905,8 +19907,9 @@
 	                            ),
 	                            _react2.default.createElement(
 	                                'button',
-	                                { className: 'btn btn-primary', type: 'submit' },
-	                                'Login'
+	                                { disabled: this.state.loading, className: 'btn btn-primary', type: 'submit' },
+	                                'Login ',
+	                                this.state.loading ? _react2.default.createElement('span', { className: 'loading' }) : null
 	                            )
 	                        )
 	                    )
@@ -19920,7 +19923,8 @@
 	                        null,
 	                        _react2.default.createElement(
 	                            'a',
-	                            { href: '#', onClick: this.goToWebSite },
+	                            { href: '#',
+	                                onClick: this.goToWebSite },
 	                            'our website'
 	                        )
 	                    ),
@@ -19939,6 +19943,7 @@
 	        value: function submitLoginForm(e) {
 	            e.preventDefault();
 	            var _this = this;
+	            _this.setState({ loading: true });
 	            var params = { email: (0, _reactDom.findDOMNode)(this.refs.email).value, password: (0, _reactDom.findDOMNode)(this.refs.password).value };
 	            (0, _api.login)(params).then(function (response) {
 	                var token = response.token;
@@ -19946,13 +19951,15 @@
 	                (0, _api.me)().then(function (user) {
 	                    kango.storage.setItem('last_used_email', user.email);
 	                    kango.storage.setItem('user', JSON.stringify(user));
+	                    _this.setState({ loading: false });
 	                    _this.onChange({ user: user, token: token });
 	                }).catch(function (err) {
-	                    console.log(err);
+	                    _this.setState({ loading: false });
+	                    console.log(err.message || "Something went wrong when attempting to log you in.");
 	                });
 	            }).catch(function (err) {
-	                console.log(err);
-	                //todo handle error
+	                _this.setState({ loading: false });
+	                console.log(err.message || "Something went wrong when attempting to log you in.");
 	            });
 	        }
 	    }, {
@@ -19980,6 +19987,7 @@
 	exports.login = login;
 	exports.collect = collect;
 	exports.getCollections = getCollections;
+	exports.createItemFromURL = createItemFromURL;
 	
 	var _lodash = __webpack_require__(165);
 	
@@ -20017,7 +20025,7 @@
 	            if (data.status == 200 && data.response != null) {
 	                resolve(JSON.parse(data.response).data);
 	            } else {
-	                resolve(JSON.parse(data.response));
+	                reject(JSON.parse(data.response));
 	            }
 	        });
 	    });
@@ -20033,13 +20041,18 @@
 	    return makeApiRequest(route, "POST", { params: params });
 	}
 	
-	function collect() {
+	function collect(params) {
 	    var route = 'collect-item';
-	    return makeApiRequest(route, "POST");
+	    return makeApiRequest(route, "POST", { params: params });
 	}
 	
 	function getCollections() {
 	    var route = 'me/collections';
+	    return makeApiRequest(route, "GET");
+	}
+	
+	function createItemFromURL(url) {
+	    var route = 'item/from-url?url=' + encodeURI(url);
 	    return makeApiRequest(route, "GET");
 	}
 
@@ -36007,6 +36020,7 @@
 	
 	module.exports = {
 	    apiUrl: "https://stage-integratr.factr.com",
+	    //apiUrl: "http://localhost:3000",
 	    environment: "staging"
 	};
 
@@ -36025,6 +36039,8 @@
 	var _react = __webpack_require__(4);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(161);
 	
 	var _reactSelect = __webpack_require__(173);
 	
@@ -36056,28 +36072,34 @@
 	    function CollectPage(props) {
 	        _classCallCheck(this, CollectPage);
 	
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CollectPage).call(this, props));
+	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(CollectPage).call(this, props));
 	
-	        _this.state = { collections: [] };
-	        return _this;
+	        _this2.state = { collection: null, collections: [], loadingCollections: false, saving: false };
+	        _this2.onSubmit = _this2.onSubmit.bind(_this2);
+	        _this2.onSelectChange = _this2.onSelectChange.bind(_this2);
+	        return _this2;
 	    }
 	
 	    _createClass(CollectPage, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
+	            this.setState({ loadingCollections: true });
 	            (0, _api.getCollections)().then(function (data) {
-	                this.setState({ collections: data });
-	            }.bind(this));
-	
-	            kango.browser.tabs.getCurrent(function (tab) {
-	                // tab is KangoBrowserTab object
-	                console.log(tab.getUrl());
-	                this.setState({ currentURL: tab.getUrl() });
-	            }.bind(this));
+	                this.setState({ collections: data, loadingCollections: false });
+	            }.bind(this)).catch(function (err) {
+	                this.setState({ loadingCollections: false });
+	                alert('Could not load your collections. Please try again later');
+	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _state = this.state;
+	            var collections = _state.collections;
+	            var loadingCollections = _state.loadingCollections;
+	            var collection = _state.collection;
+	            var saving = _state.saving;
+	
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -36088,7 +36110,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    'form',
-	                    null,
+	                    { onSubmit: this.onSubmit },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'input-field' },
@@ -36097,7 +36119,7 @@
 	                            null,
 	                            'Post'
 	                        ),
-	                        _react2.default.createElement('textarea', { placeholder: 'Say something about this link (optional)' })
+	                        _react2.default.createElement('textarea', { ref: 'message', name: 'message', placeholder: 'Say something about this link (optional)' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36108,12 +36130,13 @@
 	                            'Save To'
 	                        ),
 	                        _react2.default.createElement(_reactSelect2.default, {
+	                            isLoading: loadingCollections,
+	                            value: collection,
 	                            name: 'form-field-name',
-	                            options: buildCollectionOptions(this.state.collections),
+	                            options: buildCollectionOptions(collections),
 	                            optionRenderer: this.renderOption,
 	                            onChange: this.onSelectChange
-	                        }),
-	                        '                    '
+	                        })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36123,7 +36146,7 @@
 	                            null,
 	                            'Tags'
 	                        ),
-	                        _react2.default.createElement('input', { placeholder: 'Sepaerate with a comma', type: 'text' })
+	                        _react2.default.createElement('input', { ref: 'tags', name: 'tags', placeholder: 'Sepaerate with a comma', type: 'text' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36138,8 +36161,9 @@
 	                            ),
 	                            _react2.default.createElement(
 	                                'button',
-	                                { className: 'btn btn-primary', type: 'submit' },
-	                                'Collect'
+	                                { disabled: saving, className: 'btn btn-primary', type: 'submit' },
+	                                'Collect ',
+	                                saving ? _react2.default.createElement('span', { className: 'loading' }) : null
 	                            )
 	                        )
 	                    )
@@ -36147,8 +36171,42 @@
 	            );
 	        }
 	    }, {
+	        key: 'onSubmit',
+	        value: function onSubmit(e) {
+	            e.preventDefault();
+	            var _this = this;
+	            _this.setState({ saving: true });
+	            kango.browser.tabs.getCurrent(function (tab) {
+	                (0, _api.createItemFromURL)(tab.getUrl()).then(function (item) {
+	                    var params = {
+	                        item: item._id,
+	                        collection: _this.state.collection,
+	                        tags: (0, _reactDom.findDOMNode)(_this.refs.tags).value.split(','),
+	                        message: (0, _reactDom.findDOMNode)(_this.refs.message).value.split(',')
+	                    };
+	                    (0, _api.collect)(params).then(function () {
+	                        _this.setState({ saving: false, collection: null });
+	                        KangoAPI.closeWindow();
+	                    }).catch(function () {
+	                        alert("Something went wrong when trying to collect item.");
+	                        _this.setState({ saving: false });
+	                    });
+	                }).catch(function (err) {
+	                    _this.setState({ saving: false });
+	                    alert("Could not parse current page.");
+	                });
+	            }.bind(this));
+	        }
+	    }, {
+	        key: 'clearForm',
+	        value: function clearForm() {}
+	    }, {
 	        key: 'onSelectChange',
-	        value: function onSelectChange() {}
+	        value: function onSelectChange(val) {
+	            this.setState({
+	                collection: val
+	            });
+	        }
 	    }, {
 	        key: 'renderOption',
 	        value: function renderOption(option) {

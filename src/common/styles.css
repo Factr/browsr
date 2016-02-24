@@ -805,6 +805,7 @@ textarea::-webkit-input-placeholder {
   width: 100%;
 }
 .btn {
+  position: relative;
   height: 29px;
   display: inline-block;
   padding: 0 32px;
@@ -829,6 +830,24 @@ textarea::-webkit-input-placeholder {
 .btn.btn-gray {
   background: #eceff1;
   color: #1E2431;
+}
+.btn:disabled {
+  background: #bdc0ca;
+}
+.btn .loading {
+  -webkit-animation: animation-spin 400ms infinite linear;
+  -o-animation: animation-spin 400ms infinite linear;
+  animation: animation-spin 400ms infinite linear;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #1E2431;
+  border-right-color: #fcc100;
+  display: inline-block;
+  position: absolute;
+  top: 7px;
+  right: 7px;
 }
 .nav {
   padding: 0 20px;
@@ -882,6 +901,16 @@ textarea::-webkit-input-placeholder {
   content: '';
   clear: both;
   width: 1px;
+}
+@keyframes animation-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@-webkit-keyframes animation-spin {
+  to {
+    -webkit-transform: rotate(1turn);
+  }
 }
 
 /*# sourceMappingURL=main.js.map*/

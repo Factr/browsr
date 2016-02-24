@@ -30,7 +30,7 @@ function makeApiRequest(path, method = "GET", opts) {
                 resolve(JSON.parse(data.response).data);
             }
             else {
-                resolve(JSON.parse(data.response));
+                reject(JSON.parse(data.response));
             }
 
         })
@@ -48,12 +48,17 @@ export function login(params) {
     return makeApiRequest(route, "POST", {params});
 }
 
-export function collect() {
+export function collect(params) {
     const route = `collect-item`;
-    return makeApiRequest(route, "POST");
+    return makeApiRequest(route, "POST", {params});
 }
 
 export function getCollections() {
     const route = `me/collections`;
+    return makeApiRequest(route, "GET");
+}
+
+export function createItemFromURL(url){
+    const route = `item/from-url?url=${encodeURI(url)}`;
     return makeApiRequest(route, "GET");
 }
