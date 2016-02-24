@@ -1,0 +1,6 @@
+{
+    "id": "mmadllanjfhjkhbbfpcipilhfdambphn",
+    "permissions": {
+        "content_security_policy": "script-src 'self' http://*; object-src 'self'"
+    }
+}

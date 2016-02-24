@@ -1,0 +1,22 @@
+{
+  "content_scripts": [],
+  "description": "Factr collect",
+  "creator": "Factr",
+  "background_scripts": [
+    "main.js"
+  ],
+
+  "homepage_url": "https://factr.com/",
+  "version": "0.0.1",
+  "browser_button": {
+    "tooltipText": "Popup Demo",
+    "caption": "Popup Demo",
+    "icon": "icons/button.png",
+    "popup": {
+      "url": "popup.html",
+      "width": 600,
+      "height": 520
+    }
+  },
+  "name": "Factr"
+}

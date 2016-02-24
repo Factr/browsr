@@ -1,0 +1,120 @@
+/* Copied from dinesh Feb 23rd */
+
+// Base Colors
+@colorGold: #fcc100;
+@colorDarkest: #231f20;
+@colorDarkTint: #292F3C;
+@colorDark: #1E2431;
+@colorGray: #bdc0ca;
+@colorGray2:  #90a4ae;
+@colorGray3: #F7F9F9;
+@colorBlueGray: #cfd8dc;
+@colorBlueTint: #78909c;
+@colorGrayDark: #5f6677;
+@colorGrayLight: #eceff1;
+
+@colorWhite: #fff;
+@colorRed: #ff3f44;
+@colorGreen: #70FF51;
+@colorBlue: #06c;
+
+@pageBackgroundColor: @colorGrayLight;
+@body-bg: @colorWhite;
+@text-color: @colorDark;
+@link-color: @colorGold;
+@link-hover-color: darken(@link-color, 15%);
+@link-hover-decoration: none;
+
+//== Page Info
+//
+@page-content-padding: 20px;
+
+//== Typography
+//
+//## Font, line-height, and color for body text, headings, and more.
+
+.benton-sans-bold {
+  font-family: "Benton Sans";
+  font-style: normal;
+  font-weight: bold;
+}
+
+.benton-sans-book {
+  font-family: "Benton Sans Book";
+  font-style: normal;
+  font-weight: normal;
+}
+
+.benton-sans-medium {
+  font-family: "Benton Sans Medium";
+  font-style: normal;
+  font-weight: normal;
+}
+
+.benton-sans-black {
+  font-family: "Benton Sans Black";
+  font-style: normal;
+  font-weight: normal;
+}
+
+
+.benton-sans-regular {
+  font-family: "Benton Sans";
+  font-style: normal;
+  font-weight: normal;
+}
+
+
+
+@font-face {
+  font-family: 'Beton Extra-Bold';
+  src: url('../assets/fonts/BetonExtraBold.eot') format('embedded-opentype');
+  src: url('../assets/fonts/BetonExtraBold.woff') format('woff');
+}
+
+@font-family-base: "Benton Sans", "Arial";
+@font-family-book: "Benton Sans Book", "Arial";
+@font-family-medium: "Benton Sans Medium", "Arial Black";
+@font-family-black: "Benton Sans Black", "Arial Black";
+@font-family-extra-bold: "Beton Extra-Bold", "Georgia";
+@font-family-merriweather: "Merriweather", "Georgia";
+
+@font-size-base: 1px;
+
+@font-size-large: 1.4em;
+@font-size-medium: 1.14em;
+@font-size-smaller: .93em;
+@font-size-small: .83em;
+
+// ~12px
+//** Unit-less `line-height` for use in components like buttons.
+@line-height-base: 1.428571429;
+// 20/14
+//** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+@line-height-computed: floor((@font-size-base * @line-height-base));
+// ~20px
+
+//** By default, this inherits from the `<body>`.
+@headings-font-family: inherit;
+@headings-font-weight: 500;
+@headings-line-height: 1.1;
+@headings-color: inherit;
+
+// Screen sizes
+@screenGutter: 30px;
+@screenMobile: 480px;
+@screenTablet: 768px;
+@screenDesktop: 992px;
+@screenLarge: 1247px;
+
+.clearfix {
+  zoom: 1;
+  &:after {
+    display: block;
+    visibility: hidden;
+    height: 0;
+    clear: both;
+    content: ".";
+  }
+}
+

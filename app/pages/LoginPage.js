@@ -1,0 +1,64 @@
+import React, {Component, PropTypes} from 'react';
+import {findDOMNode} from 'react-dom';
+import {login, me} from '../api';
+import {setItem} from '../db';
+
+class LoginPage extends Component {
+    constructor(props) {
+        super(props);
+        this.submitLoginForm = this.submitLoginForm.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    render() {
+        return (
+            <div className="login">
+                <h1>Login</h1>
+                <form className="login-form default-form" onSubmit={this.submitLoginForm}>
+                    <div className="input-field">
+                        <input placeholder="Email Address" ref="email" type="text" name="email"/>
+                    </div>
+                    <div className="input-field">
+                        <input placeholder="Password" ref="password" type="password" name="password"/>
+                    </div>
+                    <div className="form-actions">
+                        <div className="pull-right">
+                            <button className="btn btn-gray" type="reset">Cancel</button>
+                            <button className="btn btn-primary" type="submit">Login</button>
+                        </div>
+                    </div>
+                </form>
+                <p>
+                    Don't have an account yet? Factr is currently in private beta. Go to <b><a href="https://factr.com">our
+                    website</a></b> to apply for an invitation.
+                </p>
+            </div>
+        );
+    }
+
+    submitLoginForm(e) {
+        e.preventDefault();
+        var _this = this;
+        var params = {email: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
+        login(params).then(function (response) {
+            var token = response.token;
+            kango.storage.setItem('token', token);
+            me().then(function (user) {
+                kango.storage.setItem('user', JSON.stringify(user));
+                _this.onChange({user, token})
+            }).catch(function (err) {
+                console.log(err);
+            })
+        }).catch(function (err) {
+            console.log(err);
+            //todo handle error
+        })
+    }
+
+    onChange(change) {
+        this.props.onChange(change);
+    }
+}
+
+
+export default LoginPage;

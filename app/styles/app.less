@@ -1,0 +1,168 @@
+@import (reference) 'variables.less';
+@import 'normalize.less';
+@import 'react-select.less';
+
+html, body, * {
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+body {
+  width: 399px;
+  background: #F7F9F9;
+}
+
+p {
+  font-family: @font-family-base;
+  font-size: 1em;
+  line-height: 1.5em;
+}
+
+a {
+  text-decoration: underline;
+  color: @colorDark;
+
+}
+
+h1 {
+  font-family: @font-family-base;
+  font-weight: bold;
+  color: @colorDark;
+  font-size: 1.17em;
+  margin: 20px 0;
+
+}
+
+label {
+  font-family: @font-family-medium;
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: .83em;
+  margin-bottom: 2.5px;
+  color: @colorGrayDark;
+  display: block;
+}
+
+input[type="text"], input[type="password"] {
+  height: 41px;
+  line-height: 41px;
+
+}
+
+input, textarea {
+  color: @colorGray2;
+  font-family: @font-family-medium;
+  padding: 15px 14px;
+  border: 1px solid @colorBlueGray;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  &:-moz-placeholder {
+    color: @colorGray2;
+    font-family: @font-family-base;
+    font-weight: normal;
+  }
+  &:-ms-input-placeholder {
+    color: @colorGray2;
+    font-family: @font-family-base;
+    font-weight: normal;
+  }
+  &::-webkit-input-placeholder {
+    color: @colorGray2;
+    font-family: @font-family-base;
+    font-weight: normal;
+
+  }
+}
+
+.clearfix {
+  &:after {
+    content: '';
+    clear: both;
+    width: 1px;
+  }
+}
+
+#app {
+  padding: 20px 0;
+}
+
+.input-field {
+  position: relative;
+  display: block;
+  width: 100%;
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}
+
+.pull-right {
+  float: right;
+}
+
+.Select-input{
+  width: 100%;
+}
+.btn {
+  height: 29px;
+  display: inline-block;
+  padding: 0 32px;
+  font-family: @font-family-medium;
+  font-size: 1em;
+  box-shadow: none;
+  border: none;
+  line-height: 32px;
+  border-radius: 5px;
+  &:not(:last-child){
+    margin-right: 5px;
+  }
+  &.btn-primary {
+    background: @colorDark;
+    color: @colorWhite;
+  }
+  &.btn-light {
+    background: @colorWhite;
+    color: @colorDark;
+  }
+  &.btn-gray {
+    background: @colorGrayLight;
+    color:@colorDark;
+  }
+}
+
+.nav {
+  padding: 0 20px;
+  margin-bottom: 20px;
+  .nav-wrapper {
+    height: 30px;
+    overflow: hidden;
+    .clearfix;
+  }
+  .branding {
+    float: left;
+  }
+  .menu {
+    float: right;
+    height: 30px;
+    .logged-in {
+
+    }
+  }
+}
+
+.container {
+  padding: 0 20px;
+}
+
+.logo {
+  background: url("url?limit=10000'./../../assets/logo.png") no-repeat;
+  width: 78px;
+  height: 30px;
+  display: inline-block;
+  text-decoration: none;
+
+}
+
+.form-actions {
+  .clearfix;
+}
