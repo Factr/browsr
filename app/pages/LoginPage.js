@@ -16,7 +16,7 @@ class LoginPage extends Component {
                 <h1>Login</h1>
                 <form className="login-form default-form" onSubmit={this.submitLoginForm}>
                     <div className="input-field">
-                        <input placeholder="Email Address" ref="email" type="text" name="email"/>
+                        <input placeholder="Email Address" ref="email" type="text" name="email" defaultValue={kango.storage.getItem('last_used_email')}/>
                     </div>
                     <div className="input-field">
                         <input placeholder="Password" ref="password" type="password" name="password"/>
@@ -29,11 +29,16 @@ class LoginPage extends Component {
                     </div>
                 </form>
                 <p>
-                    Don't have an account yet? Factr is currently in private beta. Go to <b><a href="https://factr.com">our
+                    Don't have an account yet? Factr is currently in private beta. Go to <b><a href="#" onClick={this.goToWebSite}>our
                     website</a></b> to apply for an invitation.
                 </p>
             </div>
         );
+    }
+
+    goToWebSite(e) {
+        e.preventDefault();
+        kango.browser.tabs.create({url:"https://factr.com"});
     }
 
     submitLoginForm(e) {
@@ -44,6 +49,7 @@ class LoginPage extends Component {
             var token = response.token;
             kango.storage.setItem('token', token);
             me().then(function (user) {
+                kango.storage.setItem('last_used_email', user.email);
                 kango.storage.setItem('user', JSON.stringify(user));
                 _this.onChange({user, token})
             }).catch(function (err) {

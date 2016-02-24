@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import Select from 'react-select';
 import moment from 'moment';
+import {getCollections} from 'api';
 
 function buildCollectionOptions(collections) {
     return collections.map(function (c) {
@@ -15,8 +16,16 @@ class CollectPage extends Component {
         this.state = {collections: []}
     }
 
-    shouldComponentUpdate(nextProps) {
-        return this.props.isLoggedIn !== nextProps.isLoggedIn;
+    componentDidMount() {
+        getCollections().then(function(data) {
+            this.setState({collections: data});
+        }.bind(this));
+
+        kango.browser.tabs.getCurrent(function(tab) {
+            // tab is KangoBrowserTab object
+            console.log(tab.getUrl());
+            this.setState({currentURL: tab.getUrl()});
+        }.bind(this));
     }
 
     render() {

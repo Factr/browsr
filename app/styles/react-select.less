@@ -5,8 +5,29 @@
  * https://twitter.com/jedwatson https://twitter.com/jossmackison https://twitter.com/keystonejs
  * MIT License: https://github.com/keystonejs/react-select
 */
+@import (reference) 'variables.less';
+
 .Select {
   position: relative;
+
+    &.has-value{
+      .Select-placeholder{
+        color:@colorDark;
+        font-family: @font-family-medium;
+      }
+    }
+    .option-title, .option-date{
+      vertical-align: middle;
+
+    }
+    .option-title {
+      margin-right:5px;
+    }
+    .option-date {
+      font-size: .65em;
+      color:@colorGray;
+      font-family: @font-family-medium;
+    }
 }
 .Select,
 .Select div,

@@ -371,6 +371,22 @@ optgroup {
 .Select {
   position: relative;
 }
+.Select.has-value .Select-placeholder {
+  color: #1E2431;
+  font-family: "Benton Sans Medium", "Arial Black";
+}
+.Select .option-title,
+.Select .option-date {
+  vertical-align: middle;
+}
+.Select .option-title {
+  margin-right: 5px;
+}
+.Select .option-date {
+  font-size: .65em;
+  color: #bdc0ca;
+  font-family: "Benton Sans Medium", "Arial Black";
+}
 .Select,
 .Select div,
 .Select input,
@@ -713,6 +729,9 @@ p {
 a {
   text-decoration: underline;
   color: #1E2431;
+}
+a:focus {
+  outline: 0;
 }
 h1 {
   font-family: "Benton Sans", "Arial";

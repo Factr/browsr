@@ -33,8 +33,6 @@ node_modules
 .node_repl_history
 
 output
-
 .idea
-
 .DS_Store
-
+*.pyc

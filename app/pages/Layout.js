@@ -63,7 +63,8 @@ class Layout extends Component {
     }
 
     logOut() {
-        kango.storage.clear();
+        kango.storage.removeItem('user');
+        kango.storage.removeItem('token');
         this.onChange({user: null, token: null});
     }
 }
