@@ -798,6 +798,7 @@ input[type="password"]::-webkit-input-placeholder {
 }
 #app {
   padding: 20px 0;
+  min-height: 292px;
 }
 .input-field {
   position: relative;
@@ -910,6 +911,20 @@ input[type="password"]::-webkit-input-placeholder {
   content: '';
   clear: both;
   width: 1px;
+}
+.status-message {
+  font-size: 1.17em;
+  font-family: "Benton Sans Medium", "Arial Black";
+  text-align: center;
+  height: 100%;
+  padding-top: 100px;
+  color: #1E2431;
+}
+.status-message.error {
+  color: red;
+}
+.collect {
+  min-height: 292px;
 }
 @keyframes animation-spin {
   to {

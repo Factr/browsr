@@ -14,9 +14,11 @@ function buildCollectionOptions(collections) {
 class CollectPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {collection: null, collections: [], loadingCollections: false, saving: false};
+        this.state = {collection: null, collections: [], loadingCollections: false, saving: false, showSuccess: false};
         this.onSubmit = this.onSubmit.bind(this);
+        this.onClear = this.onClear.bind(this);
         this.onSelectChange = this.onSelectChange.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
     componentDidMount() {
@@ -25,20 +27,26 @@ class CollectPage extends Component {
             this.setState({collections: data, loadingCollections: false});
         }.bind(this)).catch(function (err) {
             this.setState({loadingCollections: false});
-            alert('Could not load your collections. Please try again later');
-        });
+            this.props.onError('Could not load your collections. Please try again later');
+        }.bind(this));
 
     }
 
     render() {
-        var {collections, loadingCollections, collection, saving} = this.state;
+        var {collections, loadingCollections, collection, saving, showSuccess} = this.state;
+        if (showSuccess) {
+            return (<div className="collect">
+                <div className="status-message">Successfully saved</div>
+            </div>)
+        }
         return (
-            <div>
+            <div className="collect">
                 <h1>Save this page</h1>
                 <form onSubmit={this.onSubmit}>
                     <div className="input-field">
                         <label>Post</label>
-                        <textarea ref="message" name="message" placeholder="Say something about this link (optional)"/>
+                        <textarea ref="message" name="message" defaultValue={kango.storage.getItem("message")}
+                                  onChange={this.onInputChange} placeholder="Say something about this link (optional)"/>
                     </div>
                     <div className="input-field">
                         <label>Save To</label>
@@ -52,18 +60,27 @@ class CollectPage extends Component {
                         /></div>
                     <div className="input-field">
                         <label>Tags</label>
-                        <input ref="tags" name="tags" placeholder="Sepaerate with a comma" type="text"/>
+                        <input ref="tags" name="tags" defaultValue={kango.storage.getItem("tags")}
+                               onChange={this.onInputChange} placeholder="Separate with a comma"
+                               type="text"/>
                     </div>
 
                     <div className="form-actions">
                         <div className="pull-right">
-                            <button className="btn btn-gray" type="reset">Cancel</button>
-                            <button disabled={saving} className="btn btn-primary" type="submit">Collect {saving ? (<span className="loading"></span>) : null}</button>
+                            <button onClick={this.onClear} className="btn btn-gray" type="button">Cancel</button>
+                            <button disabled={saving} className="btn btn-primary" type="submit">Collect {saving ? (
+                                <span className="loading"></span>) : null}</button>
                         </div>
                     </div>
                 </form>
             </div>
         );
+    }
+
+    onInputChange(e) {
+        var value = e.target.value;
+        var name = e.target.name;
+        kango.storage.setItem(name, value);
     }
 
     onSubmit(e) {
@@ -80,21 +97,32 @@ class CollectPage extends Component {
                         message: findDOMNode(_this.refs.message).value.split(',')
                     };
                     collect(params).then(function () {
-                        _this.setState({saving: false, collection: null});
-                        KangoAPI.closeWindow()
+                        _this.setState({saving: false, collection: null, showSuccess: true});
+                        _this.clearKangoLocal();
+                        setTimeout(function () {
+                            KangoAPI.closeWindow();
+                        }, 1000);
                     }).catch(function () {
-                        alert("Something went wrong when trying to collect item.");
+                        _this.props.onError("Something went wrong when trying to collect item.");
                         _this.setState({saving: false});
                     })
                 }).catch(function (err) {
                 _this.setState({saving: false});
-                alert("Could not parse current page.");
+                _this.props.onError("Could not parse current page.");
             })
         }.bind(this));
     }
 
-    clearForm() {
+    clearKangoLocal() {
+        kango.storage.removeItem('message');
+        kango.storage.removeItem('tags');
 
+    }
+
+    onClear() {
+        this.clearKangoLocal();
+        this.setState({collection: null});
+        KangoAPI.closeWindow();
     }
 
     onSelectChange(val) {

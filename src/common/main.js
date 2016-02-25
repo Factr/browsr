@@ -19710,8 +19710,13 @@
 	
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Layout).call(this, props));
 	
-	        _this.state = { token: kango.storage.getItem('token'), user: JSON.parse(kango.storage.getItem('user')) };
+	        _this.state = {
+	            token: kango.storage.getItem('token'),
+	            user: JSON.parse(kango.storage.getItem('user')),
+	            error: false
+	        };
 	        _this.onChange = _this.onChange.bind(_this);
+	        _this.onError = _this.onError.bind(_this);
 	        _this.logOut = _this.logOut.bind(_this);
 	        _this.renderBody = _this.renderBody.bind(_this);
 	        _this.renderNavMenu = _this.renderNavMenu.bind(_this);
@@ -19721,6 +19726,17 @@
 	    _createClass(Layout, [{
 	        key: 'render',
 	        value: function render() {
+	            if (this.state.error) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { id: 'app' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'status-message error' },
+	                        this.state.error
+	                    )
+	                );
+	            }
 	            return _react2.default.createElement(
 	                'div',
 	                { id: 'app' },
@@ -19757,7 +19773,7 @@
 	                return _react2.default.createElement(
 	                    'div',
 	                    null,
-	                    _react2.default.createElement(_LoginPage2.default, { onChange: this.onChange })
+	                    _react2.default.createElement(_LoginPage2.default, { onChange: this.onChange, onError: this.onError })
 	                );
 	            }
 	            var user = state.user;
@@ -19805,6 +19821,14 @@
 	                );
 	            }
 	            return null;
+	        }
+	    }, {
+	        key: 'onError',
+	        value: function onError(message) {
+	            this.setState({ error: message });
+	            setTimeout(function () {
+	                this.setState({ error: false });
+	            }.bind(this), 3000);
 	        }
 	    }, {
 	        key: 'onChange',
@@ -19954,12 +19978,13 @@
 	                    _this.setState({ loading: false });
 	                    _this.onChange({ user: user, token: token });
 	                }).catch(function (err) {
+	
 	                    _this.setState({ loading: false });
-	                    console.log(err.message || "Something went wrong when attempting to log you in.");
+	                    _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
 	                });
 	            }).catch(function (err) {
 	                _this.setState({ loading: false });
-	                console.log(err.message || "Something went wrong when attempting to log you in.");
+	                _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
 	            });
 	        }
 	    }, {
@@ -35016,7 +35041,7 @@
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -36074,9 +36099,11 @@
 	
 	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(CollectPage).call(this, props));
 	
-	        _this2.state = { collection: null, collections: [], loadingCollections: false, saving: false };
+	        _this2.state = { collection: null, collections: [], loadingCollections: false, saving: false, showSuccess: false };
 	        _this2.onSubmit = _this2.onSubmit.bind(_this2);
+	        _this2.onClear = _this2.onClear.bind(_this2);
 	        _this2.onSelectChange = _this2.onSelectChange.bind(_this2);
+	        _this2.onInputChange = _this2.onInputChange.bind(_this2);
 	        return _this2;
 	    }
 	
@@ -36088,8 +36115,8 @@
 	                this.setState({ collections: data, loadingCollections: false });
 	            }.bind(this)).catch(function (err) {
 	                this.setState({ loadingCollections: false });
-	                alert('Could not load your collections. Please try again later');
-	            });
+	                this.props.onError('Could not load your collections. Please try again later');
+	            }.bind(this));
 	        }
 	    }, {
 	        key: 'render',
@@ -36099,10 +36126,22 @@
 	            var loadingCollections = _state.loadingCollections;
 	            var collection = _state.collection;
 	            var saving = _state.saving;
+	            var showSuccess = _state.showSuccess;
 	
+	            if (showSuccess) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'collect' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'status-message' },
+	                        'Successfully saved'
+	                    )
+	                );
+	            }
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'collect' },
 	                _react2.default.createElement(
 	                    'h1',
 	                    null,
@@ -36119,7 +36158,8 @@
 	                            null,
 	                            'Post'
 	                        ),
-	                        _react2.default.createElement('textarea', { ref: 'message', name: 'message', placeholder: 'Say something about this link (optional)' })
+	                        _react2.default.createElement('textarea', { ref: 'message', name: 'message', defaultValue: kango.storage.getItem("message"),
+	                            onChange: this.onInputChange, placeholder: 'Say something about this link (optional)' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36146,7 +36186,9 @@
 	                            null,
 	                            'Tags'
 	                        ),
-	                        _react2.default.createElement('input', { ref: 'tags', name: 'tags', placeholder: 'Sepaerate with a comma', type: 'text' })
+	                        _react2.default.createElement('input', { ref: 'tags', name: 'tags', defaultValue: kango.storage.getItem("tags"),
+	                            onChange: this.onInputChange, placeholder: 'Separate with a comma',
+	                            type: 'text' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36156,7 +36198,7 @@
 	                            { className: 'pull-right' },
 	                            _react2.default.createElement(
 	                                'button',
-	                                { className: 'btn btn-gray', type: 'reset' },
+	                                { onClick: this.onClear, className: 'btn btn-gray', type: 'button' },
 	                                'Cancel'
 	                            ),
 	                            _react2.default.createElement(
@@ -36169,6 +36211,13 @@
 	                    )
 	                )
 	            );
+	        }
+	    }, {
+	        key: 'onInputChange',
+	        value: function onInputChange(e) {
+	            var value = e.target.value;
+	            var name = e.target.name;
+	            kango.storage.setItem(name, value);
 	        }
 	    }, {
 	        key: 'onSubmit',
@@ -36185,21 +36234,34 @@
 	                        message: (0, _reactDom.findDOMNode)(_this.refs.message).value.split(',')
 	                    };
 	                    (0, _api.collect)(params).then(function () {
-	                        _this.setState({ saving: false, collection: null });
-	                        KangoAPI.closeWindow();
+	                        _this.setState({ saving: false, collection: null, showSuccess: true });
+	                        _this.clearKangoLocal();
+	                        setTimeout(function () {
+	                            KangoAPI.closeWindow();
+	                        }, 1000);
 	                    }).catch(function () {
-	                        alert("Something went wrong when trying to collect item.");
+	                        _this.props.onError("Something went wrong when trying to collect item.");
 	                        _this.setState({ saving: false });
 	                    });
 	                }).catch(function (err) {
 	                    _this.setState({ saving: false });
-	                    alert("Could not parse current page.");
+	                    _this.props.onError("Could not parse current page.");
 	                });
 	            }.bind(this));
 	        }
 	    }, {
-	        key: 'clearForm',
-	        value: function clearForm() {}
+	        key: 'clearKangoLocal',
+	        value: function clearKangoLocal() {
+	            kango.storage.removeItem('message');
+	            kango.storage.removeItem('tags');
+	        }
+	    }, {
+	        key: 'onClear',
+	        value: function onClear() {
+	            this.clearKangoLocal();
+	            this.setState({ collection: null });
+	            KangoAPI.closeWindow();
+	        }
 	    }, {
 	        key: 'onSelectChange',
 	        value: function onSelectChange(val) {

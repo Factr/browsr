@@ -6,7 +6,7 @@ import {setItem} from '../db';
 class LoginPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {loading: false}
+        this.state = {loading: false};
         this.submitLoginForm = this.submitLoginForm.bind(this);
         this.onChange = this.onChange.bind(this);
     }
@@ -40,6 +40,7 @@ class LoginPage extends Component {
         );
     }
 
+
     goToWebSite(e) {
         e.preventDefault();
         kango.browser.tabs.create({url: "https://factr.com"});
@@ -59,12 +60,13 @@ class LoginPage extends Component {
                 _this.setState({loading: false});
                 _this.onChange({user, token});
             }).catch(function (err) {
+
                 _this.setState({loading: false});
-                console.log(err.message || "Something went wrong when attempting to log you in.");
+                _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
             })
         }).catch(function (err) {
             _this.setState({loading: false});
-            console.log(err.message || "Something went wrong when attempting to log you in.");
+            _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
         })
     }
 

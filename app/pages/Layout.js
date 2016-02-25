@@ -6,14 +6,26 @@ import CollectPage from './CollectPage';
 class Layout extends Component {
     constructor(props) {
         super(props);
-        this.state = {token: kango.storage.getItem('token'), user: JSON.parse(kango.storage.getItem('user'))};
+        this.state = {
+            token: kango.storage.getItem('token'),
+            user: JSON.parse(kango.storage.getItem('user')),
+            error: false
+        };
         this.onChange = this.onChange.bind(this);
+        this.onError = this.onError.bind(this);
         this.logOut = this.logOut.bind(this);
         this.renderBody = this.renderBody.bind(this);
         this.renderNavMenu = this.renderNavMenu.bind(this);
     }
 
     render() {
+        if (this.state.error) {
+            return (
+                <div id="app">
+                    <div className="status-message error">{this.state.error}</div>
+                </div>
+            )
+        }
         return (
             <div id="app">
                 <nav className="nav">
@@ -34,7 +46,7 @@ class Layout extends Component {
     renderBody() {
         var state = this.state;
         if (!state.token) {
-            return <div><LoginPage onChange={this.onChange}/></div>;
+            return <div><LoginPage onChange={this.onChange} onError={this.onError}/></div>;
         }
         var user = state.user;
 
@@ -56,6 +68,14 @@ class Layout extends Component {
             );
         }
         return null;
+    }
+
+    onError(message) {
+        this.setState({error: message});
+        setTimeout(function () {
+            this.setState({error: false});
+        }.bind(this), 3000)
+
     }
 
     onChange(state) {
