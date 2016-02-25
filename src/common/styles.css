@@ -719,6 +719,7 @@ body,
 }
 body {
   width: 399px;
+  overflow: hidden;
   background: #F7F9F9;
 }
 p {
@@ -755,7 +756,9 @@ input[type="password"] {
   line-height: 41px;
 }
 input,
-textarea {
+textarea,
+input[type="text"],
+input[type="password"] {
   color: #90a4ae;
   font-family: "Benton Sans Medium", "Arial Black";
   padding: 15px 14px;
@@ -765,19 +768,25 @@ textarea {
   box-sizing: border-box;
 }
 input:-moz-placeholder,
-textarea:-moz-placeholder {
+textarea:-moz-placeholder,
+input[type="text"]:-moz-placeholder,
+input[type="password"]:-moz-placeholder {
   color: #90a4ae;
   font-family: "Benton Sans", "Arial";
   font-weight: normal;
 }
 input:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
+textarea:-ms-input-placeholder,
+input[type="text"]:-ms-input-placeholder,
+input[type="password"]:-ms-input-placeholder {
   color: #90a4ae;
   font-family: "Benton Sans", "Arial";
   font-weight: normal;
 }
 input::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder,
+input[type="text"]::-webkit-input-placeholder,
+input[type="password"]::-webkit-input-placeholder {
   color: #90a4ae;
   font-family: "Benton Sans", "Arial";
   font-weight: normal;

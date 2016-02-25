@@ -1,6 +1,6 @@
 {
   "content_scripts": [],
-  "description": "Factr collect",
+  "description": "Factr Extension",
   "creator": "Factr",
   "background_scripts": [
     "main.js"
@@ -9,12 +9,12 @@
   "homepage_url": "https://factr.com/",
   "version": "0.0.1",
   "browser_button": {
-    "tooltipText": "Popup Demo",
-    "caption": "Popup Demo",
+    "tooltipText": "Factr Extension",
+    "caption": "Factr Extension",
     "icon": "icons/button.png",
     "popup": {
       "url": "popup.html",
-      "width": 600,
+      "width": 399,
       "height": 520
     }
   },
