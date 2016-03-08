@@ -19840,6 +19840,7 @@
 	        value: function logOut() {
 	            kango.storage.removeItem('user');
 	            kango.storage.removeItem('token');
+	            heap.track('Logged Out', { extension: true });
 	            this.onChange({ user: null, token: null });
 	        }
 	    }]);
@@ -19978,6 +19979,7 @@
 	                kango.storage.setItem('token', token);
 	                (0, _api.me)().then(function (user) {
 	                    heap.identify(_lodash2.default.extend({ name: user.first_name + ' ' + user.last_name }, user));
+	                    heap.track('Logged In', { 'extension': true });
 	                    kango.storage.setItem('last_used_email', user.email);
 	                    kango.storage.setItem('user', JSON.stringify(user));
 	                    _this.setState({ loading: false });
@@ -36073,6 +36075,10 @@
 	
 	var _reactDom = __webpack_require__(161);
 	
+	var _lodash = __webpack_require__(165);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
 	var _reactSelect = __webpack_require__(173);
 	
 	var _reactSelect2 = _interopRequireDefault(_reactSelect);
@@ -36242,6 +36248,7 @@
 	                    (0, _api.collect)(params).then(function () {
 	                        _this.setState({ saving: false, collection: null, showSuccess: true });
 	                        _this.clearKangoLocal();
+	                        heap.track('Collected Item', _lodash2.default.extend({}, { extension: true }, params));
 	                        setTimeout(function () {
 	                            KangoAPI.closeWindow();
 	                        }, 1000);

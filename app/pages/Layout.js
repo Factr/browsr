@@ -85,6 +85,7 @@ class Layout extends Component {
     logOut() {
         kango.storage.removeItem('user');
         kango.storage.removeItem('token');
+        heap.track('Logged Out', {extension: true});
         this.onChange({user: null, token: null});
     }
 }

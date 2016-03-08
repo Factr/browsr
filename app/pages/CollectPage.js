@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
+import _ from 'lodash';
 import Select from 'react-select';
 import moment from 'moment';
 import {getCollections, createItemFromURL, collect} from 'api';
@@ -99,6 +100,7 @@ class CollectPage extends Component {
                     collect(params).then(function () {
                         _this.setState({saving: false, collection: null, showSuccess: true});
                         _this.clearKangoLocal();
+                        heap.track('Collected Item', _.extend({},{extension: true}, params));
                         setTimeout(function () {
                             KangoAPI.closeWindow();
                         }, 1000);

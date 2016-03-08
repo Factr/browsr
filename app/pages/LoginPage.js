@@ -57,6 +57,7 @@ class LoginPage extends Component {
             kango.storage.setItem('token', token);
             me().then(function (user) {
                 heap.identify(_.extend({name: user.first_name + ' ' + user.last_name}, user));
+                heap.track('Logged In', {'extension': true});
                 kango.storage.setItem('last_used_email', user.email);
                 kango.storage.setItem('user', JSON.stringify(user));
                 _this.setState({loading: false});
