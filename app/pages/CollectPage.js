@@ -6,7 +6,7 @@ import {getCollections, createItemFromURL, collect} from 'api';
 
 function buildCollectionOptions(collections) {
     return collections.map(function (c) {
-        return {value: c._id, label: c.title, title: c.title, date: c.updateTime}
+        return {value: c._id, label: c.title, title: c.title + ' - ' + c.streamTitle, date: c.updateTime}
     })
 }
 
