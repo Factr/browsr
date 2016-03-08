@@ -1,0 +1,25 @@
+{
+    "content_scripts": [], 
+    "description": "Factr Extension", 
+    "creator": "Factr", 
+    "framework_version": "1.8.0 3dc957b83b36", 
+    "developer_id": "YOUR_SAFARI_DEVELOPER_ID", 
+    "background_scripts": [
+        "main.js"
+    ], 
+    "homepage_url": "https://factr.com/", 
+    "version": "0.1.2", 
+    "framework_package_id": "dev", 
+    "browser_button": {
+        "caption": "Factr Extension", 
+        "icon": "icons/button.png", 
+        "popup": {
+            "url": "popup.html", 
+            "width": 399, 
+            "height": 520
+        }, 
+        "tooltipText": "Factr Extension"
+    }, 
+    "id": "com.kangoextensions.cdextendr", 
+    "name": "Factr"
+}
