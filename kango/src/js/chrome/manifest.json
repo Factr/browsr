@@ -47,6 +47,6 @@
     "homepage_url": "",
     "description": "Extension description",
     "options_page": "options.html",
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-CLPfQtJAnW5oTJaRNKkIjO/B/+rFd5RpbrI8kZz8MB8=' https://cdn.heapanalytics.com; object-src 'self'",
     "web_accessible_resources": ["res/*", "assets/*", "icons/*"]
 }
