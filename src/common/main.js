@@ -19871,6 +19871,10 @@
 	
 	var _db = __webpack_require__(170);
 	
+	var _lodash = __webpack_require__(165);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19973,6 +19977,7 @@
 	                var token = response.token;
 	                kango.storage.setItem('token', token);
 	                (0, _api.me)().then(function (user) {
+	                    heap.identify(_lodash2.default.extend({ name: user.first_name + ' ' + user.last_name }, user));
 	                    kango.storage.setItem('last_used_email', user.email);
 	                    kango.storage.setItem('user', JSON.stringify(user));
 	                    _this.setState({ loading: false });

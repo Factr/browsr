@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
 import {login, me} from '../api';
 import {setItem} from '../db';
+import _ from 'lodash';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -55,6 +56,7 @@ class LoginPage extends Component {
             var token = response.token;
             kango.storage.setItem('token', token);
             me().then(function (user) {
+                heap.identify(_.extend({name: user.first_name + ' ' + user.last_name}, user));
                 kango.storage.setItem('last_used_email', user.email);
                 kango.storage.setItem('user', JSON.stringify(user));
                 _this.setState({loading: false});
