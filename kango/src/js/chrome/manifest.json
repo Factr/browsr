@@ -44,9 +44,9 @@
         "nativeMessaging"
     ],
     "update_url": "",
-    "homepage_url": "",
+    "homepage_url": "https://factr.com",
     "description": "Extension description",
     "options_page": "options.html",
-    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-CLPfQtJAnW5oTJaRNKkIjO/B/+rFd5RpbrI8kZz8MB8=' https://cdn.heapanalytics.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-Lt/TLvT9KyLfYFRrYX8cQ94h+V/6KWsiM7jSvH+qW3A=' https://cdn.heapanalytics.com; object-src 'self'",
     "web_accessible_resources": ["res/*", "assets/*", "icons/*"]
 }
