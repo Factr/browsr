@@ -1,6 +1,5 @@
-import {merge}  from 'lodash';
-import {Promise} from 'es6-promise';
-import {getItem} from './db';
+import {merge} from "lodash";
+import {Promise} from "es6-promise";
 
 const config = require('./config');
 
@@ -10,9 +9,16 @@ function generateRoute(path) {
 
 function generateHeaders() {
     var token = kango.storage.getItem('token');
-    if (!token) return {};
+    console.log(token);
+    if (!token) return {
+       
+
+    };
     return {
-        Authorization: `Bearer ${token}`
+        Authorization: `Token ${token}`,
+        'Referer': 'https://factr.com',
+        'Host': 'https://factr.com'
+
     }
 }
 
@@ -20,16 +26,17 @@ function makeApiRequest(path, method = "GET", opts) {
     opts = merge({}, {
         method: method,
         url: generateRoute(path),
-        headers: generateHeaders(),
-        contentType: 'application/json'
+        headers: generateHeaders()
     }, opts || {});
-
+    console.log(opts);
     return new Promise(function (resolve, reject) {
         kango.xhr.send(opts, function (data) {
+            console.log(data);
             if (data.status == 200 && data.response != null) {
                 resolve(JSON.parse(data.response).data);
             }
             else {
+
                 reject(JSON.parse(data.response));
             }
 
@@ -44,7 +51,7 @@ export function me() {
 }
 
 export function login(params) {
-    const route = 'auth/login';
+    const route = 'auth/token';
     return makeApiRequest(route, "POST", {params});
 }
 
@@ -58,7 +65,7 @@ export function getCollections() {
     return makeApiRequest(route, "GET");
 }
 
-export function createItemFromURL(url){
+export function createItemFromURL(url) {
     const route = `item/from-url?url=${encodeURI(url)}`;
     return makeApiRequest(route, "GET");
 }

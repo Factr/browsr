@@ -51,7 +51,7 @@ class LoginPage extends Component {
         e.preventDefault();
         var _this = this;
         _this.setState({loading: true});
-        var params = {email: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
+        var params = {username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
         login(params).then(function (response) {
             var token = response.token;
             kango.storage.setItem('token', token);

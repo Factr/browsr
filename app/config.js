@@ -1,6 +1,6 @@
 module.exports = {
-    // apiUrl: "https://stage-integratr.factr.com",
-    apiUrl: "https://integratr.factr.com",
+    apiUrl: "http://dev-centr.factr.com",
+    //apiUrl: "https://centr.factr.com",
     //apiUrl: "http://localhost:3000",
-    environment: "staging"
+    environment: "dev"
 };
