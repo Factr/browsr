@@ -104,21 +104,21 @@ class CollectPage extends Component {
                     var tags = findDOMNode(_this.refs.tags).value.split(',');
                     postItem(streamId, post).then(function (post) {
                         heap.track('Posted Item', _.extend({}, {extension: true}, post));
-                        //if (tags.length > 0) {
-                        //    console.log(tags);
-                        //    addItemTags(streamId, post.id, tags).then(function () {
-                        //        _this.setState({saving: false, stream: null, showSuccess: true});
-                        //        _this.closeWindow();
-                        //        _this.clearKangoLocal();
-                        //    }).catch(function (err) {
-                        //        console.log(err);
-                        //    });
-                        //}
-                        //else {
-                        _this.setState({saving: false, stream: null, showSuccess: true});
-                        _this.closeWindow();
-                        _this.clearKangoLocal();
-                        //}
+                        if (tags.length > 0) {
+                            console.log(tags);
+                            addItemTags(streamId, post.id, tags).then(function () {
+                                _this.setState({saving: false, stream: null, showSuccess: true});
+                                _this.closeWindow();
+                                _this.clearKangoLocal();
+                            }).catch(function (err) {
+                                console.log(err);
+                            });
+                        }
+                        else {
+                            _this.setState({saving: false, stream: null, showSuccess: true});
+                            _this.closeWindow();
+                            _this.clearKangoLocal();
+                        }
                     }).catch(function (err) {
                         console.log(err);
                     });
