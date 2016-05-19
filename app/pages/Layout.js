@@ -62,7 +62,7 @@ class Layout extends Component {
         if (user) {
             return (
                 <div className="logged-in">
-                    <div>Logged in as <b>{user.display_name}</b></div>
+                    <div>Logged in as <b>{user.first_name + ' ' + user.last_name}</b></div>
                     <div><a href="#" onClick={this.logOut}>Logout</a></div>
                 </div>
             );

@@ -63,10 +63,9 @@ class LoginPage extends Component {
                 _this.setState({loading: false});
                 _this.onChange({user, token});
             }).catch(function (err) {
-
                 _this.setState({loading: false});
                 _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
-            })
+            });
         }).catch(function (err) {
             _this.setState({loading: false});
             _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
