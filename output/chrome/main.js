@@ -20479,13 +20479,9 @@
 	
 	function generateHeaders() {
 	    var token = kango.storage.getItem('token');
-	    console.log(token);
 	    if (!token) return {};
 	    return {
-	        Authorization: "Token " + token,
-	        'Referer': 'https://factr.com',
-	        'Host': 'https://factr.com'
-	
+	        Authorization: "Token " + token
 	    };
 	}
 	
@@ -20496,16 +20492,17 @@
 	    opts = (0, _lodash.merge)({}, {
 	        method: method,
 	        url: generateRoute(path),
-	        headers: generateHeaders()
+	        headers: generateHeaders(),
+	        contentType: 'json'
 	    }, opts || {});
 	    console.log(opts);
+	    document.cookie = '';
 	    return new _es6Promise.Promise(function (resolve, reject) {
 	        kango.xhr.send(opts, function (data) {
 	            console.log(data);
 	            if (data.status == 200 && data.response != null) {
 	                resolve(JSON.parse(data.response).data);
 	            } else {
-	
 	                reject(JSON.parse(data.response));
 	            }
 	        });

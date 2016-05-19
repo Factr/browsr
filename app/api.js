@@ -9,16 +9,9 @@ function generateRoute(path) {
 
 function generateHeaders() {
     var token = kango.storage.getItem('token');
-    console.log(token);
-    if (!token) return {
-       
-
-    };
+    if (!token) return {};
     return {
-        Authorization: `Token ${token}`,
-        'Referer': 'https://factr.com',
-        'Host': 'https://factr.com'
-
+        Authorization: `Token ${token}`
     }
 }
 
@@ -26,9 +19,11 @@ function makeApiRequest(path, method = "GET", opts) {
     opts = merge({}, {
         method: method,
         url: generateRoute(path),
-        headers: generateHeaders()
+        headers: generateHeaders(),
+        contentType: 'json'
     }, opts || {});
     console.log(opts);
+    document.cookie = '';
     return new Promise(function (resolve, reject) {
         kango.xhr.send(opts, function (data) {
             console.log(data);
@@ -36,7 +31,6 @@ function makeApiRequest(path, method = "GET", opts) {
                 resolve(JSON.parse(data.response).data);
             }
             else {
-
                 reject(JSON.parse(data.response));
             }
 
