@@ -2,10 +2,11 @@ import React, {Component, PropTypes} from 'react';
 
 
 class LogoutPage extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
     }
-    shouldComponentUpdate(nextProps){
+
+    shouldComponentUpdate(nextProps) {
         return this.props.isLoggedIn !== nextProps.isLoggedIn;
     }
 
@@ -18,7 +19,6 @@ class LogoutPage extends Component {
 LogoutPage.propTypes = {
     isLoggedIn: React.PropTypes.bool.isRequired
 };
-
 
 
 export default LogoutPage;

@@ -54,7 +54,7 @@ class Layout extends Component {
             this.logOut();
             return null;
         }
-        return <div><CollectPage user={state.user}/></div>
+        return <div><CollectPage onError={this.onError} user={state.user}/></div>
     }
 
     renderNavMenu() {
@@ -83,8 +83,9 @@ class Layout extends Component {
     }
 
     logOut() {
-        kango.storage.removeItem('user');
-        kango.storage.removeItem('token');
+        //kango.storage.removeItem('user');
+        //kango.storage.removeItem('token');
+        kango.storage.clear();
         heap.track('Logged Out', {extension: true});
         this.onChange({user: null, token: null});
     }

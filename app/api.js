@@ -22,14 +22,14 @@ function makeApiRequest(path, method = "GET", opts) {
         url: generateRoute(path),
         headers: generateHeaders()
     }, opts || {});
-    document.cookie = '';
+    console.log(opts)
     return new Promise(function (resolve, reject) {
         kango.xhr.send(opts, function (data) {
             if (data.status == 200) {
                 return resolve(JSON.parse(data.response));
             }
             else {
-                return reject(JSON.parse(data.response));
+                return reject();
             }
 
         })

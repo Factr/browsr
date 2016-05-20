@@ -69,7 +69,7 @@ class CollectPage extends Component {
                     <div className="form-actions">
                         <div className="pull-right">
                             <button onClick={this.onClear} className="btn btn-gray" type="button">Cancel</button>
-                            <button disabled={saving} className="btn btn-primary" type="submit">Collect {saving ? (
+                            <button disabled={saving || !this.state.stream} className="btn btn-primary" type="submit">Collect {saving ? (
                                 <span className="loading"></span>) : null}</button>
                         </div>
                     </div>
@@ -87,7 +87,7 @@ class CollectPage extends Component {
     onSubmit(e) {
         e.preventDefault();
         var _this = this;
-        var streamId = _this.state.stream;
+        var streamId = _this.state.stream.value;
         var post = {};
         _this.setState({saving: true});
         kango.browser.tabs.getCurrent(function (tab) {
@@ -101,17 +101,17 @@ class CollectPage extends Component {
                     if (data.authors.length > 0) {
                         post.author = data.authors.join(', ');
                     }
-                    var tags = findDOMNode(_this.refs.tags).value.split(',');
+                    var tags = findDOMNode(_this.refs.tags).value.split(',').map(function(a){return a.trim()});
                     postItem(streamId, post).then(function (post) {
                         heap.track('Posted Item', _.extend({}, {extension: true}, post));
                         if (tags.length > 0) {
-                            console.log(tags);
                             addItemTags(streamId, post.id, tags).then(function () {
                                 _this.setState({saving: false, stream: null, showSuccess: true});
                                 _this.closeWindow();
                                 _this.clearKangoLocal();
-                            }).catch(function (err) {
-                                console.log(err);
+                            }).catch(function () {
+                                _this.props.onError("Something went wrong saving tags but your post was created.");
+                                _this.setState({saving: false, stream: null, showSuccess: false});
                             });
                         }
                         else {
@@ -119,12 +119,15 @@ class CollectPage extends Component {
                             _this.closeWindow();
                             _this.clearKangoLocal();
                         }
-                    }).catch(function (err) {
-                        console.log(err);
+                    }).catch(function () {
+                        _this.props.onError("Something went wrong when creating post.");
+                        _this.setState({saving: false, stream: null, showSuccess: false});
+
                     });
 
-                }).catch(function (err) {
-                console.log(err)
+                }).catch(function () {
+                    _this.setState({saving: false, stream: null, showSuccess: false});
+                    _this.props.onError("Could not create post because this page is not valid.")
             })
         }.bind(this));
     }
