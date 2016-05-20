@@ -7,7 +7,7 @@
         "main.js"
     ], 
     "homepage_url": "https://factr.com/", 
-    "version": "0.2", 
+    "version": "0.2.1", 
     "framework_package_id": "dev", 
     "browser_button": {
         "caption": "Factr Extension", 
