@@ -22,7 +22,6 @@ function makeApiRequest(path, method = "GET", opts) {
         url: generateRoute(path),
         headers: generateHeaders()
     }, opts || {});
-    console.log(opts)
     return new Promise(function (resolve, reject) {
         kango.xhr.send(opts, function (data) {
             if (data.status == 200) {

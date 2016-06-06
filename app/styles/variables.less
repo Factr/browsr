@@ -6,7 +6,7 @@
 @colorDarkTint: #292F3C;
 @colorDark: #1E2431;
 @colorGray: #bdc0ca;
-@colorGray2:  #90a4ae;
+@colorGray2: #90a4ae;
 @colorGray3: #F7F9F9;
 @colorBlueGray: #cfd8dc;
 @colorBlueTint: #78909c;
@@ -32,55 +32,52 @@
 //== Typography
 //
 //## Font, line-height, and color for body text, headings, and more.
+@font-family-base: "Benton Sans", "Arial", serif;
+@font-family-book: "Benton Sans Book", "Arial", serif;
+@font-family-medium: "Benton Sans Medium", "Arial Black", serif;
+@font-family-black: "Benton Sans Black", "Arial Black", serif;
+@font-family-extra-bold: "Beton Extra-Bold", "Georgia", serif;
+@font-family-merriweather: "Merriweather", "Georgia", serif;
 
 .benton-sans-bold {
-  font-family: "Benton Sans";
+  font-family: @font-family-base;
   font-style: normal;
   font-weight: bold;
 }
 
 .benton-sans-book {
-  font-family: "Benton Sans Book";
+  font-family: @font-family-book;
   font-style: normal;
   font-weight: normal;
 }
 
 .benton-sans-medium {
-  font-family: "Benton Sans Medium";
+  font-family: @font-family-medium;
   font-style: normal;
   font-weight: normal;
 }
 
 .benton-sans-black {
-  font-family: "Benton Sans Black";
+  font-family: @font-family-black;
   font-style: normal;
   font-weight: normal;
 }
-
 
 .benton-sans-regular {
-  font-family: "Benton Sans";
+  font-family: @font-family-base;
   font-style: normal;
   font-weight: normal;
 }
 
-
-
 @font-face {
-  font-family: 'Beton Extra-Bold';
-  src: url('../assets/fonts/BetonExtraBold.eot') format('embedded-opentype');
-  src: url('../assets/fonts/BetonExtraBold.woff') format('woff');
+  font-family: "Beton Extra-Bold", serif;
+  src: url("../assets/fonts/BetonExtraBold.eot") format("embedded-opentype");
+  src: url("../assets/fonts/BetonExtraBold.woff") format("woff");
 }
 
-@font-family-base: "Benton Sans", "Arial";
-@font-family-book: "Benton Sans Book", "Arial";
-@font-family-medium: "Benton Sans Medium", "Arial Black";
-@font-family-black: "Benton Sans Black", "Arial Black";
-@font-family-extra-bold: "Beton Extra-Bold", "Georgia";
-@font-family-merriweather: "Merriweather", "Georgia";
+
 
 @font-size-base: 1px;
-
 @font-size-large: 1.4em;
 @font-size-medium: 1.14em;
 @font-size-smaller: .93em;

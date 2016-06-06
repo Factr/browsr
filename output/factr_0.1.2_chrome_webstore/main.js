@@ -19953,7 +19953,7 @@
 	                        _react2.default.createElement(
 	                            'a',
 	                            { href: '#',
-	                                onClick: this.goToWebSite },
+	                                onClick: LoginPage.goToWebSite },
 	                            'our website'
 	                        )
 	                    ),
@@ -36115,7 +36115,7 @@
 	        _this2.onSubmit = _this2.onSubmit.bind(_this2);
 	        _this2.onClear = _this2.onClear.bind(_this2);
 	        _this2.onSelectChange = _this2.onSelectChange.bind(_this2);
-	        _this2.onInputChange = _this2.onInputChange.bind(_this2);
+	        _this2.onInputChange = CollectPage.onInputChange.bind(_this2);
 	        return _this2;
 	    }
 	
@@ -36171,7 +36171,7 @@
 	                            'Post'
 	                        ),
 	                        _react2.default.createElement('textarea', { ref: 'message', name: 'message', defaultValue: kango.storage.getItem("message"),
-	                            onChange: this.onInputChange, placeholder: 'Say something about this link (optional)' })
+	                            onChange: CollectPage.onInputChange, placeholder: 'Say something about this link (optional)' })
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -36186,7 +36186,7 @@
 	                            value: collection,
 	                            name: 'form-field-name',
 	                            options: buildCollectionOptions(collections),
-	                            optionRenderer: this.renderOption,
+	                            optionRenderer: CollectPage.renderOption,
 	                            onChange: this.onSelectChange
 	                        })
 	                    ),
@@ -36199,7 +36199,7 @@
 	                            'Tags'
 	                        ),
 	                        _react2.default.createElement('input', { ref: 'tags', name: 'tags', defaultValue: kango.storage.getItem("tags"),
-	                            onChange: this.onInputChange, placeholder: 'Separate with a comma',
+	                            onChange: CollectPage.onInputChange, placeholder: 'Separate with a comma',
 	                            type: 'text' })
 	                    ),
 	                    _react2.default.createElement(
@@ -36247,7 +36247,7 @@
 	                    };
 	                    (0, _api.collect)(params).then(function () {
 	                        _this.setState({ saving: false, collection: null, showSuccess: true });
-	                        _this.clearKangoLocal();
+	                        CollectPage.clearKangoLocal();
 	                        heap.track('Collected Item', _lodash2.default.extend({}, { extension: true }, params));
 	                        setTimeout(function () {
 	                            KangoAPI.closeWindow();
@@ -36271,7 +36271,7 @@
 	    }, {
 	        key: 'onClear',
 	        value: function onClear() {
-	            this.clearKangoLocal();
+	            CollectPage.clearKangoLocal();
 	            this.setState({ collection: null });
 	            KangoAPI.closeWindow();
 	        }

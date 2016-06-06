@@ -30,7 +30,7 @@ class Layout extends Component {
             <div id="app">
                 <nav className="nav">
                     <div className="nav-wrapper">
-                        <div className="branding"><a href="https://factr.com" className="logo"></a></div>
+                        <div className="branding"><a href="https://factr.com" className="logo" /></div>
                         <div className="menu">
                             {this.renderNavMenu()}
                         </div>

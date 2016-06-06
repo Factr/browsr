@@ -1,8 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {findDOMNode} from 'react-dom';
-import _ from 'lodash';
+import extend from 'lodash/extend';
 import Select from 'react-select';
-import moment from 'moment';
 import {getStreams, getItemFromUrl, postItem, addItemTags} from 'api';
 
 function buildStreamOptions(streams) {
@@ -19,14 +18,14 @@ class CollectPage extends Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onSelectChange = this.onSelectChange.bind(this);
-        this.onInputChange = this.onInputChange.bind(this);
+        CollectPage.onInputChange = CollectPage.onInputChange.bind(this);
     }
 
     componentDidMount() {
         this.setState({loadingStreams: true});
         getStreams().then(function (data) {
             this.setState({streams: data, loadingStreams: false});
-        }.bind(this)).catch(function (err) {
+        }.bind(this)).catch(function () {
             this.setState({loadingStreams: false});
             this.props.onError('Could not load your streams. Please try again later');
         }.bind(this));
@@ -47,7 +46,8 @@ class CollectPage extends Component {
                     <div className="input-field">
                         <label>Post</label>
                         <textarea ref="message" name="message" defaultValue={kango.storage.getItem("message")}
-                                  onChange={this.onInputChange} placeholder="Say something about this link (optional)"/>
+                                  onChange={CollectPage.onInputChange}
+                                  placeholder="Say something about this link (optional)"/>
                     </div>
                     <div className="input-field">
                         <label>Save To</label>
@@ -56,21 +56,23 @@ class CollectPage extends Component {
                             value={stream}
                             name="form-field-name"
                             options={buildStreamOptions(streams)}
-                            optionRenderer={this.renderOption}
+                            optionRenderer={CollectPage.renderOption}
                             onChange={this.onSelectChange}
-                        /></div>
+                        />
+                    </div>
                     <div className="input-field">
                         <label>Tags</label>
                         <input ref="tags" name="tags"
-                               onChange={this.onInputChange} placeholder="Separate with a comma"
+                               onChange={CollectPage.onInputChange} placeholder="Separate with a comma"
                                type="text"/>
                     </div>
 
                     <div className="form-actions">
                         <div className="pull-right">
                             <button onClick={this.onClear} className="btn btn-gray" type="button">Cancel</button>
-                            <button disabled={saving || !this.state.stream} className="btn btn-primary" type="submit">Collect {saving ? (
-                                <span className="loading"></span>) : null}</button>
+                            <button disabled={saving || !this.state.stream} className="btn btn-primary" type="submit">
+                                Collect {saving ? (
+                                <span className="loading"/>) : null}</button>
                         </div>
                     </div>
                 </form>
@@ -78,7 +80,7 @@ class CollectPage extends Component {
         );
     }
 
-    onInputChange(e) {
+    static onInputChange(e) {
         var value = e.target.value;
         var name = e.target.name;
         kango.storage.setItem(name, value);
@@ -101,14 +103,16 @@ class CollectPage extends Component {
                     if (data.authors.length > 0) {
                         post.author = data.authors.join(', ');
                     }
-                    var tags = findDOMNode(_this.refs.tags).value.split(',').map(function(a){return a.trim()});
+                    var tags = findDOMNode(_this.refs.tags).value.split(',').map(function (a) {
+                        return a.trim()
+                    });
                     postItem(streamId, post).then(function (post) {
-                        heap.track('Posted Item', _.extend({}, {extension: true}, post));
+                        heap.track('Posted Item', extend({}, {extension: true}, post));
                         if (tags.length > 0) {
                             addItemTags(streamId, post.id, tags).then(function () {
                                 _this.setState({saving: false, stream: null, showSuccess: true});
                                 _this.closeWindow();
-                                _this.clearKangoLocal();
+                                CollectPage.clearKangoLocal();
                             }).catch(function () {
                                 _this.props.onError("Something went wrong saving tags but your post was created.");
                                 _this.setState({saving: false, stream: null, showSuccess: false});
@@ -117,7 +121,7 @@ class CollectPage extends Component {
                         else {
                             _this.setState({saving: false, stream: null, showSuccess: true});
                             _this.closeWindow();
-                            _this.clearKangoLocal();
+                            CollectPage.clearKangoLocal();
                         }
                     }).catch(function () {
                         _this.props.onError("Something went wrong when creating post.");
@@ -126,8 +130,8 @@ class CollectPage extends Component {
                     });
 
                 }).catch(function () {
-                    _this.setState({saving: false, stream: null, showSuccess: false});
-                    _this.props.onError("Could not create post because this page is not valid.")
+                _this.setState({saving: false, stream: null, showSuccess: false});
+                _this.props.onError("Could not create post because this page is not valid.")
             })
         }.bind(this));
     }
@@ -138,14 +142,14 @@ class CollectPage extends Component {
         }, 1000);
     }
 
-    clearKangoLocal() {
+    static clearKangoLocal() {
         kango.storage.removeItem('message');
         kango.storage.removeItem('tags');
 
     }
 
     onClear() {
-        this.clearKangoLocal();
+        CollectPage.clearKangoLocal();
         this.setState({stream: null});
         KangoAPI.closeWindow();
     }
@@ -156,7 +160,7 @@ class CollectPage extends Component {
         })
     }
 
-    renderOption(option) {
+    static renderOption(option) {
         return (
             <div>
                 <span className="option-title">{option.label}</span>

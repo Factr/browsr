@@ -1,8 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {findDOMNode} from 'react-dom';
-import {login, me} from '../api';
-import {setItem} from '../db';
-import _ from 'lodash';
+import {login, me} from 'api';
+import extend from 'lodash/extend';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -28,13 +27,13 @@ class LoginPage extends Component {
                         <div className="pull-right">
                             <button className="btn btn-gray" type="reset">Cancel</button>
                             <button disabled={this.state.loading} className="btn btn-primary" type="submit">
-                                Login {this.state.loading ? (<span className="loading"></span>) : null}</button>
+                                Login {this.state.loading ? (<span className="loading" />) : null}</button>
                         </div>
                     </div>
                 </form>
                 <p>
                     Don't have an account yet? Factr is currently in private beta. Go to <b><a href="#"
-                                                                                               onClick={this.goToWebSite}>our
+                                                                                               onClick={LoginPage.goToWebSite}>our
                     website</a></b> to apply for an invitation.
                 </p>
             </div>
@@ -42,7 +41,7 @@ class LoginPage extends Component {
     }
 
 
-    goToWebSite(e) {
+    static goToWebSite(e) {
         e.preventDefault();
         kango.browser.tabs.create({url: "https://factr.com"});
     }
@@ -52,12 +51,11 @@ class LoginPage extends Component {
         var _this = this;
         _this.setState({loading: true});
         var params = {username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
-        console.log(params)
         login(params).then(function (response) {
             var token = response.token;
             kango.storage.setItem('token', token);
             me().then(function (user) {
-                heap.identify(_.extend({name: user.first_name + ' ' + user.last_name}, user));
+                heap.identify(extend({name: user.first_name + ' ' + user.last_name}, user));
                 heap.track('Logged In', {'extension': true});
                 kango.storage.setItem('last_used_email', user.email);
                 kango.storage.setItem('user', JSON.stringify(user));

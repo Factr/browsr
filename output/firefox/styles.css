@@ -373,7 +373,7 @@ optgroup {
 }
 .Select.has-value .Select-placeholder {
   color: #1E2431;
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
 }
 .Select .option-title,
 .Select .option-date {
@@ -385,7 +385,7 @@ optgroup {
 .Select .option-date {
   font-size: .65em;
   color: #bdc0ca;
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
 }
 .Select,
 .Select div,
@@ -723,7 +723,7 @@ body {
   background: #F7F9F9;
 }
 p {
-  font-family: "Benton Sans", "Arial";
+  font-family: "Benton Sans", "Arial", serif;
   font-size: 1em;
   line-height: 1.5em;
 }
@@ -735,14 +735,14 @@ a:focus {
   outline: 0;
 }
 h1 {
-  font-family: "Benton Sans", "Arial";
+  font-family: "Benton Sans", "Arial", serif;
   font-weight: bold;
   color: #1E2431;
   font-size: 1.17em;
   margin: 20px 0;
 }
 label {
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
   font-weight: normal;
   text-transform: uppercase;
   font-size: .83em;
@@ -760,7 +760,7 @@ textarea,
 input[type="text"],
 input[type="password"] {
   color: #90a4ae;
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
   padding: 15px 14px;
   border: 1px solid #cfd8dc;
   width: 100%;
@@ -772,7 +772,7 @@ textarea:-moz-placeholder,
 input[type="text"]:-moz-placeholder,
 input[type="password"]:-moz-placeholder {
   color: #90a4ae;
-  font-family: "Benton Sans", "Arial";
+  font-family: "Benton Sans", "Arial", serif;
   font-weight: normal;
 }
 input:-ms-input-placeholder,
@@ -780,7 +780,7 @@ textarea:-ms-input-placeholder,
 input[type="text"]:-ms-input-placeholder,
 input[type="password"]:-ms-input-placeholder {
   color: #90a4ae;
-  font-family: "Benton Sans", "Arial";
+  font-family: "Benton Sans", "Arial", serif;
   font-weight: normal;
 }
 input::-webkit-input-placeholder,
@@ -788,7 +788,7 @@ textarea::-webkit-input-placeholder,
 input[type="text"]::-webkit-input-placeholder,
 input[type="password"]::-webkit-input-placeholder {
   color: #90a4ae;
-  font-family: "Benton Sans", "Arial";
+  font-family: "Benton Sans", "Arial", serif;
   font-weight: normal;
 }
 .clearfix:after {
@@ -819,7 +819,7 @@ input[type="password"]::-webkit-input-placeholder {
   height: 29px;
   display: inline-block;
   padding: 0 32px;
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
   font-size: 1em;
   box-shadow: none;
   border: none;
@@ -914,7 +914,7 @@ input[type="password"]::-webkit-input-placeholder {
 }
 .status-message {
   font-size: 1.17em;
-  font-family: "Benton Sans Medium", "Arial Black";
+  font-family: "Benton Sans Medium", "Arial Black", serif;
   text-align: center;
   height: 100%;
   padding-top: 100px;
