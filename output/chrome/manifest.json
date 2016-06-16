@@ -15,7 +15,7 @@
         "page": "background.html"
     }, 
     "homepage_url": "https://factr.com/", 
-    "version": "0.2.2", 
+    "version": "0.2.3", 
     "manifest_version": 2, 
     "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-Lt/TLvT9KyLfYFRrYX8cQ94h+V/6KWsiM7jSvH+qW3A=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'", 
     "browser_action": {

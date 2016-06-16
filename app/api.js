@@ -37,7 +37,7 @@ function makeApiRequest(path, method = "GET", opts) {
 }
 
 export function me() {
-    const route = 'me/';
+    const route = 'users/whoami';
     return makeApiRequest(route, "GET");
 }
 

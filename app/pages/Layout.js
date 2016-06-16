@@ -20,7 +20,7 @@ class Layout extends Component {
 
     render() {
         if (this.state.error) {
-            return (
+            var error_text = (
                 <div id="app">
                     <div className="status-message error">{this.state.error}</div>
                 </div>
@@ -39,6 +39,7 @@ class Layout extends Component {
                 <div className="container">
                     {this.renderBody()}
                 </div>
+                {error_text}
             </div>);
 
     }

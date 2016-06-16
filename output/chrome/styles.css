@@ -917,7 +917,7 @@ input[type="password"]::-webkit-input-placeholder {
   font-family: "Benton Sans Medium", "Arial Black", serif;
   text-align: center;
   height: 100%;
-  padding-top: 100px;
+  padding-top: 10px;
   color: #1E2431;
 }
 .status-message.error {

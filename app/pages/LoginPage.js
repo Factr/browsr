@@ -61,13 +61,13 @@ class LoginPage extends Component {
                 kango.storage.setItem('user', JSON.stringify(user));
                 _this.setState({loading: false});
                 _this.onChange({user, token});
-            }).catch(function (err) {
+            }).catch(function () {
                 _this.setState({loading: false});
-                _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
+                _this.props.onError("Something went wrong when attempting to log you in");
             });
-        }).catch(function (err) {
+        }).catch(function () {
             _this.setState({loading: false});
-            _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
+            _this.props.onError("Something went wrong when attempting to log you in");
         })
     }
 

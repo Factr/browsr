@@ -20394,7 +20394,7 @@
 	        key: 'render',
 	        value: function render() {
 	            if (this.state.error) {
-	                return _react2.default.createElement(
+	                var error_text = _react2.default.createElement(
 	                    'div',
 	                    { id: 'app' },
 	                    _react2.default.createElement(
@@ -20429,7 +20429,8 @@
 	                    'div',
 	                    { className: 'container' },
 	                    this.renderBody()
-	                )
+	                ),
+	                error_text
 	            );
 	        }
 	    }, {
@@ -20644,13 +20645,13 @@
 	                    kango.storage.setItem('user', JSON.stringify(user));
 	                    _this.setState({ loading: false });
 	                    _this.onChange({ user: user, token: token });
-	                }).catch(function (err) {
+	                }).catch(function () {
 	                    _this.setState({ loading: false });
-	                    _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
+	                    _this.props.onError("Something went wrong when attempting to log you in");
 	                });
-	            }).catch(function (err) {
+	            }).catch(function () {
 	                _this.setState({ loading: false });
-	                _this.props.onError(err.message || "Something went wrong when attempting to log you in.");
+	                _this.props.onError("Something went wrong when attempting to log you in");
 	            });
 	        }
 	    }, {
@@ -20727,7 +20728,7 @@
 	}
 	
 	function me() {
-	    var route = 'me/';
+	    var route = 'users/whoami';
 	    return makeApiRequest(route, "GET");
 	}
 	
