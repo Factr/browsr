@@ -47,6 +47,6 @@
     "homepage_url": "https://factr.com",
     "description": "Extension description",
     "options_page": "options.html",
-    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-Lt/TLvT9KyLfYFRrYX8cQ94h+V/6KWsiM7jSvH+qW3A=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-0tzuyoOqrEzlYLfmTeCY7N8QSpfH7297OSW0APcCB4s=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'",
     "web_accessible_resources": ["res/*", "assets/*", "icons/*"]
 }

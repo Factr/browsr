@@ -15,9 +15,9 @@
         "page": "background.html"
     }, 
     "homepage_url": "https://factr.com/", 
-    "version": "0.2.3", 
+    "version": "0.2.4", 
     "manifest_version": 2, 
-    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-Lt/TLvT9KyLfYFRrYX8cQ94h+V/6KWsiM7jSvH+qW3A=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'", 
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-0tzuyoOqrEzlYLfmTeCY7N8QSpfH7297OSW0APcCB4s=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'", 
     "browser_action": {
         "default_popup": "popup.html", 
         "default_icon": "icons/button.png", 

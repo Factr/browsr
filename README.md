@@ -7,4 +7,6 @@ Browser extension for [Factr](https://factr.com) supporting Firefox, Safari, Chr
 
 This command signs the javascript: `echo -n "alert('Hello, world.');" | openssl dgst -sha256 -binary | openssl enc -base64`
 
-This will return the hash for inline script.  Do not include the `<script>` tags themselves just what's inside
+This will return the hash for inline script.  Do not include the `<script>` tags themselves just what's inside the tags.
+
+Place the hash in kango/src/js/chrome/manifest.json and rebuild.
