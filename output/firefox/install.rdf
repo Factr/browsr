@@ -2,7 +2,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>{329CFD2D-0BF5-4B49-BAF6-866536DB3519}</em:id>
         <em:name>Factr</em:name>
-        <em:version>0.2.4</em:version>
+        <em:version>0.2.5</em:version>
         <em:targetApplication>
             <Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
