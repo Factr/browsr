@@ -66,6 +66,6 @@ export function getStreams() {
 }
 
 export function getItemFromUrl(url) {
-    const route = `sourceitems/extract_url?url=${encodeURI(url)}`;
+    const route = `streams/extract_url?url=${encodeURI(url)}`;
     return makeApiRequest(route, "GET");
 }
