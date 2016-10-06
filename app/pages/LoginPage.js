@@ -18,10 +18,13 @@ class LoginPage extends Component {
                 <form className="login-form default-form" onSubmit={this.submitLoginForm}>
                     <div className="input-field">
                         <input placeholder="Email Address" ref="email" type="text" name="email"
+                               className="b-input"
                                defaultValue={kango.storage.getItem('last_used_email')}/>
                     </div>
                     <div className="input-field">
-                        <input placeholder="Password" ref="password" type="password" name="password"/>
+                        <input placeholder="Password"
+                               className="b-input"
+                               ref="password" type="password" name="password"/>
                     </div>
                     <div className="form-actions">
                         <div className="pull-right">
@@ -51,6 +54,7 @@ class LoginPage extends Component {
         var _this = this;
         _this.setState({loading: true});
         var params = {username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
+        var errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in";
         login(params).then(function (response) {
             var token = response.token;
             kango.storage.setItem('token', token);
@@ -63,11 +67,11 @@ class LoginPage extends Component {
                 _this.onChange({user, token});
             }).catch(function () {
                 _this.setState({loading: false});
-                _this.props.onError("Something went wrong when attempting to log you in");
+                _this.props.onError(errorMessage);
             });
         }).catch(function () {
             _this.setState({loading: false});
-            _this.props.onError("Something went wrong when attempting to log you in");
+            _this.props.onError(errorMessage);
         })
     }
 

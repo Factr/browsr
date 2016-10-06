@@ -21,13 +21,11 @@ class Layout extends Component {
     render() {
         if (this.state.error) {
             var error_text = (
-                <div id="app">
-                    <div className="status-message error">{this.state.error}</div>
-                </div>
+                <div className="status-message error" dangerouslySetInnerHTML={{ __html: this.state.error }} />
             )
         }
         return (
-            <div id="app">
+            <div id="app" ref="app">
                 <nav className="nav">
                     <div className="nav-wrapper">
                         <div className="branding"><a href="https://factr.com" className="logo" /></div>
@@ -73,9 +71,9 @@ class Layout extends Component {
 
     onError(message) {
         this.setState({error: message});
-        setTimeout(function () {
-            this.setState({error: false});
-        }.bind(this), 3000)
+        // setTimeout(function () {
+        //     this.setState({error: false});
+        // }.bind(this), 3000)
 
     }
 

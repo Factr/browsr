@@ -29,7 +29,6 @@ class CollectPage extends Component {
             this.setState({loadingStreams: false});
             this.props.onError('Could not load your streams. Please try again later');
         }.bind(this));
-
     }
 
     render() {
@@ -46,7 +45,8 @@ class CollectPage extends Component {
                     <div className="input-field">
                         <label>Post</label>
                         <textarea ref="message" name="message" defaultValue={kango.storage.getItem("message")}
-                                  onChange={CollectPage.onInputChange}
+                                  onChange={CollectPage.onInputChange} autoFocus
+                                  className="b-input _message _resize-y"
                                   placeholder="Say something about this link (optional)"/>
                     </div>
                     <div className="input-field">
@@ -63,6 +63,7 @@ class CollectPage extends Component {
                     <div className="input-field">
                         <label>Tags</label>
                         <input ref="tags" name="tags"
+                               className="b-input"
                                onChange={CollectPage.onInputChange} placeholder="Separate with a comma"
                                type="text"/>
                     </div>
