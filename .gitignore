@@ -37,3 +37,7 @@ node_modules/
 *.pyc
 
 output/
+
+src/common/*.js
+src/common/*.map
+src/common/*.css
