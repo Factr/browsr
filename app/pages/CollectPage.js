@@ -24,7 +24,8 @@ class CollectPage extends Component {
     componentDidMount() {
         this.setState({loadingStreams: true});
         getStreams().then(function (data) {
-            this.setState({streams: data, loadingStreams: false});
+            const stream = kango.storage.getItem("stream");
+            this.setState({streams: data, loadingStreams: false, stream});
         }.bind(this)).catch(function () {
             this.setState({loadingStreams: false});
             this.props.onError('Could not load your streams. Please try again later');
@@ -65,13 +66,14 @@ class CollectPage extends Component {
                         <input ref="tags" name="tags"
                                className="b-input"
                                onChange={CollectPage.onInputChange} placeholder="Separate with a comma"
+                               defaultValue={kango.storage.getItem("tags")}
                                type="text"/>
                     </div>
 
                     <div className="form-actions">
                         <div className="pull-right">
                             <button onClick={this.onClear} className="btn btn-gray" type="button">Cancel</button>
-                            <button disabled={saving || !this.state.stream} className="btn btn-primary" type="submit">
+                            <button disabled={saving || !stream} className="btn btn-primary" type="submit">
                                 Collect {saving ? (
                                 <span className="loading"/>) : null}</button>
                         </div>
@@ -145,17 +147,17 @@ class CollectPage extends Component {
 
     static clearKangoLocal() {
         kango.storage.removeItem('message');
+        kango.storage.removeItem('stream');
         kango.storage.removeItem('tags');
-
     }
 
     onClear() {
         CollectPage.clearKangoLocal();
-        this.setState({stream: null});
         KangoAPI.closeWindow();
     }
 
     onSelectChange(val) {
+        kango.storage.setItem('stream', val);
         this.setState({
             stream: val
         })
