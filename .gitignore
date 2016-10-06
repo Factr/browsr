@@ -21,10 +21,10 @@ coverage
 .lock-wscript
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+build/Release/
 
 # Dependency directory
-node_modules
+node_modules/
 
 # Optional npm cache directory
 .npm
@@ -32,6 +32,8 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-.idea
+.idea/
 .DS_Store
 *.pyc
+
+output/
