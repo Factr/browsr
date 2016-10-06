@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {findDOMNode} from 'react-dom';
 import extend from 'lodash/extend';
 import Select from 'react-select';
-import {getStreams, getItemFromUrl, postItem, addItemTags} from 'api';
+import {getStreams, getItemFromUrl, postItem, addItemTags} from '../api';
 
 function buildStreamOptions(streams) {
     return streams.map(function (c) {
         return {value: c.id, label: c.name, title: c.name}
-    })
+    }).sort((a, b) => a.title > b.title ? 1 : -1)
 }
 
 
