@@ -1,5 +1,7 @@
-import {merge} from "lodash";
-import {Promise} from "es6-promise";
+import {merge, forEach} from "lodash";
+
+//noinspection JSUnresolvedFunction
+require('es6-promise').polyfill()
 
 const config = require('./config');
 
@@ -8,32 +10,41 @@ function generateRoute(path) {
 }
 
 function generateHeaders() {
-    var token = kango.storage.getItem('token');
-    if (!token) return {};
-    return {
-        "Authorization": `Token ${token}`,
-        "Content-Type": "application/json"
+    const result = {
+        "Content-Type": "application/json;charset=UTF-8"
     }
+    
+    const token = kango.storage.getItem('token');
+    if (token) result["Authorization"] = `Token ${token}`
+    
+    return result
 }
 
-function makeApiRequest(path, method = "GET", opts) {
-    opts = merge({}, {
+function makeApiRequest(path, method = "GET", opts = {}) {
+    const newOpts = merge({}, {
         method: method,
         url: generateRoute(path),
         headers: generateHeaders()
-    }, opts || {});
-    return new Promise(function (resolve, reject) {
-        kango.xhr.send(opts, function (data) {
-            if (data.status == 200) {
-                return resolve(JSON.parse(data.response));
-            }
-            else {
-                return reject();
-            }
+    }, opts);
+    const params = opts.params ? JSON.stringify(opts.params) : undefined
+    
+    // Native XHR request
+    const xhr = new XMLHttpRequest()
+    xhr.open(method, newOpts.url, true)
+    
+    return new Promise((resolve, reject) => {
+        forEach(newOpts.headers, (v, k) => xhr.setRequestHeader(k, v))
 
-        })
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                resolve(JSON.parse(xhr.responseText))
+            } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status >= 400) {
+                reject()
+            }
+        }
+        
+        xhr.send(params)
     })
-
 }
 
 export function me() {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {findDOMNode} from 'react-dom';
-import {login, me} from 'api';
+import {login, me} from '../api';
 import extend from 'lodash/extend';
 
 class LoginPage extends Component {
