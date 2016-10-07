@@ -59,6 +59,7 @@ class CollectPage extends Component {
                             options={buildStreamOptions(streams)}
                             optionRenderer={CollectPage.renderOption}
                             onChange={this.onSelectChange}
+                            noResultsText="You have streams for posting…"
                         />
                     </div>
                     <div className="input-field">
