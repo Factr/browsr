@@ -3,10 +3,16 @@ import {findDOMNode} from 'react-dom';
 import {login, me} from '../api';
 import extend from 'lodash/extend';
 
+const baseUrl = "https://factr.com"
+const urls = {
+    site: baseUrl,
+    resetPassword: `${baseUrl}/forgot-password`
+}
+
 class LoginPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {loading: false};
+        this.state = {loading: false, error: false};
         this.submitLoginForm = this.submitLoginForm.bind(this);
         this.onChange = this.onChange.bind(this);
     }
@@ -14,7 +20,17 @@ class LoginPage extends Component {
     render() {
         return (
             <div className="login">
-                <h1>Login</h1>
+                <h1 className="login__heading">Login</h1>
+                {
+                    this.state.error &&
+                    <div className="login__error-outer">
+                        <span className="login__error-message" dangerouslySetInnerHTML={{ __html: this.state.error }} />
+                        <br/>
+                        Try again or
+                        {' '}
+                        <a href="#" onClick={LoginPage.goToResetPassword}>reset your password</a>.
+                    </div>
+                }
                 <form className="login-form default-form" onSubmit={this.submitLoginForm}>
                     <div className="input-field">
                         <input placeholder="Email Address" ref="email" type="text" name="email"
@@ -42,11 +58,19 @@ class LoginPage extends Component {
             </div>
         );
     }
-
+    
+    onError(message) {
+        this.setState({error: message})
+    }
 
     static goToWebSite(e) {
         e.preventDefault();
-        kango.browser.tabs.create({url: "https://factr.com"});
+        kango.browser.tabs.create({url: urls.site});
+    }
+    
+    static goToResetPassword(e) {
+        e.preventDefault()
+        kango.browser.tabs.create({url: urls.resetPassword})
     }
 
     submitLoginForm(e) {
@@ -54,7 +78,7 @@ class LoginPage extends Component {
         var _this = this;
         _this.setState({loading: true});
         var params = {username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value};
-        var errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in";
+        var errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in.";
         login(params).then(function (response) {
             var token = response.token;
             kango.storage.setItem('token', token);
@@ -67,11 +91,11 @@ class LoginPage extends Component {
                 _this.onChange({user, token});
             }).catch(function () {
                 _this.setState({loading: false});
-                _this.props.onError(errorMessage);
+                _this.onError(errorMessage);
             });
         }).catch(function () {
             _this.setState({loading: false});
-            _this.props.onError(errorMessage);
+            _this.onError(errorMessage);
         })
     }
 

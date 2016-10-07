@@ -9,21 +9,14 @@ class Layout extends Component {
         this.state = {
             token: kango.storage.getItem('token'),
             user: JSON.parse(kango.storage.getItem('user')),
-            error: false
         };
         this.onChange = this.onChange.bind(this);
-        this.onError = this.onError.bind(this);
         this.logOut = this.logOut.bind(this);
         this.renderBody = this.renderBody.bind(this);
         this.renderNavMenu = this.renderNavMenu.bind(this);
     }
 
     render() {
-        if (this.state.error) {
-            var error_text = (
-                <div className="status-message error" dangerouslySetInnerHTML={{ __html: this.state.error }} />
-            )
-        }
         return (
             <div id="app" ref="app">
                 <nav className="nav">
@@ -37,7 +30,6 @@ class Layout extends Component {
                 <div className="container">
                     {this.renderBody()}
                 </div>
-                {error_text}
             </div>);
 
     }
@@ -67,14 +59,6 @@ class Layout extends Component {
             );
         }
         return null;
-    }
-
-    onError(message) {
-        this.setState({error: message});
-        // setTimeout(function () {
-        //     this.setState({error: false});
-        // }.bind(this), 3000)
-
     }
 
     onChange(state) {
