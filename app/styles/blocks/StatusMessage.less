@@ -1,0 +1,29 @@
+@import (reference) '../variables.less';
+
+.b-status-message {
+    color: #57cc00;
+    padding-bottom: 50px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    &._error {
+        color: #c00;
+    }
+}
+
+.b-status-message__title {
+    font-size: 1.17em;
+    font-family: @font-family-medium;
+    text-align: center;
+}
+
+.b-status-message__icon {
+    margin-bottom: .5em;
+    font-size: 35px;
+    line-height: 1;
+}
+
+.b-status-message__buttons {
+    margin-top: 35px;
+}

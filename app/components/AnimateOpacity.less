@@ -1,0 +1,16 @@
+.animate-opacity {
+    > * {
+        transition: opacity .15s ease;
+        will-change: opacity;
+
+        &.item-enter,
+        &.item-leave.item-leave-active {
+            opacity: 0;
+        }
+
+        &.item-leave,
+        &.item-enter.item-enter-active {
+            opacity: 1;
+        }
+    }
+}

@@ -1,32 +1,38 @@
-import {merge, forEach} from "lodash";
+import {merge, forEach} from "lodash"
 
 //noinspection JSUnresolvedFunction
 require('es6-promise').polyfill()
 
-const config = require('./config');
+const config = require('./config')
 
 function generateRoute(path) {
-    return `${config.apiUrl}/${path}`;
+    return `${config.apiUrl}/${path}`
 }
 
-function generateHeaders() {
-    const result = {
-        "Content-Type": "application/json;charset=UTF-8"
-    }
+function generateHeaders(contentType = "application/json; charset=UTF-8") {
+    const result = {}
     
-    const token = kango.storage.getItem('token');
-    if (token) result["Authorization"] = `Token ${token}`
+    if (contentType)
+        result["Content-Type"] = contentType
+    
+    const token = kango.storage.getItem('token')
+    if (token)
+        result["Authorization"] = `Token ${token}`
     
     return result
 }
 
-function makeApiRequest(path, method = "GET", opts = {}) {
+function makeApiRequest(path, method = "GET", opts = {}, contentType) {
     const newOpts = merge({}, {
         method: method,
         url: generateRoute(path),
-        headers: generateHeaders()
-    }, opts);
-    const params = opts.params ? JSON.stringify(opts.params) : undefined
+        headers: generateHeaders(contentType)
+    }, opts)
+    
+    let params = opts.params
+    
+    if (params && params.constructor.name.toLowerCase() !== "formdata")
+        params = JSON.stringify(params)
     
     // Native XHR request
     const xhr = new XMLHttpRequest()
@@ -38,8 +44,10 @@ function makeApiRequest(path, method = "GET", opts = {}) {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 resolve(JSON.parse(xhr.responseText))
-            } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status >= 400) {
-                reject()
+            } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status >= 400 || xhr.status === 0) {
+                reject({
+                    noInternet: xhr.status === 0,
+                })
             }
         }
         
@@ -48,35 +56,39 @@ function makeApiRequest(path, method = "GET", opts = {}) {
 }
 
 export function me() {
-    const route = 'users/whoami';
-    return makeApiRequest(route, "GET");
+    const route = 'users/whoami'
+    return makeApiRequest(route, "GET")
 }
 
 export function login(params) {
-    const route = 'auth/token';
-    return makeApiRequest(route, "POST", {params: params});
+    const route = 'auth/token'
+    return makeApiRequest(route, "POST", {params: params})
 }
 
 export function addItemTags(streamId, itemId, tags) {
-    const route = `streams/${streamId}/update_item_tags`;
+    const route = `streams/${streamId}/update_item_tags`
     var params = {
         item_id: itemId,
         added: tags
-    };
-    return makeApiRequest(route, "POST", {params: params});
+    }
+    return makeApiRequest(route, "POST", {params: params})
 }
 
 export function postItem(streamId, params) {
-    const route = `streams/${streamId}/post_item`;
-    return makeApiRequest(route, "POST", {params: params});
+    const route = `streams/${streamId}/post_item`
+    return makeApiRequest(route, "POST", {params: params})
 }
 
 export function getStreams() {
-    const route = `me/streams`;
-    return makeApiRequest(route, "GET");
+    const route = `me/streams`
+    return makeApiRequest(route, "GET")
 }
 
 export function getItemFromUrl(url) {
-    const route = `streams/extract_url?url=${encodeURI(url)}`;
-    return makeApiRequest(route, "GET");
+    const route = `streams/extract_url?url=${encodeURI(url)}`
+    return makeApiRequest(route, "GET")
+}
+
+export function createStream(formData) {
+    return makeApiRequest("streams", "POST", { params: formData }, false)
 }

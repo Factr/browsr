@@ -4,9 +4,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Layout from './pages/Layout';
 
+import { Provider } from 'react-redux'
+import configureStore from './store'
+
+const store = configureStore()
+
 KangoAPI.onReady(function () {
     ReactDOM.render(
-        <Layout/>,
+        <Provider store={store}>
+            <Layout />
+        </Provider>,
         document.getElementById('body')
     );
 });

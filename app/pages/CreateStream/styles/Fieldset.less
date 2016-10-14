@@ -1,0 +1,32 @@
+@import (reference) "../../../styles/variables.less";
+
+.b-fieldset__legend {
+    font-size: 10px;
+    line-height: 1.2;
+    color: #546f7a;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+    display: inline-block;
+}
+
+.b-fieldset__inputs {
+    padding: 20px 15px;
+    margin: 0;
+    border: 2px solid @grayButtonBgColor;
+    border-radius: 2px;
+    position: relative;
+    transition: border-color @hoverTiming ease;
+}
+
+.b-fieldset__inputs_focused {
+    border-color: @colorGray2;
+}
+
+.b-fieldset__input {
+    margin-bottom: 15px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}

@@ -1,0 +1,27 @@
+@import (reference) "../../../styles/variables.less";
+
+// Content
+.b-stream-create-edit__text-input[disabled] {
+  cursor: not-allowed;
+}
+
+input.b-stream-create-edit__stream-name-input[type="text"] {
+  font-weight: bold;
+  color: #1e2431;
+}
+
+.b-stream-create-edit__general-tab-form-column {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.b-stream-create-edit__general-tab-form-desc-input {
+  margin-top: 25px;
+
+  textarea {
+    resize: vertical;
+    max-height: 250px;
+    min-height: 80px;
+  }
+}

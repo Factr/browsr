@@ -1,27 +1,95 @@
-import React, {Component} from 'react';
-import LoginPage from './LoginPage';
-import CollectPage from './CollectPage';
+import React, { Component, PropTypes } from "react"
+import { findDOMNode } from "react-dom"
+import LoginPage from "./LoginPage"
+import CollectPage from "./CollectPage"
+import CreateStreamPageConnected from "./CreateStream/index.js"
+import Message from "components/Message"
+import classnames from "classnames"
 
+class TryAgainButton extends Component {
+    static propTypes = {
+        fn: PropTypes.func.isRequired,
+    }
+    
+    state = {
+        loading: false,
+    }
+    
+    onClick() {
+        this.setState({ loading: true })
+        
+        this.props.fn()
+            .then(() => this.setState({ loading: false }))
+            .catch(() => this.setState({ loading: false }))
+    }
+    
+    render() {
+        return (
+            <button autoFocus
+                    className={classnames("btn btn-primary", { "_loading": this.state.loading })}
+                    disabled={this.state.loading}
+                    onClick={::this.onClick}>
+                <span className="__title">Try again</span>
+                { this.state.loading && <span className="loading" /> }
+            </button>
+        )
+    }
+}
 
 class Layout extends Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            token: kango.storage.getItem('token'),
-            user: JSON.parse(kango.storage.getItem('user')),
-        };
-        this.onChange = this.onChange.bind(this);
-        this.logOut = this.logOut.bind(this);
-        this.renderBody = this.renderBody.bind(this);
-        this.renderNavMenu = this.renderNavMenu.bind(this);
+        super(props)
     }
-
+    
+    state = {
+        token: kango.storage.getItem('token'),
+        user: JSON.parse(kango.storage.getItem('user')),
+        isCreatingStream: false,
+        appShown: false,
+        error: null,
+    }
+    
+    componentDidMount() {
+        setTimeout(() => this.setState({ appShown: true }), 150)
+        
+        if (!this.state.user) {
+            this.logOut()
+        }
+    }
+    
+    renderErrorButtons(error) {
+        return (
+            <div>
+                {
+                    error.backBtn &&
+                    <button className="btn btn-gray-white"
+                            autoFocus={!error.tryAgainFn}
+                            onClick={() => this.setState({ error: null }, error.backBtnCallback)}>
+                        <span className="icon icon-chevron-left"/>{' '}Back
+                    </button>
+                }
+                {
+                    error.closeBtn &&
+                    <button className="btn btn-gray-white"
+                            autoFocus
+                            onClick={() => KangoAPI.closeWindow()}>Close</button>
+                }
+                {
+                    error.tryAgainFn &&
+                    <TryAgainButton fn={error.tryAgainFn}/>
+                }
+            </div>
+        )
+    }
+    
     render() {
+        const { error } = this.state
+        
         return (
             <div id="app" ref="app">
                 <nav className="nav">
                     <div className="nav-wrapper">
-                        <div className="branding"><a href="https://factr.com" className="logo" /></div>
+                        <div className="branding"><a href="https://factr.com" className="logo"/></div>
                         <div className="menu">
                             {this.renderNavMenu()}
                         </div>
@@ -29,49 +97,99 @@ class Layout extends Component {
                 </nav>
                 <div className="container">
                     {this.renderBody()}
+                    {
+                        error &&
+                        <Message text={error.message} buttons={this.renderErrorButtons(error)} error/>
+                    }
                 </div>
-            </div>);
-
+            </div>
+        )
+        
     }
-
+    
+    openCreatingStream() {
+        this.setState({ isCreatingStream: true })
+    }
+    
+    closeCreatingStream(stream) {
+        if (stream)
+            kango.storage.setItem('stream', stream)
+        
+        this.setState({ isCreatingStream: false }, () => {
+            // Focus tags field
+            findDOMNode(this).querySelector('#tags input').focus()
+        })
+    }
+    
     renderBody() {
-        var state = this.state;
-        if (!state.token) {
-            return <div><LoginPage onChange={this.onChange} onError={this.onError}/></div>;
+        const { user, token, isCreatingStream } = this.state
+        
+        if (!token) {
+            return (
+                <div>
+                    <LoginPage onChange={::this.onChange} error={this.state.error}/>
+                </div>
+            )
         }
-        var user = state.user;
-
+        
         if (!user) {
-            this.logOut();
-            return null;
+            return null
         }
-        return <div><CollectPage onError={this.onError} user={state.user}/></div>
+        
+        return (
+            <div>
+                {
+                    isCreatingStream
+                        ? <CreateStreamPageConnected onDone={::this.closeCreatingStream}
+                                                     onError={::this.onError}
+                                                     error={this.state.error}/>
+                        : <CollectPage user={user}
+                                       openCreatingStream={::this.openCreatingStream}
+                                       onError={::this.onError}
+                                       error={this.state.error}/>
+                }
+            </div>
+        )
     }
-
+    
     renderNavMenu() {
-        var {user, token} = this.state;
+        const { user, token } = this.state
+        
         if (user) {
+            //noinspection JSUnresolvedVariable
             return (
                 <div className="logged-in">
                     <div>Logged in as <b>{user.first_name + ' ' + user.last_name}</b></div>
-                    <div><a href="#" onClick={this.logOut}>Logout</a></div>
+                    <div>
+                        <a href="#" onClick={::this.logOut}>Log out</a>
+                    </div>
                 </div>
-            );
+            )
         }
-        return null;
+        
+        return null
     }
-
+    
     onChange(state) {
-        this.setState(state);
+        this.setState(state)
     }
-
-    logOut() {
-        //kango.storage.removeItem('user');
-        //kango.storage.removeItem('token');
-        kango.storage.clear();
-        heap.track('Logged Out', {extension: true});
-        this.onChange({user: null, token: null});
+    
+    onError(error) {
+        console.error("ERROR:", error.actualError)
+        if (error.actualError.noInternet) {
+            this.setState({ error: { ...error, message: "No internet connection.", closeBtn: true } })
+        } else {
+            this.setState({ error })
+        }
+    }
+    
+    logOut(e) {
+        e.preventDefault()
+        
+        kango.storage.clear()
+        heap.track('Logged Out', { extension: true })
+        this.onChange({ user: null, token: null, error: null })
     }
 }
 
-export default Layout;
+export default Layout

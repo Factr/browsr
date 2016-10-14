@@ -1,0 +1,54 @@
+@import (reference) "../../../styles/variables.less";
+
+.b-form-input {
+    width: 100%;
+    margin-bottom: 20px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.b-form-input__label {
+    font-size: 10px;
+    line-height: 1.2;
+    color: #546f7a;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+    display: inline-block;
+
+    b {
+        color: #1e2431;
+    }
+
+    i {
+        font-family: @font-family-book;
+        font-weight: normal;
+        font-style: normal;
+        color: #90a4ae;
+        display: inline-block;
+    }
+
+    b, i, & {
+        transition: color @hoverTiming ease;
+    }
+}
+
+.b-form-input__input {
+    input, textarea {
+        vertical-align: top;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.b-form-input.b-form-input_error {
+    .b-form-input__label {
+        b, i, & {
+            color: #da3f0b;
+        }
+    }
+}

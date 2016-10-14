@@ -1,0 +1,100 @@
+@import (reference) "../../../styles/variables.less";
+
+.b-radio-input {
+  cursor: pointer;
+  position: relative;
+  display: block;
+
+  &.b-radio-input_disabled {
+    cursor: not-allowed;
+  }
+
+  > input[type="radio"] {
+    display: block;
+    position: absolute;
+    opacity: 0;
+  }
+}
+
+.b-radio-input__inner {
+  display: flex;
+  align-items: baseline;
+}
+
+.b-radio-input__input {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  line-height: 8px;
+  display: inline-block;
+  border: 2px solid #8fa3ad;
+  border-radius: 50%;
+  position: relative;
+  top: 3px;
+  flex: 0 16px;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+    border-radius: 50%;
+    opacity: 0;
+    will-change: opacity;
+    transition: opacity @hoverTiming ease;
+    color: inherit;
+  }
+}
+
+.b-radio-input input:checked ~ .b-radio-input__inner {
+  .b-radio-input__input {
+    border-color: #1e2431;
+
+    &:after {
+      opacity: 1;
+      box-shadow: inset 0 0 0 8px #1e2431;
+    }
+  }
+
+  .b-radio-input__icon,
+  .b-radio-input__label-title {
+    color: #1e2431;
+  }
+
+  .b-radio-input__label-desc {
+    color: #5f6677;
+  }
+}
+
+.b-radio-input__icon {
+  font-size: 20px;
+  line-height: 1;
+  margin: 0 10px 0 13px;
+  color: inherit;
+
+  &:before {
+    font-size: inherit;
+  }
+}
+
+.b-radio-input__label {
+  font: 1rem/1.4 @font-family-base;
+  text-transform: none;
+}
+
+.b-radio-input__label,
+.b-radio-input__label-title,
+.b-radio-input__label-desc {
+  color: inherit;
+}
+
+.b-radio-input__input,
+.b-radio-input__icon,
+.b-radio-input__label-title,
+.b-radio-input__label-desc {
+  transition: color @hoverTiming ease;
+}
