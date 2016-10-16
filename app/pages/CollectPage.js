@@ -214,7 +214,8 @@ class CollectPage extends Component {
                         post.author = data.authors.join(', ')
                     }
                     
-                    const tags = kango.storage.getItem("tags").map(a => a.trim()).filter(tag => tag)
+                    let tags = kango.storage.getItem("tags") || []
+                    tags = tags.map(a => a.trim()).filter(tag => tag)
                     
                     postItem(streamId, post)
                         .then(post => {
