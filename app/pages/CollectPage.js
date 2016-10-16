@@ -6,15 +6,16 @@ import { getStreams, getItemFromUrl, postItem, addItemTags } from '../api'
 import _ from 'lodash'
 import classnames from "classnames"
 import Message from "components/Message"
+import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
 
 import TagsInput from "react-tagsinput"
 require("react-tagsinput/react-tagsinput.css")
 import AutosizeInput from "react-input-autosize"
 
 function buildStreamOptions(streams) {
-    return streams.map(function (c) {
-        return { value: c.id, label: c.name, title: c.name }
-    }).sort((a, b) => a.title > b.title ? 1 : -1)
+    return streams
+        .map(c => ({ value: c.id, label: c.name, title: c.name }))
+        .sort((a, b) => a.title > b.title ? 1 : -1)
 }
 
 function autosizingRenderTagInput(props) {
@@ -175,7 +176,7 @@ class CollectPage extends Component {
                 </form>
                 {
                     showSuccess &&
-                    <Message text="Successfully saved" iconClassName="icon-checkmark-circle" />
+                    <Message text="Successfully saved" icon={<AnimatedSuccessIcon />} />
                 }
             </div>
         )
@@ -264,7 +265,7 @@ class CollectPage extends Component {
     }
     
     closeWindow() {
-        setTimeout(() => KangoAPI.closeWindow(), 1000)
+        setTimeout(() => KangoAPI.closeWindow(), 2000)
     }
     
     clearKangoLocal() {

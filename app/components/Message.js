@@ -2,8 +2,9 @@ import React from 'react'
 import classnames from 'classnames'
 
 require('./Message.less')
+require('./AnimatedSuccessIcon.less')
 
-export default function Message({ text = "No text", iconClassName, error, buttons }) {
+export default function Message({ text = "No text", iconClassName, icon, error, buttons }) {
     const statusMessageClasses = classnames("b-status-message", {
         "_error": error,
     })
@@ -16,9 +17,10 @@ export default function Message({ text = "No text", iconClassName, error, button
             <div className={statusMessageClasses}>
                 <div className="b-status-message__icon">
                     {
-                        iconClassName &&
+                        iconClassName && !icon &&
                         <span className={classnames("icon", iconClassName)}/>
                     }
+                    { icon }
                 </div>
                 <div className="b-status-message__title" dangerouslySetInnerHTML={{ __html: text }} />
                 {

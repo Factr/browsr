@@ -1,0 +1,26 @@
+.b-animated-success-icon {
+    vertical-align: top;
+}
+
+.b-animated-success-icon__circle,
+.b-animated-success-icon__checkmark {
+    stroke: #57cc00;
+    animation: dash .75s ease forwards;
+    will-change: opacity;
+}
+
+.b-animated-success-icon__circle {
+    stroke-dasharray: 1520;
+    stroke-dashoffset: -1520;
+}
+
+.b-animated-success-icon__checkmark {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
