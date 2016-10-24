@@ -1,9 +1,8 @@
-require('./styles/app.less');
+require('./styles/app.less')
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Layout from './pages/Layout';
-
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Layout from './pages/Layout'
 import { Provider } from 'react-redux'
 import configureStore from './store'
 
@@ -15,5 +14,5 @@ KangoAPI.onReady(function () {
             <Layout />
         </Provider>,
         document.getElementById('body')
-    );
-});
+    )
+})

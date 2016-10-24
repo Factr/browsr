@@ -7,7 +7,9 @@ var _ = require('lodash')
 require('colors')
 
 var compiler = webpack({
-    entry: "./app/app.js",
+    entry: {
+        main: "./app/app.js",
+    },
     target: "web",
     cache: true,
     stats: {

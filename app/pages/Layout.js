@@ -5,6 +5,7 @@ import CollectPage from "./CollectPage"
 import CreateStreamPageConnected from "./CreateStream/index.js"
 import Message from "components/Message"
 import classnames from "classnames"
+import analytics from '../analytics'
 
 class TryAgainButton extends Component {
     static propTypes = {
@@ -89,7 +90,9 @@ class Layout extends Component {
             <div id="app" ref="app">
                 <nav className="nav">
                     <div className="nav-wrapper">
-                        <div className="branding"><a href="https://factr.com" className="logo"/></div>
+                        <div className="branding">
+                            <a href="https://factr.com" target="_blank" className="logo" tabIndex="-1"/>
+                        </div>
                         <div className="menu">
                             {this.renderNavMenu()}
                         </div>
@@ -161,7 +164,7 @@ class Layout extends Component {
                 <div className="logged-in">
                     <div>Logged in as <b>{user.first_name + ' ' + user.last_name}</b></div>
                     <div>
-                        <a href="#" onClick={::this.logOut}>Log out</a>
+                        <a href="#" onClick={::this.logOut} tabIndex="-1">Log out</a>
                     </div>
                 </div>
             )
@@ -184,10 +187,10 @@ class Layout extends Component {
     }
     
     logOut(e) {
-        e.preventDefault()
+        e && typeof e.preventDefault === "function" && e.preventDefault()
         
         kango.storage.clear()
-        heap.track('Logged Out', { extension: true })
+        analytics.track('Logged Out', { extension: true })
         this.onChange({ user: null, token: null, error: null })
     }
 }

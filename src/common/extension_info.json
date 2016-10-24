@@ -1,13 +1,9 @@
 {
-  "content_scripts": [],
   "description": "Factr Extension",
   "creator": "Factr",
-  "background_scripts": [
-    "main.js"
-  ],
-
+  "background_scripts": ["main.js"],
   "homepage_url": "https://factr.com/",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "browser_button": {
     "tooltipText": "Factr Extension",
     "caption": "Factr Extension",
@@ -18,5 +14,8 @@
       "height": 520
     }
   },
-  "name": "Factr"
+  "name": "Factr",
+  "permissions": {
+    "content_security_policy": "script-src 'self' http://*; object-src 'self'"
+  }
 }

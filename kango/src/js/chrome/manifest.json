@@ -1,4 +1,5 @@
 {
+    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCuYl5gxsMjEha1TkyYgaDd01WjvqfashqTh8efqGwllwXW9FST7iMS9fPAoIxL3SnWTftMCv6ND5feYwHH6lh2qOAQcPNriGzKAm4dgp79iCt+XX07r8vWPtz76yxMvNidXjzctureZajuRKSnaYzm82QZdADiqlJe0GasSOrkxQIDAQAB",
     "manifest_version": 2,
     "content_scripts": [
         {
@@ -41,12 +42,21 @@
         "webNavigation",
         "notifications",
         "cookies",
-        "nativeMessaging"
+        "nativeMessaging",
+        "https://www.linkedin.com/oauth/v2/authorization",
+        "identity"
     ],
     "update_url": "",
     "homepage_url": "https://factr.com",
     "description": "Extension description",
     "options_page": "options.html",
-    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-0tzuyoOqrEzlYLfmTeCY7N8QSpfH7297OSW0APcCB4s=' https://cdn.heapanalytics.com https://heapanalytics.com; object-src 'self'",
-    "web_accessible_resources": ["res/*", "assets/*", "icons/*"]
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-0tzuyoOqrEzlYLfmTeCY7N8QSpfH7297OSW0APcCB4s='; object-src 'self'",
+    "web_accessible_resources": ["res/*", "assets/*", "icons/*"],
+    "oauth2": {
+        "client_id": "1018201353456-lmk0h1ue7han8kmuug2m2a86k5nsfvig.apps.googleusercontent.com",
+        "scopes": [
+            "email",
+            "profile"
+        ]
+    }
 }

@@ -1,0 +1,103 @@
+@import (reference) "../styles/variables.less";
+
+
+
+.login {
+    .provider-oauth-button {
+        width: 100%;
+        background: white;
+        border: 1px solid @colorBlueGray;
+        height: 42px;
+        line-height: 42px;
+        display: block;
+        margin-bottom: 14px;
+        font-size: 1em;
+        font-family: @font-family-medium;
+        color: @colorDark;
+        padding-left: 50px;
+        position: relative;
+        border-radius: 5px;
+        text-decoration: none;
+
+        &:focus:not(:active):not(:hover) {
+            color: @colorDark;
+        }
+
+        .provider-icon {
+            width: 42px;
+            height: 42px;
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            border-radius: 5px;
+
+            background: url("../assets/login-providers-sprite.png") no-repeat;
+            background-size: 84px 84px;
+            display: block;
+
+            &.google {
+                width: 42px;
+                height: 42px;
+                background-position: 0 0;
+            }
+
+            &.hid {
+                width: 42px;
+                height: 42px;
+                background-position: -42px 0;
+            }
+
+            &.linkedin {
+                width: 42px;
+                height: 42px;
+                background-position: 0 -42px;
+            }
+        }
+
+        &._disabled {
+            @color: #b9bfca;
+            background: #f3f6f6;
+            border: 1px solid #e1e7ea;
+            color: @color;
+            cursor: default;
+            user-select: none;
+
+            &:focus:not(:active):not(:hover) {
+                color: @color;
+            }
+
+            .provider-icon {
+                opacity: .25;
+            }
+        }
+    }
+
+    .form-or {
+        text-align: center;
+        font-family: @font-family-medium;
+        font-size: 1em;
+        color: @colorBlueTint;
+        margin: 25px 0;
+        width: 100%;
+
+        &:after {
+            content: '';
+            display: inline;
+            width: 40%;
+            margin-top: 5px;
+            float: left;
+            height: 1px;
+            background: #eceff1;
+        }
+
+        &:before {
+            content: '';
+            display: inline;
+            width: 40%;
+            float: right;
+            margin-top: 5px;
+            height: 1px;
+            background: #eceff1;
+        }
+    }
+}
