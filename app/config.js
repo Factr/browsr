@@ -1,14 +1,13 @@
 module.exports = {
     // apiUrl: "http://dev-centr.factr.com",
-    //apiUrl: "https://stage-centr.factr.com",
-    apiUrl: "http://dev-centr.factr.com",
-    frontendUrl: "http://localhost:5000",
-    //apiUrl: "http://localhost:3000",
+    // apiUrl: "https://stage-centr.factr.com",
+    apiUrl: "https://centr.factr.com",
+    frontendUrl: "https://factr.com",
     environment: "prod",
-    appId: "mmadllanjfhjkhbbfpcipilhfdambphn",
+    appId: "lfkimcbknmlhjihcekgpkhefiegcobnk",
     oauth: {
         linkedin: {
-            clientId: "77knq3qp9daiuk"
+            clientId: "77cgzky7xvsh05"
         }
     }
 };

@@ -1,6 +1,6 @@
 import { createAction } from 'redux-act'
 import { createActionAsync } from 'redux-act-async'
-import { trackEvent } from './utils'
+import { trackEvent } from '../../analytics'
 import { formatResponseError, streamInternalToExternal } from './utils'
 import { createStream } from '../../api'
 import _ from 'lodash'
@@ -13,7 +13,7 @@ export const sendGeneral = createActionAsync('SEND_STREAM_GENERAL',
         _.forEach(params, (value, key) => formData.append(key, value))
         
         const saveOk = data => {
-            trackEvent('[chrome extension] created stream', data)
+            trackEvent('created stream', data)
             
             return data
         }

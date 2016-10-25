@@ -7,7 +7,7 @@ import _ from 'lodash'
 import classnames from "classnames"
 import Message from "components/Message"
 import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
-import analytics from '../analytics'
+import analytics, { trackEvent } from '../analytics'
 
 import TagsInput from "react-tagsinput"
 require("react-tagsinput/react-tagsinput.css")
@@ -220,7 +220,7 @@ class CollectPage extends Component {
                     
                     postItem(streamId, post)
                         .then(post => {
-                            analytics.track('Posted Item', extend({}, { extension: true }, post))
+                            trackEvent('add post', post)
                             
                             if (tags.length > 0) {
                                 addItemTags(streamId, post.id, tags)

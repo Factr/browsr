@@ -5,7 +5,7 @@ import CollectPage from "./CollectPage"
 import CreateStreamPageConnected from "./CreateStream/index.js"
 import Message from "components/Message"
 import classnames from "classnames"
-import analytics from '../analytics'
+import { trackEvent, identify } from '../analytics'
 
 class TryAgainButton extends Component {
     static propTypes = {
@@ -51,10 +51,14 @@ class Layout extends Component {
     }
     
     componentDidMount() {
-        setTimeout(() => this.setState({ appShown: true }), 150)
+        setTimeout(() => {
+            this.setState({ appShown: true }, () => trackEvent('opened extension'))
+        }, 150)
         
         if (!this.state.user) {
             this.logOut()
+        } else {
+            identify(this.state.user)
         }
     }
     
@@ -164,7 +168,7 @@ class Layout extends Component {
                 <div className="logged-in">
                     <div>Logged in as <b>{user.first_name + ' ' + user.last_name}</b></div>
                     <div>
-                        <a href="#" onClick={::this.logOut} tabIndex="-1">Log out</a>
+                        <a href="#" onClick={::this.onLogOut} tabIndex="-1">Log out</a>
                     </div>
                 </div>
             )
@@ -186,11 +190,17 @@ class Layout extends Component {
         }
     }
     
-    logOut(e) {
+    onLogOut(e) {
         e && typeof e.preventDefault === "function" && e.preventDefault()
         
+        this.logOut()
+    
+        trackEvent('logged out')
+    }
+    
+    logOut() {
         kango.storage.clear()
-        analytics.track('Logged Out', { extension: true })
+        
         this.onChange({ user: null, token: null, error: null })
     }
 }

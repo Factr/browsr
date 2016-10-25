@@ -2,12 +2,11 @@ import React, { PropTypes, Component } from 'react'
 import { findDOMNode } from 'react-dom'
 import { login, me, authLinkedIn, authGoogle } from '../api'
 import config from '../config'
-import extend from 'lodash/extend'
 import classnames from 'classnames'
 import AnimateOpacity from 'components/AnimateOpacity'
 import URL from 'url-parse'
 
-import analytics from '../analytics'
+import { trackEvent, identify } from '../analytics'
 
 require('./LoginPage.less')
 
@@ -21,6 +20,7 @@ const CHROME_EXTENSION_REDIRECT_URI = `https://${config.appId}.chromiumapp.org`
 function LoginWith({ name, iconClassName, onClick, disabled }) {
     return (
         <a className={classnames('provider-oauth-button', { '_disabled': disabled })} href="#"
+           tabIndex={disabled ? '-1' : '0'}
            onClick={e => {
                e.preventDefault()
                onClick && !disabled && onClick()
@@ -135,7 +135,7 @@ class LoginPage extends Component {
                         .then(userObjectAndToken => {
                             const { token, ...userObject } = userObjectAndToken
             
-                            this.loginUserByUserObject(userObject, token)
+                            this.loginUserByUserObject(userObject, token, 'linkedin')
                         })
                         .catch(() => this.setState({ loading: false, error: errorMessage }))
                 } else {
@@ -155,7 +155,7 @@ class LoginPage extends Component {
                 .then(userObjectAndToken => {
                     const { token, ...userObject } = userObjectAndToken
 
-                    this.loginUserByUserObject(userObject, token)
+                    this.loginUserByUserObject(userObject, token, 'google')
                 })
                 .catch(() => this.setState({ loading: false, error: errorMessage }))
         })
@@ -177,7 +177,7 @@ class LoginPage extends Component {
                         .then(userObjectAndToken => {
                             const { token, ...userObject } = userObjectAndToken
                         
-                            this.loginUserByUserObject(userObject, token)
+                            this.loginUserByUserObject(userObject, token, 'humanitarian-id')
                         })
                         .catch(() => this.setState({ loading: false, error: errorMessage }))
                 } else {
@@ -222,10 +222,11 @@ class LoginPage extends Component {
             })
     }
     
-    loginUserByUserObject(userObject, token) {
+    loginUserByUserObject(userObject, token, provider = 'password') {
         //noinspection JSUnresolvedVariable
-        analytics.identify(extend({ name: userObject.first_name + ' ' + userObject.last_name }, userObject))
-        analytics.track('Logged In', { 'extension': true })
+        identify(userObject)
+        trackEvent('logged in', { provider })
+        
         kango.storage.setItem('last_used_email', userObject.email)
         kango.storage.setItem('user', JSON.stringify(userObject))
         kango.storage.setItem('token', token)

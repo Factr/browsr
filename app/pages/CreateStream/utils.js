@@ -41,28 +41,3 @@ export function uncheckRadio(radio) {
     radio.removeAttribute('checked')
     radio.checked = false
 }
-
-// Tracking events
-function addIntercomEvent(name, args = {}) {
-    //noinspection JSUnresolvedVariable
-    if (window.Intercom) {
-        //noinspection JSUnresolvedFunction
-        window.Intercom('trackEvent', name, args)
-    }
-}
-
-function addMixpanelEvent(name, args = {}) {
-    //noinspection JSUnresolvedVariable
-    if (window.mixpanel) {
-        //noinspection JSUnresolvedVariable
-        window.mixpanel.track(name, args)
-    }
-}
-
-export function trackEvent(name, opts = {}) {
-    if (typeof window !== "undefined") {
-        opts.app_type = "web"
-        addMixpanelEvent(name, opts)
-        addIntercomEvent(name, opts)
-    }
-}
