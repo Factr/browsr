@@ -17,12 +17,15 @@ export function trackEvent(name, opts = {}) {
 }
 
 export function identify(userObject) {
-    window.mixpanel.identify(userObject.id)
-    window.mixpanel.people.set({
-        $name: userObject.name,
-        $distinct_id: userObject.id,
-        $email: userObject.email,
-        $last_login: new Date(),
-        ...userObject
-    })
+    if (window.mixpanel){
+        window.mixpanel.identify(userObject.id)
+        window.mixpanel.people.set({
+            $name: userObject.name,
+            $distinct_id: userObject.id,
+            $email: userObject.email,
+            $last_login: new Date(),
+            ...userObject
+        })
+    }
+
 }

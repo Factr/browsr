@@ -1,4 +1,4 @@
-import {merge, forEach, map} from "lodash"
+import { merge, forEach, map } from "lodash"
 
 //noinspection JSUnresolvedFunction
 require('es6-promise').polyfill()
@@ -11,14 +11,14 @@ function generateRoute(path, frontend) {
 
 function generateHeaders(contentType = "application/json; charset=UTF-8") {
     const result = {}
-    
+
     if (contentType)
         result["Content-Type"] = contentType
-    
+
     const token = kango.storage.getItem('token')
     if (token)
         result["Authorization"] = `Token ${token}`
-    
+
     return result
 }
 
@@ -32,45 +32,41 @@ function makeApiRequest(path = {}, method = "GET", opts = {}, contentType) {
     }, opts)
 
     let params = opts.params
-
     if (params && params.constructor.name.toLowerCase() !== "formdata")
         params = JSON.stringify(params)
 
     // Native XHR request
     const xhr = new XMLHttpRequest()
     xhr.open(method, newOpts.url, true)
-    
+
     return new Promise((resolve, reject) => {
         forEach(newOpts.headers, (headerValue, headerKey) => xhr.setRequestHeader(headerKey, headerValue))
-
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 resolve(JSON.parse(xhr.responseText))
             } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status >= 400 || xhr.status === 0) {
-                reject({
-                    noInternet: xhr.status === 0,
-                })
+                reject({ noInternet: xhr.status === 0 })
             }
         }
-        
+
         xhr.send(params)
     })
 }
 
 export function me() {
-    const route = 'users/whoami'
+    const route = 'user/whoami'
     return makeApiRequest(route, "GET")
 }
 
 export function login(params) {
     const route = 'auth/token'
-    return makeApiRequest(route, "POST", {params: params})
+    return makeApiRequest(route, "POST", { params: params })
 }
 
 export function authLinkedIn(code, redirect_uri) {
     const params = { code, redirect_uri: encodeURIComponent(redirect_uri), json: true }
     const url = `auth/linkedin?${map(params, (v, k) => `${k}=${v}`).join('&')}`
-    
+
     return makeApiRequest({
         url,
         frontend: true
@@ -85,29 +81,29 @@ export function authGoogle(access_token) {
 }
 
 export function addItemTags(streamId, itemId, tags) {
-    const route = `streams/${streamId}/update_item_tags`
-    var params = {
+    const route = `stream/${streamId}/update_item_tags`
+    const params = {
         item_id: itemId,
         added: tags
     }
-    return makeApiRequest(route, "POST", {params: params})
+    return makeApiRequest(route, "POST", { params: params })
 }
 
 export function postItem(streamId, params) {
-    const route = `streams/${streamId}/post_item`
-    return makeApiRequest(route, "POST", {params: params})
+    const route = `stream/${streamId}/post_item`
+    return makeApiRequest(route, "POST", { params: params })
 }
 
 export function getStreams() {
-    const route = `me/streams`
+    const route = `me/stream`
     return makeApiRequest(route, "GET")
 }
 
 export function getItemFromUrl(url) {
-    const route = `streams/extract_url?url=${encodeURI(url)}`
+    const route = `stream/extract_url?url=${encodeURI(url)}`
     return makeApiRequest(route, "GET")
 }
 
 export function createStream(formData) {
-    return makeApiRequest("streams", "POST", { params: formData }, false)
+    return makeApiRequest("stream", "POST", { params: formData }, false)
 }

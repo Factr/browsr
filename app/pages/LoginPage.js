@@ -35,19 +35,19 @@ class LoginPage extends Component {
     static propTypes = {
         onChange: PropTypes.func.isRequired,
     }
-    
+
     constructor(props) {
         super(props)
-    
+
         this.state = {
             loading: false,
             error: null,
         }
     }
-    
+
     render() {
         const { loading: isLoading } = this.state
-        
+
         return (
             <div className="login">
                 <h1 className="login__heading">Login</h1>
@@ -63,18 +63,18 @@ class LoginPage extends Component {
                 }
                 <div>
                     <LoginWith name="LinkedIn" onClick={::this.openLinkedInOAuth}
-                               iconClassName="linkedin" disabled={isLoading} />
+                               iconClassName="linkedin" disabled={isLoading}/>
                     <LoginWith name="Google" onClick={::this.openGoogleOAuth}
                                iconClassName="google" disabled={isLoading}/>
                     {
                         false &&
                         <LoginWith name="Humanitarian ID"
-                                   iconClassName="hid" disabled={isLoading} />
+                                   iconClassName="hid" disabled={isLoading}/>
                     }
                 </div>
-                
+
                 <div className="form-or">OR</div>
-                
+
                 <form className="login-form default-form" onSubmit={::this.submitLoginForm}>
                     <div className="input-field">
                         <input placeholder="Email Address" ref="email" type="text" name="email"
@@ -112,7 +112,7 @@ class LoginPage extends Component {
             </div>
         )
     }
-    
+
     openLinkedInOAuth() {
         const params = [
             'response_type=code',
@@ -120,21 +120,21 @@ class LoginPage extends Component {
             `redirect_uri=${CHROME_EXTENSION_REDIRECT_URI}`,
             `state=asdf355asdf`
         ]
-        
+
         this.setState({ loading: true, error: null })
-        
+
         chrome.identity.launchWebAuthFlow(
             { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
             redirect_url => {
                 const url = new URL(redirect_url, true)
                 const code = url.query.code
                 const errorMessage = 'An error happened while authorizing you through LinkedIn'
-                
+
                 if (code) {
                     authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
                         .then(userObjectAndToken => {
                             const { token, ...userObject } = userObjectAndToken
-            
+
                             this.loginUserByUserObject(userObject, token, 'linkedin')
                         })
                         .catch(() => this.setState({ loading: false, error: errorMessage }))
@@ -144,10 +144,10 @@ class LoginPage extends Component {
             }
         )
     }
-    
+
     openGoogleOAuth() {
         this.setState({ loading: true, error: null })
-        
+
         chrome.identity.getAuthToken({ 'interactive': true }, access_token => {
             const errorMessage = 'An error happened while authorizing you through Google'
 
@@ -160,23 +160,23 @@ class LoginPage extends Component {
                 .catch(() => this.setState({ loading: false, error: errorMessage }))
         })
     }
-    
+
     openHumanitarianIDOAuth() {
         // TODO: Finish Humanitarian ID OAuth Login
         this.setState({ loading: true, error: null })
-    
+
         chrome.identity.launchWebAuthFlow(
             { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
             redirect_url => {
                 const url = new URL(redirect_url, true)
                 const code = url.query.code
                 const errorMessage = 'An error happened while authorizing you through LinkedIn'
-            
+
                 if (code) {
                     authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
                         .then(userObjectAndToken => {
                             const { token, ...userObject } = userObjectAndToken
-                        
+
                             this.loginUserByUserObject(userObject, token, 'humanitarian-id')
                         })
                         .catch(() => this.setState({ loading: false, error: errorMessage }))
@@ -186,29 +186,29 @@ class LoginPage extends Component {
             }
         )
     }
-    
+
     goToWebSite(e) {
         e.preventDefault()
         kango.browser.tabs.create({ url: urls.site })
     }
-    
+
     goToResetPassword(e) {
         e.preventDefault()
         kango.browser.tabs.create({ url: urls.resetPassword })
     }
-    
+
     submitLoginForm(e) {
         e.preventDefault()
         this.setState({ loading: true })
-        
+
         const params = { username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value }
         const errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in."
-        
+
         login(params)
             .then(response => {
                 const token = response.token
                 kango.storage.setItem('token', token)
-                
+
                 me()
                     .then(userObject => this.loginUserByUserObject(userObject, token))
                     .catch(err => {
@@ -221,26 +221,26 @@ class LoginPage extends Component {
                 this.onError(errorMessage)
             })
     }
-    
+
     loginUserByUserObject(userObject, token, provider = 'password') {
         //noinspection JSUnresolvedVariable
         identify(userObject)
         trackEvent('logged in', { provider })
-        
+
         kango.storage.setItem('last_used_email', userObject.email)
         kango.storage.setItem('user', JSON.stringify(userObject))
         kango.storage.setItem('token', token)
-            
+
         this.setState({ loading: false })
         this.onChange({ user: userObject, token })
     }
-    
+
     onError(errorMessage) {
         this.setState({
             error: errorMessage,
         })
     }
-    
+
     onChange(change) {
         this.props.onChange(change)
     }

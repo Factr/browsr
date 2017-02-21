@@ -170,7 +170,7 @@ class CollectPage extends Component {
                                 className={classnames("btn btn-primary", { "_loading": saving })}
                                 ref="submit"
                                 type="submit">
-                            <span className="__title">Collect</span>
+                            <span className="__title">Save</span>
                             { saving ? <span className="loading" /> : null }
                         </button>
                     </div>
