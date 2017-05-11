@@ -3,7 +3,7 @@
   "creator": "Factr",
   "background_scripts": ["main.js"],
   "homepage_url": "https://factr.com/",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "browser_button": {
     "tooltipText": "Factr Extension",
     "caption": "Factr Extension",

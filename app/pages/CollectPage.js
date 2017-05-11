@@ -65,14 +65,15 @@ class CollectPage extends Component {
             .then(data => {
                 let { stream } = this.state
                 const selectedStreamId = stream && stream.value
-                
+                const streams = data.results
+
                 stream = (
-                    _.some(data, streamObject => streamObject.id === selectedStreamId)
+                    _.some(streams, streamObject => streamObject.id === selectedStreamId)
                         ? stream
                         : ''
                 )
                 
-                this.setState({ streams: data, loadingStreams: false, stream })
+                this.setState({ streams: streams, loadingStreams: false, stream })
             })
             .catch(actualError => {
                 this.setState({ loadingStreams: false })

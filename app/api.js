@@ -95,8 +95,8 @@ export function postItem(streamId, params) {
 }
 
 export function getStreams() {
-    const route = `me/stream`
-    return makeApiRequest(route, "GET")
+    const route = `stream/contributable`
+    return makeApiRequest(route, "GET", { params: {'mobile': true}})
 }
 
 export function getItemFromUrl(url) {
