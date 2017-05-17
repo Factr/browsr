@@ -80,10 +80,10 @@ compiler.plugin("done", function (a) {
     const modulesWithErrors = _.filter(comp.modules, module => module.error)
     const anyErrors = modulesWithErrors.length
     const compilationTime = (a.endTime - a.startTime) / 1000
-    
+
     if (anyErrors) {
         console.log("We have errors in some of the modules:")
-        
+
         modulesWithErrors.forEach((module, index) => {
             console.log(`#${module.id} Module at ${module.resource.blue} has error\n`, module.error.message.red)
         })
@@ -98,9 +98,10 @@ compiler.watch({}, function (err, stats) {
             if (error) {
                 console.error(err)
             }
+
             console.log(stdout)
         })
     } else {
-        console.log(err)
+        console.error(err)
     }
 })
