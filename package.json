@@ -57,6 +57,7 @@
     "url-parse": "^1.1.6"
   },
   "scripts": {
-    "watch": "node ./webpack.config.js --watch"
+    "watch": "node ./webpack.config.js --watch",
+    "build": "node ./webpack.config.js"
   }
 }
