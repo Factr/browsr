@@ -1,10 +1,10 @@
 import React, { PropTypes, Component } from 'react'
 import { findDOMNode } from 'react-dom'
 import { login, me, authLinkedIn, authGoogle } from '../api'
-import config from '../config'
 import classnames from 'classnames'
 import AnimateOpacity from 'components/AnimateOpacity'
 import URL from 'url-parse'
+import config from '../config'
 
 import { trackEvent, identify } from '../analytics'
 
@@ -116,7 +116,7 @@ class LoginPage extends Component {
     openLinkedInOAuth() {
         const params = [
             'response_type=code',
-            `client_id=${config.oauth.linkedin.clientId}`,
+            `client_id=${config.oauth.linkedin.client_id}`,
             `redirect_uri=${CHROME_EXTENSION_REDIRECT_URI}`,
             `state=asdf355asdf`
         ]

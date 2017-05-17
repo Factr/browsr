@@ -5,6 +5,8 @@ Browser extension for [Factr](https://factr.com) supporting Firefox, Safari, Chr
 
 Run `npm run watch` to build for development.  This will put output into `output/chrome` which can be added to chrome://extensions
 
+Run `npm run build prod` to build with production configuration. Config files can be found in `app/config`
+
 ## Signing inline Javascript
 
 [W3 Documentation](https://www.w3.org/TR/2015/CR-CSP2-20150721/#script-src-hash-usage)

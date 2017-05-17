@@ -6,6 +6,12 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin")
 var _ = require('lodash')
 require('colors')
 
+const BROWSR_ENV = {
+    [true]: 'development',
+    [process.argv.includes('staging')]: 'staging',
+    [process.argv.includes('prod')]: 'production',
+}.true
+
 var compiler = webpack({
     entry: {
         main: "./app/app.js",
@@ -25,7 +31,8 @@ var compiler = webpack({
         sourceMapFilename: "[name].js.map",
     },
     plugins: [
-        new ExtractTextPlugin("styles.css")
+        new ExtractTextPlugin("styles.css"),
+        new webpack.DefinePlugin({ BROWSR_ENV: JSON.stringify(BROWSR_ENV) })
     ],
     module: {
         loaders: [

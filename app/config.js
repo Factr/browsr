@@ -1,13 +1,4 @@
-module.exports = {
-    // apiUrl: "http://dev-centr.factr.com",
-    // apiUrl: "https://stage-centr.factr.com",
-    apiUrl: "https://centr.factr.com",
-    frontendUrl: "https://factr.com",
-    environment: "prod",
-    appId: "lfkimcbknmlhjihcekgpkhefiegcobnk",
-    oauth: {
-        linkedin: {
-            clientId: "77cgzky7xvsh05"
-        }
-    }
-};
+var default_config = require('./config/default.json')
+var env = require(`./config/${BROWSR_ENV}.json`)
+
+export default Object.assign({}, default_config, env)

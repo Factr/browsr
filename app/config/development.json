@@ -1,0 +1,9 @@
+{
+  "apiUrl": "http://dev-centr.factr.com:8000",
+  "frontendUrl": "http://localhost:5000",
+  "oauth": {
+    "linkedin": {
+      "client_id": "77knq3qp9daiuk"
+    }
+  }
+}

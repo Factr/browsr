@@ -1,9 +1,8 @@
 import { merge, forEach, map } from 'lodash'
+import config from './config'
 
 //noinspection JSUnresolvedFunction
 require('es6-promise').polyfill()
-
-const config = require('./config')
 
 function generateRoute(path, frontend) {
     return `${frontend ? config.frontendUrl : config.apiUrl}/${path}`
