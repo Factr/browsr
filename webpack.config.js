@@ -100,6 +100,10 @@ compiler.watch({}, function (err, stats) {
             }
 
             console.log(stdout)
+
+            if (!process.argv.includes('--watch')) {
+                process.exit(0)
+            }
         })
     } else {
         console.error(err)
