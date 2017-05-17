@@ -58,6 +58,7 @@
   },
   "scripts": {
     "watch": "node ./webpack.config.js --watch",
-    "build": "node ./webpack.config.js"
+    "build": "node ./webpack.config.js",
+    "release": "python kango/kango.py build ."
   }
 }

@@ -17,4 +17,4 @@ Place the hash in kango/src/js/chrome/manifest.json and rebuild.
 
 ## Build for Chrome WebStore
 
-`python kango/kango.py build .` will build the final extension.  Make sure you update `src/common/extension_info.json` with the new version so that new files are generated.
+`npm run release` will build the final extension file. Make sure you update `src/common/extension_info.json` with the new version so that new files are generated.
