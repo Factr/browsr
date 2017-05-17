@@ -69,7 +69,7 @@ export function login(params) {
 }
 
 export function authLinkedIn(code, redirect_uri) {
-    const params = { code, redirect_uri: encodeURIComponent(redirect_uri), json: true }
+    const params = { code, redirect_uri: encodeURIComponent(redirect_uri), keep_token: true }
     const url = `auth/linkedin?${map(params, (v, k) => `${k}=${v}`).join('&')}`
 
     return makeApiRequest({
