@@ -99,8 +99,8 @@ export function postItem(streamId, params) {
 }
 
 export function getStreams() {
-    const route = `stream/contributable`
-    return makeApiRequest(route, 'GET', { params: { 'limit': 1000, 'mobile': true } })
+    const route = `stream/contributable?limit=1000&mobile=true`
+    return makeApiRequest(route, 'GET')
 }
 
 export function getItemFromUrl(url) {
