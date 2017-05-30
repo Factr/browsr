@@ -64,8 +64,11 @@ class LoginPage extends Component {
                 <div>
                     <LoginWith name="LinkedIn" onClick={::this.openLinkedInOAuth}
                                iconClassName="linkedin" disabled={isLoading}/>
-                    <LoginWith name="Google" onClick={::this.openGoogleOAuth}
-                               iconClassName="google" disabled={isLoading}/>
+                    {
+                        false &&
+                        <LoginWith name="Google" onClick={::this.openGoogleOAuth}
+                                   iconClassName="google" disabled={isLoading}/>
+                    }
                     {
                         false &&
                         <LoginWith name="Humanitarian ID"
