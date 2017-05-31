@@ -7,9 +7,9 @@ var _ = require('lodash')
 require('colors')
 
 const BROWSR_ENV = {
-    [true]: 'development',
+    [true]: 'production',
+    [process.argv.includes('dev')]: 'development',
     [process.argv.includes('staging')]: 'staging',
-    [process.argv.includes('prod')]: 'production',
 }.true
 
 var compiler = webpack({
