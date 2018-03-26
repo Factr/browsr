@@ -19,14 +19,14 @@ const CHROME_EXTENSION_REDIRECT_URI = `https://${config.appId}.chromiumapp.org`
 
 function LoginWith({ name, iconClassName, onClick, disabled }) {
     return (
-        <a className={classnames('provider-oauth-button', { '_disabled': disabled })} href="#"
+        <a className={classnames(`provider-oauth-button ${iconClassName}`, { '_disabled': disabled })} href="#"
            tabIndex={disabled ? '-1' : '0'}
            onClick={e => {
                e.preventDefault()
                onClick && !disabled && onClick()
            }}>
             <div className={`provider-icon ${iconClassName}`}/>
-            Login with {name}
+            Login in with {name}
         </a>
     )
 }
@@ -50,7 +50,7 @@ class LoginPage extends Component {
 
         return (
             <div className="login">
-                <h1 className="login__heading">Login</h1>
+                <h1 className="login__heading">Login to get started.</h1>
                 {
                     this.state.error &&
                     <div className="login__error-outer">
@@ -62,13 +62,11 @@ class LoginPage extends Component {
                     </div>
                 }
                 <div>
+                    <LoginWith name="Google" onClick={::this.openGoogleOAuth}
+                        iconClassName="google" disabled={isLoading}/>
                     <LoginWith name="LinkedIn" onClick={::this.openLinkedInOAuth}
-                               iconClassName="linkedin" disabled={isLoading}/>
-                    {
-                        false &&
-                        <LoginWith name="Google" onClick={::this.openGoogleOAuth}
-                                   iconClassName="google" disabled={isLoading}/>
-                    }
+                        iconClassName="linkedin" disabled={isLoading}/>
+
                     {
                         false &&
                         <LoginWith name="Humanitarian ID"

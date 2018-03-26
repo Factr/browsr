@@ -3,9 +3,12 @@
 
 
 .login {
+    width: 230px;
+    margin: 0 auto;
+
     .provider-oauth-button {
         width: 100%;
-        background: white;
+        color: @colorWhite;
         border: 1px solid @colorBlueGray;
         height: 42px;
         line-height: 42px;
@@ -13,7 +16,6 @@
         margin-bottom: 14px;
         font-size: 1em;
         font-family: @font-family-medium;
-        color: @colorDark;
         padding-left: 50px;
         position: relative;
         border-radius: 5px;
@@ -23,9 +25,17 @@
             color: @colorDark;
         }
 
+        &.google {
+            background-color: @googleBlue;
+        }
+
+        &.linkedin {
+            background-color: @linkedinBlue;
+        }
+
         .provider-icon {
-            width: 42px;
-            height: 42px;
+            width: 35px;
+            height: 35px;
             position: absolute;
             top: -1px;
             left: -1px;
@@ -36,9 +46,8 @@
             display: block;
 
             &.google {
-                width: 42px;
-                height: 42px;
                 background-position: 0 0;
+                background-color: @colorWhite;
             }
 
             &.hid {
@@ -48,9 +57,8 @@
             }
 
             &.linkedin {
-                width: 42px;
-                height: 42px;
                 background-position: 0 -42px;
+                color: @linkedinBlue;
             }
         }
 
