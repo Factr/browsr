@@ -42,11 +42,16 @@ class LoginPage extends Component {
         this.state = {
             loading: false,
             error: null,
+            oauthFocused: true,
         }
     }
 
+    handleFocus = (focus) => {
+        this.setState({ oauthFocused: focus})
+    }
+
     render() {
-        const { loading: isLoading } = this.state
+        const { loading: isLoading, oauthFocused } = this.state
 
         return (
             <div className="login">
@@ -61,7 +66,11 @@ class LoginPage extends Component {
                         <a href="#" onClick={::this.goToResetPassword}>reset your password</a>.
                     </div>
                 }
-                <div>
+                <div className={classnames("oauth-options", {
+                    focused: oauthFocused,
+                })}
+                    onClick={() => this.handleFocus(true)}
+                >
                     <LoginWith name="Google" onClick={::this.openGoogleOAuth}
                         iconClassName="google" disabled={isLoading}/>
                     <LoginWith name="LinkedIn" onClick={::this.openLinkedInOAuth}
@@ -76,39 +85,39 @@ class LoginPage extends Component {
 
                 <div className="form-or">OR</div>
 
-                <form className="login-form default-form" onSubmit={::this.submitLoginForm}>
+                <form className={classnames("login-form default-form", {
+                    focused: !oauthFocused,
+                    })}
+                    onSubmit={::this.submitLoginForm}
+                >
                     <div className="input-field">
                         <input placeholder="Email Address" ref="email" type="text" name="email"
                                className="b-input"
-                               autoFocus
+                               onFocus={() => this.handleFocus(false)}
                                disabled={isLoading}
                                defaultValue={kango.storage.getItem('last_used_email')}/>
                     </div>
                     <div className="input-field">
                         <input placeholder="Password"
                                className="b-input"
+                               onFocus={() => this.handleFocus(false)}
                                disabled={isLoading}
                                ref="password" type="password" name="password"/>
                     </div>
                     <div className="form-actions">
-                        <div className="pull-right">
-                            <button className="btn btn-gray" type="reset">Cancel</button>
-                            <button disabled={isLoading}
-                                    className={classnames("btn btn-primary", { "_loading": isLoading })}
-                                    type="submit">
-                                <span className="__title">Login</span>
-                                {' '}
-                                <AnimateOpacity>
-                                    { isLoading && <span className="loading"/> }
-                                </AnimateOpacity>
-                            </button>
-                        </div>
+                        <button disabled={isLoading}
+                                className={classnames("btn btn-gold", "login-button", { "_loading": isLoading })}
+                                type="submit">
+                            <span className="__title">Login</span>
+                            {' '}
+                            <AnimateOpacity>
+                                { isLoading && <span className="loading"/> }
+                            </AnimateOpacity>
+                        </button>
                     </div>
                 </form>
                 <p>
-                    Don't have an account yet? Factr is currently in private beta.
-                    <br />
-                    Go to <b><a href="#" onClick={::this.goToWebSite}>our website</a></b> to apply for an invitation.
+                    Don't have an account yet? <b><a href="#" onClick={::this.goToWebSite}>Create one.</a></b>
                 </p>
             </div>
         )

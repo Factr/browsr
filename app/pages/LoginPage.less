@@ -4,7 +4,28 @@
 
 .login {
     width: 230px;
-    margin: 0 auto;
+    margin: 48px 129px;
+
+    .oauth-options {
+        opacity: .5;
+
+        &.focused {
+            opacity: 1;
+        }
+    }
+
+    .default-form {
+        opacity: .7;
+
+        &.focused {
+            opacity: 1;
+
+            .login-button {
+                color: #1E2431;
+                background: @colorGold;
+            }
+        }
+    }
 
     .provider-oauth-button {
         width: 100%;
@@ -34,19 +55,19 @@
         }
 
         .provider-icon {
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             position: absolute;
-            top: -1px;
-            left: -1px;
-            border-radius: 5px;
+            top: 2px;
+            left: 2px;
+            border-radius: 2px;
 
             background: url("../assets/login-providers-sprite.png") no-repeat;
             background-size: 84px 84px;
             display: block;
 
             &.google {
-                background-position: 0 0;
+                background-position: -3px -3px;
                 background-color: @colorWhite;
             }
 
