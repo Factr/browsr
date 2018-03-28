@@ -1,0 +1,78 @@
+@import (reference) "../styles/variables.less";
+
+.stream-selector {
+    display: flex;
+    height: 36px;
+    width: 335px;
+    border: 1px solid @inputBorderColor;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    &._open {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .selected-stream {
+        padding-right: 5px;
+        font-weight: bold;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+
+    .dropdown-container {
+        position: absolute;
+        top: 34px;
+        left: -1px;
+        display: flex;
+        flex-direction: column;
+        background-color: @colorWhite;
+        border: 1px solid @inputBorderColor;
+        border-top: none;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+
+        .search-bar {
+            input {
+                border: none;
+            }
+        }
+
+        .divider {
+            margin: 10px 16px 0 16px;
+            width: 300px;
+            color: #A1B3BC;
+            border-bottom: 1px solid @inputBorderColor;
+        }
+
+        .stream-list-item {
+            cursor: pointer;
+            box-sizing: content-box;
+            width: 300px;
+            height: 30px;
+            padding: 5px 17px 5px 16px;
+
+            .stream-name {
+                color: #5F6577;
+                font-size: 12px;
+            }
+
+            .stream-owner {
+                color: #78909C;
+                font-size: 10px;
+            }
+
+            &:hover {
+                background-color: @colorGray2;
+                color: white;
+            }
+        }
+    }
+
+    .icon {
+        color: @colorGray2;
+        margin-right: 10px;
+    }
+}

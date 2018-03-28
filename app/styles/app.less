@@ -161,6 +161,13 @@ a:focus:not(:active):not(:hover) {
         border-radius: 2px;
     }
 
+    &.add-to-factr {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
     &.btn-light {
         background: @colorWhite;
         color: @colorDark;
@@ -249,6 +256,12 @@ a:focus:not(:active):not(:hover) {
 
         .logged-in {
             text-align: right;
+            color: #78909C;
+            font-size: 11px;
+            a {
+                text-decoration: none;
+                color: #78909C;
+              }
         }
     }
 }
@@ -260,7 +273,7 @@ a:focus:not(:active):not(:hover) {
 
 .logo {
     @padding: 4px;
-    background: url("../assets/factr-logo.svg") no-repeat @padding @padding;
+    background: url("../assets/factr-logo-gold.png") no-repeat @padding @padding;
     background-size: auto 27px;
     width: 63px;
     height: 27px;
@@ -330,13 +343,16 @@ a:focus:not(:active):not(:hover) {
         min-height: 80px;
         max-height: 160px;
     }
+    border-color: @inputBorderColor !important;
+    border-radius: 4px !important;
+    border-width: 1px !important;
 }
 
 .Select {
     .Select-control {
         background: @colorWhite;
-        border: 2px solid @colorBlueGray;
-        border-radius: 1px;
+        border: 1px solid @inputBorderColor;
+        border-radius: 4px;
         transition: border-color @hoverTiming ease;
         color: @colorDark;
 
@@ -346,6 +362,7 @@ a:focus:not(:active):not(:hover) {
 
         .Select-value {
             color: @colorDark;
+            font-weight: bold;
         }
     }
 
@@ -401,10 +418,10 @@ a:focus:not(:active):not(:hover) {
 @SelectMenuHeight: 175px;
 .Select-menu-outer {
     background: @colorWhite;
-    border: 2px solid @colorGray2;
+    border: 1px solid @colorGray2;
     border-top: 0;
-    border-bottom-right-radius: 1px;
-    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
     margin-top: -2px;
     padding-top: 2px;
     box-shadow: none;

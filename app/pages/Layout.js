@@ -11,19 +11,19 @@ class TryAgainButton extends Component {
     static propTypes = {
         fn: PropTypes.func.isRequired,
     }
-    
+
     state = {
         loading: false,
     }
-    
+
     onClick() {
         this.setState({ loading: true })
-        
+
         this.props.fn()
             .then(() => this.setState({ loading: false }))
             .catch(() => this.setState({ loading: false }))
     }
-    
+
     render() {
         return (
             <button autoFocus
@@ -41,7 +41,7 @@ class Layout extends Component {
     constructor(props) {
         super(props)
     }
-    
+
     state = {
         token: kango.storage.getItem('token'),
         user: JSON.parse(kango.storage.getItem('user')),
@@ -49,19 +49,19 @@ class Layout extends Component {
         appShown: false,
         error: null,
     }
-    
+
     componentDidMount() {
         setTimeout(() => {
             this.setState({ appShown: true }, () => trackEvent('opened extension'))
         }, 150)
-        
+
         if (!this.state.user) {
             this.logOut()
         } else {
             identify(this.state.user)
         }
     }
-    
+
     renderErrorButtons(error) {
         return (
             <div>
@@ -86,10 +86,10 @@ class Layout extends Component {
             </div>
         )
     }
-    
+
     render() {
         const { error } = this.state
-        
+
         return (
             <div id="app" ref="app">
                 <nav className="nav">
@@ -111,26 +111,26 @@ class Layout extends Component {
                 </div>
             </div>
         )
-        
+
     }
-    
+
     openCreatingStream() {
         this.setState({ isCreatingStream: true })
     }
-    
+
     closeCreatingStream(stream) {
         if (stream)
             kango.storage.setItem('stream', stream)
-        
+
         this.setState({ isCreatingStream: false }, () => {
             // Focus tags field
             findDOMNode(this).querySelector('#tags input').focus()
         })
     }
-    
+
     renderBody() {
         const { user, token, isCreatingStream } = this.state
-        
+
         if (!token) {
             return (
                 <div>
@@ -138,11 +138,11 @@ class Layout extends Component {
                 </div>
             )
         }
-        
+
         if (!user) {
             return null
         }
-        
+
         return (
             <div>
                 {
@@ -158,29 +158,29 @@ class Layout extends Component {
             </div>
         )
     }
-    
+
     renderNavMenu() {
         const { user, token } = this.state
-        
+
         if (user) {
             //noinspection JSUnresolvedVariable
             return (
                 <div className="logged-in">
-                    <div>Logged in as <b>{user.first_name + ' ' + user.last_name}</b></div>
-                    <div>
-                        <a href="#" onClick={::this.onLogOut} tabIndex="-1">Log out</a>
+                    <div>Logged in as {user.first_name + ' ' + user.last_name}.
+                        <a href="#" onClick={::this.onLogOut} tabIndex="-1"> Logout.</a>
                     </div>
+
                 </div>
             )
         }
-        
+
         return null
     }
-    
+
     onChange(state) {
         this.setState(state)
     }
-    
+
     onError(error) {
         console.error("ERROR:", error.actualError)
         if (error.actualError.noInternet) {
@@ -189,18 +189,18 @@ class Layout extends Component {
             this.setState({ error })
         }
     }
-    
+
     onLogOut(e) {
         e && typeof e.preventDefault === "function" && e.preventDefault()
-        
+
         this.logOut()
-    
+
         trackEvent('logged out')
     }
-    
+
     logOut() {
         kango.storage.clear()
-        
+
         this.onChange({ user: null, token: null, error: null })
     }
 }
