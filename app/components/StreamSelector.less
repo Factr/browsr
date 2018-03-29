@@ -11,6 +11,24 @@
     position: relative;
     cursor: pointer;
 
+
+    .icon-loading {
+        margin-left: 10px;
+        -webkit-animation: animation-spin 400ms infinite linear;
+        -o-animation: animation-spin 400ms infinite linear;
+        animation: animation-spin 400ms infinite linear;
+    }
+
+    &._loading {
+      cursor: not-allowed;
+
+
+      .icon-chevron-down {
+          cursor: not-allowed;
+          margin-left: 280px;
+      }
+    }
+
     &._open {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;

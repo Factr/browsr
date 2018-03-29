@@ -124,7 +124,7 @@ class Layout extends Component {
 
         this.setState({ isCreatingStream: false }, () => {
             // Focus tags field
-            findDOMNode(this).querySelector('#tags input').focus()
+            // findDOMNode(this).querySelector('#tags input').focus()
         })
     }
 

@@ -14,8 +14,10 @@ class StreamSelector extends Component {
         super(props)
         this.state = {
             loadingStreams: false,
+            recentStreams: [],
             streams: [],
             selectedStream: null,
+            numRecent: null,
             open: false,
             searchText: '',
         }
@@ -23,6 +25,7 @@ class StreamSelector extends Component {
 
     componentWillMount() {
         this.setState({ selectedStream: kango.storage.getItem('stream'),
+                        recentStreams: kango.storage.getItem('recentStreams'),
                         streams: kango.storage.getItem('streams')
                       }, () => {
                             this.props.onStreamChange(this.state.selectedStream)
@@ -30,7 +33,11 @@ class StreamSelector extends Component {
     }
 
     componentDidMount() {
-        this.setState({ loadingStreams: true })
+        if (kango.storage.getItem('stream') === null ||
+            kango.storage.getItem('streams') === null ||
+            kango.storage.getItem('recentStreams') === null) {
+                this.setState({ loadingStreams: true })
+            }
         this.updateStreams()
     }
 
@@ -38,15 +45,22 @@ class StreamSelector extends Component {
         getStreams()
             .then(data => {
                 const streams = data.streams
-                let { selectedStream } = this.state
+                const numRecent = data.count
                 // if user selects new stream before updated streams load
                 // users selection will be changed to most recently updated
                 let mostRecentStream = streams[0]
+                const recentStreams = this.findRecentStreams(streams, numRecent)
 
                 kango.storage.setItem("stream", mostRecentStream)
+                kango.storage.setItem("recentStreams", recentStreams)
                 kango.storage.setItem("streams", streams)
 
-                this.setState({ streams: streams, loadingStreams: false, selectedStream: mostRecentStream })
+                this.setState({ streams: streams,
+                                loadingStreams: false,
+                                recentStreams: recentStreams,
+                                selectedStream: mostRecentStream,
+                                numRecent: numRecent })
+                this.props.onStreamChange(mostRecentStream)
             })
             .catch(actualError => {
                 this.setState({ loadingStreams: false })
@@ -88,17 +102,38 @@ class StreamSelector extends Component {
         this.setState({ searchText: e.target.value })
     }
 
-    findRecentStreams = () => {
-        const { streams } = this.state
-        let recentlyPostedStreams = []
+    renderSearchBar = () => {
+        const { searchText } = this.state
+        return (
+            <div className="search-bar" onClick={this.stopPropagation}>
+                <i className="icon icon-magnifier" />
+                <input
+                    onChange={this.handleSearch}
+                    value={searchText}
+                    type="text"
+                    placeholder="Search streams..."
+                />
+                {
+                    searchText !== '' &&
+                    <i
+                        className="icon icon-cross-circle"
+                        onClick={() => this.setState({ searchText: '' })}
+                    />
+                }
+            </div>
+        )
+    }
 
-        for(let i = 0; i < streams.length; i++) {
-            if (streams[i].content_added && i < 5) {
-                recentlyPostedStreams.push(streams[i])
+    findRecentStreams = (streams, numRecent) => {
+        let recentStreams = []
+
+        for(let i = 0; i < numRecent && i < 5; i++) {
+            if (streams[i].content_added) {
+                recentStreams.push(streams[i])
             }
         }
 
-        return { recentlyPostedStreams, streams }
+        return recentStreams
     }
 
     renderStreamItem = (stream) => {
@@ -124,28 +159,6 @@ class StreamSelector extends Component {
         )
     }
 
-    renderSearchBar = () => {
-        const { searchText } = this.state
-        return (
-            <div className="search-bar" onClick={this.stopPropagation}>
-                <i className="icon icon-magnifier" />
-                <input
-                    onChange={this.handleSearch}
-                    value={searchText}
-                    type="text"
-                    placeholder="Search streams..."
-                />
-                {
-                    searchText !== '' &&
-                    <i
-                        className="icon icon-cross-circle"
-                        onClick={() => this.setState({ searchText: '' })}
-                    />
-                }
-            </div>
-        )
-    }
-
     renderDivider = (label, position) => {
         return (
             <div className={`divider-${position}`} onClick={this.stopPropagation}>
@@ -155,21 +168,23 @@ class StreamSelector extends Component {
     }
 
     renderStreams = () => {
-        const { recentlyPostedStreams, streams } = this.findRecentStreams()
-        if (this.state.searchText === '') {
+        const { streams, recentStreams, numRecent, searchText } = this.state
+        const sortedStreams = streams.sort((a, b) => a.name.localeCompare(b.name))
+
+        if (searchText === '') {
             return (
               <div className="streams-container">
                   {
                       this.renderDivider('RECENT', 'top')
                   }
                   {
-                      this.renderStreamsList(recentlyPostedStreams)
+                      this.renderStreamsList(recentStreams)
                   }
                   {
                       this.renderDivider('YOUR STREAMS', 'top')
                   }
                   {
-                      this.renderStreamsList(streams)
+                      this.renderStreamsList(sortedStreams)
                   }
               </div>
             )
@@ -205,18 +220,25 @@ class StreamSelector extends Component {
     }
 
     render() {
-        const { selectedStream, open } = this.state
+        const { selectedStream, open, loadingStreams } = this.state
 
         return (
             <div onClick={this.toggleDropDown} className={classnames("stream-selector", {
                 _open: open,
+                _loading: loadingStreams,
             })}>
                 {
                     selectedStream &&
+                    !loadingStreams &&
                     <span className="selected-stream">{this.truncateName(selectedStream.name)}</span>
                 }
                 {
+                    loadingStreams &&
+                    <i className="icon icon-loading loading" />
+                }
+                {
                     open &&
+                    !loadingStreams &&
                     this.buildDropDown()
                 }
                 <i className="icon icon-chevron-down"/>
