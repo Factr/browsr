@@ -41,6 +41,7 @@ class StreamSelector extends Component {
                 let { selectedStream } = this.state
                 // if user selects new stream before updated streams load
                 // users selection will be changed to most recently updated
+                debugger
                 let mostRecentStream = streams[0]
 
                 kango.storage.setItem("stream", mostRecentStream)
@@ -179,7 +180,7 @@ class StreamSelector extends Component {
         } else {
             const { searchText, streams } = this.state
 
-            const filteredStreams = streams.filter( stream => stream.name.includes(searchText))
+            const filteredStreams = streams.filter( stream => stream.name.toLowerCase().includes(searchText.toLowerCase()))
 
             return (
                 <div className="streams-container">
