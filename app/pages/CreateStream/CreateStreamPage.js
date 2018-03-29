@@ -20,18 +20,18 @@ export default class CreateStreamPage extends Component {
         onError: PropTypes.func.isRequired,
         error: PropTypes.object,
     }
-    
+
     state = {
         privacyFocused: false,
     }
-    
+
     blurTimeout = null
-    
+
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(this.props, nextProps)
             || !_.isEqual(this.state, nextState)
     }
-    
+
     // UI
     onPrivacyInputBlur() {
         this.blurTimeout = setTimeout(() => {
@@ -40,36 +40,36 @@ export default class CreateStreamPage extends Component {
             })
         }, 0)
     }
-    
+
     onPrivacyInputFocus() {
         if (this.props.state.isInProgress) return;
-        
+
         clearTimeout(this.blurTimeout)
-        
+
         this.setState({
             privacyFocused: true,
         })
     }
-    
+
     onPrivacyInputMouseDown() {
         setTimeout(() => {
             clearTimeout(this.blurTimeout)
             this.onPrivacyInputFocus()
         }, 0)
     }
-    
+
     // Data
     @debounce(500)
     onNameChange(name) {
         this.props.actions.setName(name)
     }
-    
+
     @debounce(500)
     onDescChange(desc) {
         //noinspection JSUnresolvedFunction
         this.props.actions.setDescription(desc)
     }
-    
+
     onPrivacyChange(setPublic) {
         if (setPublic) {
             //noinspection JSUnresolvedFunction
@@ -79,7 +79,7 @@ export default class CreateStreamPage extends Component {
             this.props.actions.setPrivate()
         }
     }
-    
+
     onPublish() {
         if (this.props.state.isReadySaving)
             //noinspection JSUnresolvedVariable,JSUnresolvedFunction
@@ -102,11 +102,11 @@ export default class CreateStreamPage extends Component {
                     })
                 })
     }
-    
+
     onBack() {
         this.props.onDone()
     }
-    
+
     render() {
         const {
             state: {
@@ -114,9 +114,9 @@ export default class CreateStreamPage extends Component {
             },
             error,
         } = this.props
-        
+
         const nameHasError = !isNameLengthGood && isChanged
-        
+
         return (
             <div className="b-page" style={{ color: "#5f6677" }}>
                 <div className="b-page__section">
@@ -125,7 +125,7 @@ export default class CreateStreamPage extends Component {
                     })}>
                         <label className="b-form-input__label" htmlFor="stream-name">
                             Stream name
-            
+
                             <AnimateOpacity>
                                 {
                                     nameHasError &&
@@ -235,10 +235,10 @@ export default class CreateStreamPage extends Component {
                 </div>
                 <div className="b-page__section">
                     <div className="b-page__buttons">
-                        <button className="btn btn-gray-white" disabled={!!error} onClick={::this.onBack}>
-                            <span className="icon icon-chevron-left" />{' '}Back
+                        <button className="btn btn-gray-white create-cancel" disabled={!!error} onClick={::this.onBack}>
+                            Back
                         </button>
-                        <button className="btn btn-primary"
+                        <button className="btn btn-gold create-stream"
                                 disabled={!isReadySaving || !!error}
                                 ref="submit"
                                 onClick={::this.onPublish}>Create stream</button>

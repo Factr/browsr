@@ -15,11 +15,6 @@ require("react-tagsinput/react-tagsinput.css")
 require("./CollectPage.less")
 import AutosizeInput from "react-input-autosize"
 
-function buildStreamOptions(streams) {
-    return streams
-        .map((c, idx) => ({ idx, isRecentStream: c.content_added, value: c.id, label: c.name, title: c.name }))
-}
-
 function autosizingRenderTagInput(props) {
     // Specify addTag also to prevent it passing into AutosizeInput component
     const { onChange, value, addTag, autoFocus, ...p } = props
@@ -48,8 +43,6 @@ class CollectPage extends Component {
 
         this.state = {
             stream: null,
-            streams: [],
-            loadingStreams: false,
             saving: false,
             showSuccess: false,
             post: {
@@ -62,38 +55,7 @@ class CollectPage extends Component {
         }
     }
 
-    updateStreams = () => {
-        getStreams()
-            .then(data => {
-                let { stream } = this.state
-                const selectedStreamId = stream && stream.value
-
-                const streams = data.streams
-                const cachedStreams = kango.storage.getItem("streams", streams)
-
-                if (_.isEqual(streams, cachedStreams)) return
-
-                stream = (
-                    _.some(streams, streamObject => streamObject.id === selectedStreamId)
-                        ? stream
-                        : ''
-                )
-                kango.storage.setItem("streams", streams)
-                kango.storage.setItem("stream", stream)
-                this.setState({ streams: streams, loadingStreams: false, stream })
-            })
-            .catch(actualError => {
-                this.setState({ loadingStreams: false })
-                this.props.onError({
-                    actualError,
-                    message: "Could not load your streams.<br />Please try again later.",
-                    closeBtn: true,
-                })
-            })
-    }
-
     componentWillMount() {
-        this.setState({ stream: kango.storage.getItem('stream') })
         kango.browser.tabs.getCurrent(tab => {
             getItemFromUrl(tab.getUrl())
                 .then(data => {
@@ -122,19 +84,6 @@ class CollectPage extends Component {
         })
     }
 
-    componentDidMount() {
-        this.setState({ loadingStreams: true })
-        // debugger
-        if (kango.storage.getItem('streams') === null) {
-            this.updateStreams()
-        } else {
-              this.setState({ streams: kango.storage.getItem('streams'),
-                              stream: kango.storage.getItem('stream'),
-                              loadingStreams: false })
-              this.updateStreams()
-        }
-    }
-
     onNewStream(e) {
         e.preventDefault()
 
@@ -142,7 +91,7 @@ class CollectPage extends Component {
     }
 
     render() {
-        const { streams, loadingStreams, stream, saving, showSuccess } = this.state
+        const { loadingStreams, stream, saving, showSuccess } = this.state
         const { error } = this.props
 
         let tags = kango.storage.getItem("tags") || []
@@ -157,9 +106,8 @@ class CollectPage extends Component {
                             <div className="b-row _v-center">
                                 <div className="b-row__column _fill">
                                     <StreamSelector
-                                        streams={streams}
-                                        selectedStream={stream}
-                                        onStreamChange={this.onSelectChange}
+                                        onError={this.props.onError}
+                                        onStreamChange={this.onStreamChange}
                                     />
                                 </div>
                                 <div className="b-row__column new-stream-buttom">
@@ -256,8 +204,8 @@ class CollectPage extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const streamId = this.state.stream.value
-        const { post } = this.state
+        const { post, stream } = this.state
+        const streamId = stream.id
         this.setState({ saving: true })
 
         postItem(streamId, post)
@@ -285,8 +233,6 @@ class CollectPage extends Component {
 
     clearKangoLocal() {
         kango.storage.removeItem('message')
-        kango.storage.removeItem('stream')
-        kango.storage.removeItem('streams')
         kango.storage.removeItem('tags')
         kango.storage.removeItem('description')
         kango.storage.removeItem('title')
@@ -298,21 +244,10 @@ class CollectPage extends Component {
         KangoAPI.closeWindow()
     }
 
-    onSelectChange = (val) => {
-        kango.storage.setItem('stream', val)
-
-        this.setState({
-            stream: val
-        })
+    onStreamChange = (stream) => {
+        this.setState({ stream: stream })
     }
 
-    renderOption(option) {
-        return (
-            <div>
-                <span className="option-title">{option.label}</span>
-            </div>
-        )
-    }
 }
 
 export default CollectPage

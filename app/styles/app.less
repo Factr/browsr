@@ -45,8 +45,8 @@ h1 {
 
 textarea, input[type="text"], input[type="password"] {
     width: 100%;
-    border: 2px solid @colorBlueGray;
-    border-radius: 1px;
+    border: 1px solid @inputBorderColor;
+    border-radius: 4px;
     transition: border-color @hoverTiming ease;
     padding: 10px;
     display: block;
@@ -201,6 +201,28 @@ a:focus:not(:active):not(:hover) {
         color: @colorWhite;
     }
 
+
+    &.create-stream {
+        background: @colorGold;
+        height: 48px;
+        width: 310px;
+        font-weight: bold;
+
+        &:disabled {
+            background: @colorGold;
+            opacity: .3;
+            color: #1E2431;
+        }
+    }
+
+    &.create-cancel {
+        height: 48px;
+        width: 151px;
+        border: none;
+        background: #ECEFF1;
+        font-weight: bold;
+    }
+
     .loading {
         -webkit-animation: animation-spin 400ms infinite linear;
         -o-animation: animation-spin 400ms infinite linear;
@@ -233,6 +255,7 @@ a:focus:not(:active):not(:hover) {
         display: inline-block;
         vertical-align: top;
     }
+
 }
 
 .btn._loading {
