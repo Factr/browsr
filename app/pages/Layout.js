@@ -144,7 +144,7 @@ class Layout extends Component {
         }
 
         return (
-            <div>
+            <div style={{width: '100%'}}>
                 {
                     isCreatingStream
                         ? <CreateStreamPageConnected onDone={::this.closeCreatingStream}

@@ -10,8 +10,8 @@
     "icon": "icons/button.png",
     "popup": {
       "url": "popup.html",
-      "width": 399,
-      "height": 520
+      "width": 513,
+      "height": 518
     }
   },
   "name": "Factr",

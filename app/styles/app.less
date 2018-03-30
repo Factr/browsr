@@ -18,7 +18,6 @@ html, body {
 }
 
 body {
-    width: 513px;
     overflow: hidden;
     background: @pageBackgroundColor;
 }
@@ -40,7 +39,6 @@ h1 {
     color: @colorDark;
     font-size: 1.17em;
     margin: 20px 0;
-
 }
 
 textarea, input[type="text"], input[type="password"] {
@@ -101,6 +99,7 @@ a:focus:not(:active):not(:hover) {
 
 #app {
     padding: 20px 0;
+    width: 513px;
 }
 
 .input-field {
@@ -205,8 +204,9 @@ a:focus:not(:active):not(:hover) {
     &.create-stream {
         background: @colorGold;
         height: 48px;
-        width: 310px;
+        width: 63%;
         font-weight: bold;
+        margin-left: 7px;
 
         &:disabled {
             background: @colorGold;
@@ -217,7 +217,7 @@ a:focus:not(:active):not(:hover) {
 
     &.create-cancel {
         height: 48px;
-        width: 151px;
+        width: 33%;
         border: none;
         background: #ECEFF1;
         font-weight: bold;
@@ -292,6 +292,8 @@ a:focus:not(:active):not(:hover) {
 .container {
     padding: 0 20px;
     position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 .logo {
