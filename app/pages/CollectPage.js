@@ -56,6 +56,7 @@ class CollectPage extends Component {
         let validImages = []
         for(let i = 0; i < images.length; i++) {
             const imageHeight = await this.addImageProcess(images[i])
+
             if (imageHeight > 1) {
                 validImages.push(images[i])
             }
