@@ -14,7 +14,7 @@ const BROWSR_ENV = {
 
 var compiler = webpack({
     entry: {
-        main: "./app/app.js",
+        main: ["babel-polyfill", "./app/app.js"],
     },
     target: "web",
     cache: true,

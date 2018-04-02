@@ -28,9 +28,53 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+
+            .image-loading {
+                -webkit-animation: animation-spin 400ms infinite linear;
+                -o-animation: animation-spin 400ms infinite linear;
+                animation: animation-spin 400ms infinite linear;
+                font-size: 20px;
+            }
+
+            .change-image-container {
+                cursor: pointer;
+                border-radius: 20px;
+                background: @colorWhite;
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .change-image {
+                    font-size: 15px;
+                }
+
+                &.float-left {
+                    left: 10px;
+                }
+
+                &.float-right {
+                    right: 10px;
+                }
+
+                &._disabled {
+                    cursor: not-allowed;
+                }
+            }
+
+            .remove-image {
+                position: absolute;
+                top: 15px;
+                right: 10px;
+                color: @colorGrayDark;
+                cursor: pointer;
+            }
 
             img {
-                max-width: 192px;
+                max-width: 152px;
                 max-height: 119px;
             }
         }
@@ -41,12 +85,17 @@
         box-sizing: border-box;
         width: 65%;
 
-        ._title {
+        &._full {
+            width: 100%;
+        }
+
+        .title {
             font-weight: bold;
         }
 
-        ._description {
+        .description {
             min-height: 124px;
+            font-family: 'Merriweather', serif;
         }
     }
 }

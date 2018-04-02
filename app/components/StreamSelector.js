@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import onClickOutside from "react-onclickoutside"
 import isEqual from 'lodash/isequal'
+import isEmpty from 'lodash/isEmpty'
 
 import { getStreams } from '../api'
 
 require('./StreamSelector.less')
 
 class StreamSelector extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -24,6 +24,9 @@ class StreamSelector extends Component {
     }
 
     componentWillMount() {
+        if (kango.storage.getItem('recentStreams')=== null) {
+            kango.storage.setItem('recentStreams', [])
+        }
         this.setState({ selectedStream: kango.storage.getItem('stream'),
                         recentStreams: kango.storage.getItem('recentStreams'),
                         streams: kango.storage.getItem('streams')
@@ -33,9 +36,7 @@ class StreamSelector extends Component {
     }
 
     componentDidMount() {
-        if (kango.storage.getItem('stream') === null ||
-            kango.storage.getItem('streams') === null ||
-            kango.storage.getItem('recentStreams') === null) {
+        if (kango.storage.getItem('streams') === null) {
                 this.setState({ loadingStreams: true })
             }
         this.updateStreams()
@@ -44,23 +45,15 @@ class StreamSelector extends Component {
     updateStreams = () => {
         getStreams()
             .then(data => {
-                const streams = data.streams
-                const numRecent = data.count
-                // if user selects new stream before updated streams load
-                // users selection will be changed to most recently updated
-                let mostRecentStream = streams[0]
-                const recentStreams = this.findRecentStreams(streams, numRecent)
-
-                kango.storage.setItem("stream", mostRecentStream)
-                kango.storage.setItem("recentStreams", recentStreams)
+                const streams = data.results
                 kango.storage.setItem("streams", streams)
 
+                if (kango.storage.getItem('stream') === null) {
+                    kango.storage.setItem('stream', streams[0])
+                    this.setState({ selectedStream: streams[0]})
+                }
                 this.setState({ streams: streams,
-                                loadingStreams: false,
-                                recentStreams: recentStreams,
-                                selectedStream: mostRecentStream,
-                                numRecent: numRecent })
-                this.props.onStreamChange(mostRecentStream)
+                                loadingStreams: false })
             })
             .catch(actualError => {
                 this.setState({ loadingStreams: false })
@@ -124,16 +117,8 @@ class StreamSelector extends Component {
         )
     }
 
-    findRecentStreams = (streams, numRecent) => {
-        let recentStreams = []
+    updateRecentStreams = (streams) => {
 
-        for(let i = 0; i < numRecent && i < 5; i++) {
-            if (streams[i].content_added) {
-                recentStreams.push(streams[i])
-            }
-        }
-
-        return recentStreams
     }
 
     renderStreamItem = (stream) => {
@@ -175,9 +160,11 @@ class StreamSelector extends Component {
             return (
               <div className="streams-container">
                   {
+                      !isEmpty(recentStreams) &&
                       this.renderDivider('RECENT', 'top')
                   }
                   {
+                      !isEmpty(recentStreams) &&
                       this.renderStreamsList(recentStreams)
                   }
                   {
@@ -191,7 +178,8 @@ class StreamSelector extends Component {
         } else {
             const { searchText, streams } = this.state
 
-            const filteredStreams = streams.filter( stream => stream.name.toLowerCase().includes(searchText.toLowerCase()))
+            const filteredStreams = streams.filter( stream => stream.name.toLowerCase()
+                                           .includes(searchText.toLowerCase()))
 
             return (
                 <div className="streams-container">

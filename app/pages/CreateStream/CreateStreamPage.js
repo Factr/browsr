@@ -87,11 +87,7 @@ export default class CreateStreamPage extends Component {
                 .then(({ response: stream }) => {
                     //noinspection JSUnresolvedFunction
                     this.props.actions.resetForm()
-                    this.props.onDone({
-                        value: stream.id,
-                        label: stream.name,
-                        title: stream.name,
-                    })
+                    this.props.onDone(stream)
                 })
                 .catch(actualError => {
                     this.props.onError({

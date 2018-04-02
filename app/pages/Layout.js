@@ -121,8 +121,7 @@ class Layout extends Component {
     closeCreatingStream(stream) {
         if (stream)
             kango.storage.setItem('stream', stream)
-
-        this.setState({ isCreatingStream: false }, () => {
+            this.setState({ isCreatingStream: false }, () => {
             // Focus tags field
             // findDOMNode(this).querySelector('#tags input').focus()
         })
