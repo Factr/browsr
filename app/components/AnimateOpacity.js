@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import CSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup'
 
 require('./AnimateOpacity.less')
@@ -7,11 +8,11 @@ export default class extends Component {
     static propTypes = {
         timing: PropTypes.number,
     }
-    
+
     static defaultProps = {
         timing: 150,
     }
-    
+
     render() {
         return (
             <CSSTransitionGroup className="animate-opacity"

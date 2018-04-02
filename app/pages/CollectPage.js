@@ -107,8 +107,8 @@ class CollectPage extends Component {
 
     handleRemoveImage = () => {
         let post = {...this.state.post}
-        post.image_url = '' // if set to empty string the backend finds the image again
-        post.url = false
+        post.image_url = ''
+        post.do_not_parse_url = true // inform the backend to not reparse the url
         this.setState({ post, imageRemoved: true })
     }
 
