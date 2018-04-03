@@ -66,7 +66,10 @@ class CollectPage extends Component {
     }
 
     componentWillMount() {
-        this.setState({ loadingImages: true })
+        let post = {...this.state.post}
+        post.message = kango.storage.getItem('message') || ''
+        this.setState({ loadingImages: true, post})
+
         kango.browser.tabs.getCurrent(tab => {
             getItemFromUrl(tab.getUrl())
                 .then(data => {
@@ -74,7 +77,6 @@ class CollectPage extends Component {
                         title: data.title,
                         image_url: data.image_url,
                         description: data.description,
-                        message: '',
                         url: data.url
                     }
                     //noinspection JSUnresolvedVariable
@@ -203,7 +205,8 @@ class CollectPage extends Component {
                 stream,
                 saving,
                 showSuccess,
-                imageRemoved } = this.state
+                imageRemoved,
+                post } = this.state
         const { error } = this.props
 
         let tags = kango.storage.getItem("tags") || []
@@ -235,7 +238,7 @@ class CollectPage extends Component {
                         <label className="b-form-input__label">Post</label>
                         <div className="b-form-input__input">
                             <textarea ref="message" name="message"
-                                      value={this.state.message}
+                                      value={post.message}
                                       onChange={::this.onInputChange}
                                       autoFocus
                                       className="b-input _message"
@@ -267,7 +270,7 @@ class CollectPage extends Component {
                                                 }
                                                 {
                                                     !loadingImages &&
-                                                    <img src={this.state.post.image_url} />
+                                                    <img src={post.image_url} />
                                                 }
                                                 <div className={classnames("change-image-container float-right", {
                                                         _disabled: loadingImages
@@ -289,7 +292,7 @@ class CollectPage extends Component {
                                 <div className="b-form-input__input" id="title">
                                     <input ref="description" name="title"
                                           type="text"
-                                          value={this.state.post.title}
+                                          value={post.title}
                                           onChange={::this.onInputChange}
                                           autoFocus
                                           className="b-input title"
@@ -301,7 +304,7 @@ class CollectPage extends Component {
                                 <label className="b-form-input__label">Description</label>
                                 <div className="b-form-input__input" id="description">
                                 <textarea ref="description" name="description"
-                                      value={this.state.post.description}
+                                      value={post.description}
                                       onChange={::this.onInputChange}
                                       autoFocus
                                       className="b-input description"
