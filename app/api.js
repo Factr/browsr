@@ -26,6 +26,7 @@ function generateHeaders(contentType = 'application/json; charset=UTF-8') {
 function makeApiRequest(path = {}, method = 'GET', opts = {}, contentType) {
     const url = typeof path === 'string' ? path : path.url
     //noinspection JSUnresolvedVariable
+
     const newOpts = merge({}, {
         method: method,
         url: generateRoute(url, path.frontend),
@@ -99,8 +100,8 @@ export function postItem(streamId, params) {
 }
 
 export function getStreams() {
-    const route = `stream/contributable?limit=1000&mobile=true`
-    return makeApiRequest(route, 'GET')
+    const route = `stream/contributable?limit=1000&mobile=true&nano_serializer=true`
+    return makeApiRequest(route, 'GET', { params: 'nano_serializer'})
 }
 
 export function getItemFromUrl(url) {

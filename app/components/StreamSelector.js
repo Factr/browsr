@@ -45,7 +45,8 @@ class StreamSelector extends Component {
     updateStreams = () => {
         getStreams()
             .then(data => {
-                const streams = data.results
+                const streams = data.results.sort((a, b) => a.name.localeCompare(b.name))
+
                 kango.storage.setItem("streams", streams)
 
                 if (kango.storage.getItem('stream') === null) {
@@ -117,10 +118,6 @@ class StreamSelector extends Component {
         )
     }
 
-    updateRecentStreams = (streams) => {
-
-    }
-
     renderStreamItem = (stream) => {
         return (
             <div
@@ -129,7 +126,7 @@ class StreamSelector extends Component {
                 className="stream-list-item"
             >
                 <span className="stream-name">{stream.name}</span><br/>
-                <span className="stream-owner">{stream.owner.name}</span>
+                <span className="stream-owner">{stream.owner_name}</span>
             </div>
         )
     }
@@ -154,7 +151,6 @@ class StreamSelector extends Component {
 
     renderStreams = () => {
         const { streams, recentStreams, numRecent, searchText } = this.state
-        const sortedStreams = streams.sort((a, b) => a.name.localeCompare(b.name))
 
         if (searchText === '') {
             return (
@@ -171,7 +167,7 @@ class StreamSelector extends Component {
                       this.renderDivider('YOUR STREAMS', 'top')
                   }
                   {
-                      this.renderStreamsList(sortedStreams)
+                      this.renderStreamsList(streams)
                   }
               </div>
             )
