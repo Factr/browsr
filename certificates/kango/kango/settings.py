@@ -2,7 +2,7 @@ import os
 import json
 
 
-VERSION = '1.8.0'
+VERSION = '1.7.9'
 BUILD = '3dc957b83b36'
 PACKAGE_ID = 'dev'
 
