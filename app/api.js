@@ -53,7 +53,6 @@ function makeApiRequest(path = {}, method = 'GET', opts = {}, contentType) {
                 reject({ noInternet: xhr.status === 0 })
             }
         }
-
         xhr.send(params)
     })
 }
@@ -80,8 +79,8 @@ export function authLinkedIn(code, redirect_uri) {
 
 export function authGoogle(access_token) {
     return makeApiRequest({
-        url: `auth/google?access_token=${access_token}&json=true`,
-        frontend: true,
+        url: `oauth/google-oauth2/?access_token=${access_token}&json=true`,
+        frontend: false,
     })
 }
 
