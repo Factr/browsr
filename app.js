@@ -8,6 +8,8 @@ import configureStore from './store'
 
 const store = configureStore()
 
+window.store = store
+
 ReactDOM.render(
     <Provider store={store}>
         <Layout />

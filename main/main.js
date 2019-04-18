@@ -8920,6 +8920,8 @@
 	
 	var store = (0, _store2.default)();
 	
+	window.store = store;
+	
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRedux.Provider,
 	    { store: store },
@@ -30847,6 +30849,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	window.storage = _storage2.default;
+	
 	var TryAgainButton = function (_Component) {
 	    _inherits(TryAgainButton, _Component);
 	
@@ -31103,7 +31107,7 @@
 	    }, {
 	        key: "logOut",
 	        value: function logOut() {
-	            _storage2.default.clear.clear();
+	            _storage2.default.clear();
 	
 	            this.onChange({ user: null, token: null, error: null });
 	        }
@@ -48799,26 +48803,17 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var chromeCallback = function chromeCallback(data) {
-	    if (chrome.runtime.lastError) {
-	        console.log(chrome.runtime.lastError);
-	        return;
-	    } else {
-	        return data;
-	    }
-	};
-	
 	exports.default = {
 	    setItem: function setItem(key, value) {
-	        return localStorage.set(key, value);
+	        return localStorage.setItem(key, JSON.stringify(value));
 	    },
 	
 	    getItem: function getItem(key) {
-	        return localStorage.get(key);
+	        return JSON.parse(localStorage.getItem(key));
 	    },
 	
 	    removeItem: function removeItem(key) {
-	        return localStorage.remove(key);
+	        return localStorage.removeItem(key);
 	    },
 	
 	    clear: function clear() {
@@ -53152,10 +53147,12 @@
 	        _this.updateRecentStreams = function () {
 	            var stream = _this.state.stream;
 	
+	
 	            var oldStream = _storage2.default.getItem('stream');
+	            _storage2.default.setItem('stream', stream);
 	            var recentStreams = _storage2.default.getItem('recentStreams');
 	
-	            if (oldStream.id !== stream.id) {
+	            if (oldStream && oldStream.id !== stream.id) {
 	                // check if posted stream is in recent streams, if so remove it
 	                if (_lodash2.default.find(recentStreams, { 'id': stream.id })) {
 	                    recentStreams = recentStreams.filter(function (obj) {
@@ -53164,7 +53161,6 @@
 	                }
 	                recentStreams.unshift(oldStream);
 	                _storage2.default.setItem('recentStreams', recentStreams.slice(0, 5));
-	                _storage2.default.setItem('stream', stream);
 	            }
 	        };
 	
@@ -53286,8 +53282,8 @@
 	            post.message = _storage2.default.getItem('message') || '';
 	            this.setState({ loadingImages: true, post: post });
 	
-	            chrome.tabs.getCurrent(function (tab) {
-	                (0, _api.getItemFromUrl)(tab.getUrl()).then(function (data) {
+	            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+	                (0, _api.getItemFromUrl)(tabs[0].url).then(function (data) {
 	                    var post = {
 	                        title: data.title,
 	                        image_url: data.image_url,
@@ -53366,7 +53362,7 @@
 	    }, {
 	        key: 'closeWindow',
 	        value: function closeWindow() {
-	            setTimeout(function () {}); //KangoAPI.closeWindow(), 2000)
+	            setTimeout(window.close, 2000);
 	        }
 	    }, {
 	        key: 'clearStorage',
@@ -53381,7 +53377,7 @@
 	        key: 'onClear',
 	        value: function onClear() {
 	            this.clearStorage();
-	            //KangoAPI.closeWindow()
+	            window.close();
 	        }
 	    }, {
 	        key: 'render',
@@ -55373,14 +55369,27 @@
 	                    return a.name.localeCompare(b.name);
 	                });
 	
-	                _storage2.default.setItem({ "streams": streams });
+	                _storage2.default.setItem("streams", streams);
 	
 	                if (_storage2.default.getItem('stream') === null) {
-	                    _storage2.default.setItem({ 'stream': streams[0] });
-	                    _this.setState({ selectedStream: streams[0] });
+	                    // set current stream to inbox
+	                    var inbox = streams.find(function (stream) {
+	                        return stream.personal && !stream.public;
+	                    });
+	                    _storage2.default.setItem('stream', inbox);
+	                    _this.setState({ selectedStream: inbox });
 	                }
-	                _this.setState({ streams: streams,
-	                    loadingStreams: false });
+	
+	                // remove deleted streams from recent streams
+	                var streamIds = streams.map(function (stream) {
+	                    return stream.id;
+	                });
+	                var recentStreams = _storage2.default.getItem('recentStreams').filter(function (stream) {
+	                    return streamIds.includes(stream.id);
+	                });
+	                _storage2.default.setItem('recentStreams', recentStreams);
+	
+	                _this.setState({ streams: streams, loadingStreams: false });
 	            }).catch(function (actualError) {
 	                _this.setState({ loadingStreams: false });
 	                _this.props.onError({
@@ -55538,7 +55547,7 @@
 	            var _this2 = this;
 	
 	            if (_storage2.default.getItem('recentStreams') === null) {
-	                _storage2.default.setItem({ 'recentStreams': [] });
+	                _storage2.default.setItem('recentStreams', []);
 	            }
 	            this.setState({ selectedStream: _storage2.default.getItem('stream'),
 	                recentStreams: _storage2.default.getItem('recentStreams'),
@@ -55575,7 +55584,6 @@
 	                selectedStream = _state.selectedStream,
 	                open = _state.open,
 	                loadingStreams = _state.loadingStreams;
-	
 	
 	            return _react2.default.createElement(
 	                'div',

@@ -26,7 +26,7 @@ class StreamSelector extends Component {
 
     componentWillMount() {
         if (storage.getItem('recentStreams') === null) {
-            storage.setItem({'recentStreams': [] })
+            storage.setItem('recentStreams', [])
         }
         this.setState({ selectedStream: storage.getItem('stream'),
                         recentStreams: storage.getItem('recentStreams'),
@@ -48,14 +48,22 @@ class StreamSelector extends Component {
             .then(data => {
                 const streams = data.results.sort((a, b) => a.name.localeCompare(b.name))
 
-                storage.setItem({"streams": streams})
+                storage.setItem("streams", streams)
 
                 if (storage.getItem('stream') === null) {
-                    storage.setItem({'stream': streams[0]})
-                    this.setState({ selectedStream: streams[0]})
+                    // set current stream to inbox
+                    const inbox = streams.find(stream => stream.personal && !stream.public)
+                    storage.setItem('stream', inbox)
+                    this.setState({ selectedStream: inbox})
                 }
-                this.setState({ streams: streams,
-                                loadingStreams: false })
+
+                // remove deleted streams from recent streams
+                const streamIds = streams.map(stream => stream.id)
+                const recentStreams = storage.getItem('recentStreams')
+                                             .filter(stream => streamIds.includes(stream.id))
+                storage.setItem('recentStreams', recentStreams)
+
+                this.setState({ streams: streams, loadingStreams: false })
             })
             .catch(actualError => {
                 this.setState({ loadingStreams: false })
@@ -206,7 +214,6 @@ class StreamSelector extends Component {
 
     render() {
         const { selectedStream, open, loadingStreams } = this.state
-
         return (
             <div onClick={this.toggleDropDown} className={classnames("stream-selector", {
                 _open: open,

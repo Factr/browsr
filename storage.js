@@ -1,16 +1,7 @@
-const chromeCallback = (data) => {
-    if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError)
-        return
-    } else {
-        return data
-    }
-}
-
 export default {
-    setItem: (key, value) => localStorage.setItem(key, value),
+    setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
 
-    getItem: (key) => localStorage.getItem(key),
+    getItem: (key) => JSON.parse(localStorage.getItem(key)),
 
     removeItem: (key) => localStorage.removeItem(key),
 

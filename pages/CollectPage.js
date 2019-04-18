@@ -71,8 +71,8 @@ class CollectPage extends Component {
         post.message = storage.getItem('message') || ''
         this.setState({ loadingImages: true, post})
 
-        chrome.tabs.getCurrent(tab => {
-            getItemFromUrl(tab.getUrl())
+        chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            getItemFromUrl(tabs[0].url)
                 .then(data => {
                     let post = {
                         title: data.title,
@@ -139,17 +139,18 @@ class CollectPage extends Component {
 
     updateRecentStreams = () => {
         const { stream } = this.state
+
         const oldStream = storage.getItem('stream')
+        storage.setItem('stream', stream)
         let recentStreams = storage.getItem('recentStreams')
 
-        if (oldStream.id !== stream.id) {
+        if (oldStream && oldStream.id !== stream.id) {
             // check if posted stream is in recent streams, if so remove it
             if (_.find(recentStreams, { 'id': stream.id})) {
                 recentStreams = recentStreams.filter( obj => obj.id !== stream.id )
             }
             recentStreams.unshift(oldStream)
             storage.setItem('recentStreams', recentStreams.slice(0,5))
-            storage.setItem('stream', stream)
         }
     }
 
@@ -181,7 +182,7 @@ class CollectPage extends Component {
     }
 
     closeWindow() {
-        setTimeout(() => {})//KangoAPI.closeWindow(), 2000)
+        setTimeout(window.close, 2000)
     }
 
     clearStorage() {
@@ -194,7 +195,7 @@ class CollectPage extends Component {
 
     onClear() {
         this.clearStorage()
-        //KangoAPI.closeWindow()
+        window.close()
     }
 
     onStreamChange = (stream) => {

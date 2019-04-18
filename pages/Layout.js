@@ -8,6 +8,8 @@ import classnames from "classnames"
 import { trackEvent, identify } from '../analytics'
 import storage from 'storage'
 
+window.storage = storage
+
 class TryAgainButton extends Component {
     static propTypes = {
         fn: PropTypes.func.isRequired,
@@ -200,7 +202,7 @@ class Layout extends Component {
     }
 
     logOut() {
-        storage.clear.clear()
+        storage.clear()
 
         this.onChange({ user: null, token: null, error: null })
     }
