@@ -1,3 +1,4 @@
+var fsExtra = require('fs-extra')
 var path = require("path")
 var exec = require("child_process").exec
 var webpack = require("webpack")
@@ -9,12 +10,6 @@ const BROWSR_ENV = {
     [true]: 'production',
     [process.argv.includes('dev')]: 'development',
     [process.argv.includes('staging')]: 'staging',
-}.true
-
-const BROWSER_TYPE = {
-    [true]: 'chrome',
-    [process.argv.includes('mozilla')]: 'mozilla',
-    [process.argv.includes('safari')]: 'safari',
 }.true
 
 var compiler = webpack({
@@ -31,15 +26,14 @@ var compiler = webpack({
     },
     devtool: "source-map",
     output: {
-        path: path.join(__dirname, `./${BROWSER_TYPE}`),
-        filename: "[name].js",
-        chunkFilename: "[name].js",
-        sourceMapFilename: "[name].js.map",
+        path: path.join(__dirname, `./output`),
+        filename: "main.js",
+        chunkFilename: "main.js",
+        sourceMapFilename: "main.js.map",
     },
     plugins: [
         new ExtractTextPlugin("styles.css"),
         new webpack.DefinePlugin({ BROWSR_ENV: JSON.stringify(BROWSR_ENV) }),
-        new webpack.DefinePlugin({ BROWSER_TYPE: JSON.stringify(BROWSER_TYPE) })
     ],
     module: {
         loaders: [
@@ -103,6 +97,20 @@ compiler.plugin("done", function (a) {
         })
     } else {
         console.log(`#${++compilationNumber} Successful webpack compilation in ${compilationTime.toFixed(1)}s`.green)
+
+
+        // We manually copy the manifest.json, popup.html and icon files into
+        // the output folder so we can upload the output folder directly into
+        // both the chrome and mozilla extension testing. If you change any of
+        // the files in the static folder you will need to run webpack again.
+        console.log("Copying static folder into output...")
+        fsExtra.copy('./static', './output/', (err) => {
+            if (err) {
+                console.log("Error while copying static folder: ".red, err)
+            } else {
+                console.log("Success copyting static folder.".green)
+            }
+        })
     }
 })
 
@@ -112,8 +120,6 @@ compiler.watch({}, function (err, stats) {
             if (error) {
                 console.error(err)
             }
-
-            console.log(stdout)
 
             if (!process.argv.includes('--watch')) {
                 process.exit(0)
