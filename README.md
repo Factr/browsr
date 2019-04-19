@@ -1,22 +1,18 @@
 # browsr
-Browser extension for [Factr](https://factr.com) supporting Firefox, Safari, Chrome.  Factr is customized, real-time knowledge-sharing, letting your organization know more and act faster.
+Browser extension for [Factr](https://factr.com) supporting Firefox and Chrome.  Factr is customized, real-time knowledge-sharing, letting your organization know more and act faster.
 
 ## Development
 
-Run `npm run watch` to build for development.  This will put output into `output/chrome` which can be added to chrome://extensions
+Run `npm run watch` to build for development.  This will put output into `output` folder which can be added to chrome://extensions (Load unpacked) for Chrome or about:debugging (Load Temporary Add-on...) in Mozilla.
 
-Run `npm run build prod` to build with production configuration. Config files can be found in `app/config`
+### Hot Reloading
+To enable hot reloading for chrome you can install the Extensions Reloader extension at https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid?hl=en. The extension will reload every time you open it.
 
-## Signing inline Javascript
+For hot reloading on Firefox you need to install web-ext command line tools and run web-ext run in the output folder. For more information see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Getting_started_with_web-ext.
 
-[W3 Documentation](https://www.w3.org/TR/2015/CR-CSP2-20150721/#script-src-hash-usage)
+### Updating static files
+Some files aren't bundled by webpack but still must be present in the output folder when uploading an unpacked extension. These files are stored in the static folder and include the icons used for the extension, manifest.json file, and popup.html. A custom line of code is written in the webpack config to copy the contents of the static folder into the output folder after every build. When files in the static directory are changed webpack must recompile for the changes to take affect.
 
-This command signs the javascript: `echo -n "alert('Hello, world.');" | openssl dgst -sha256 -binary | openssl enc -base64`
 
-This will return the hash for inline script.  Do not include the `<script>` tags themselves just what's inside the tags.
 
-Place the hash in kango/src/js/chrome/manifest.json and rebuild.
-
-## Build for Chrome WebStore
-
-`npm run release` will build the final extension file. Make sure you update `src/common/extension_info.json` with the new version so that new files are generated.
+Run `npm run [watch/build] [dev/staging]` to start. To run with production config leave out argument. Config files can be found in `src/config`
