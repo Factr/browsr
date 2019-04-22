@@ -15,6 +15,7 @@
         "tabs",
         "http://*/*",
         "https://*/*",
+        "activeTab",
         "contextMenus",
         "webNavigation",
         "notifications",
@@ -28,6 +29,12 @@
     "background": {
         "scripts": ["send_message.js"]
     },
+    "content_scripts": [
+        {
+            "matches": ["http://localhost:5000/*", "*://factr.com/*"],
+            "js": ["createBeacon.js"]
+        }
+    ],
     "externally_connectable": {
         "matches": ["http://localhost:5000/*", "*://factr.com/*"]
     },

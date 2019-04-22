@@ -74,7 +74,8 @@ var compiler = webpack({
     resolve: {
         modulesDirectories: [
             "src",
-            "node_modules"
+            "node_modules",
+            "static"
         ],
         extensions: ["", ".json", ".js"],
     },
@@ -108,7 +109,7 @@ compiler.plugin("done", function (a) {
             if (err) {
                 console.log("Error while copying static folder: ".red, err)
             } else {
-                console.log("Success copyting static folder.".green)
+                console.log("Success copying static folder.".green)
             }
         })
     }
