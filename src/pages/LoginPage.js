@@ -148,7 +148,7 @@ class LoginPage extends Component {
                             this.loginUserByUserObject(userObject, token, 'linkedin')
                         })
                         .catch(() => this.setState({ loading: false, error: errorMessage }))
-                } else {
+                  } else {
                     this.setState({ loading: false, error: null })
                 }
             }
@@ -157,15 +157,15 @@ class LoginPage extends Component {
 
     openGoogleOAuth() {
         this.setState({ loading: true, error: null })
-
         chrome.identity.getAuthToken({ 'interactive': true }, access_token => {
             const errorMessage = 'An error happened while authorizing you through Google'
-
             authGoogle(access_token)
-                .then(userObjectAndToken => {
-                    const { token, ...userObject } = userObjectAndToken
-
-                    this.loginUserByUserObject(userObject, token, 'google')
+                .then((resp) => {
+                    let apiToken = resp.token
+                    storage.setItem('token', apiToken)
+                    me().then((userObject)=>{
+                        this.loginUserByUserObject(userObject, apiToken, 'google')
+                    })
                 })
                 .catch(() => this.setState({ loading: false, error: errorMessage }))
         })

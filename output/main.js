@@ -31374,15 +31374,14 @@
 	            var _this4 = this;
 	
 	            this.setState({ loading: true, error: null });
-	
 	            chrome.identity.getAuthToken({ 'interactive': true }, function (access_token) {
 	                var errorMessage = 'An error happened while authorizing you through Google';
-	
-	                (0, _api.authGoogle)(access_token).then(function (userObjectAndToken) {
-	                    var token = userObjectAndToken.token,
-	                        userObject = _objectWithoutProperties(userObjectAndToken, ['token']);
-	
-	                    _this4.loginUserByUserObject(userObject, token, 'google');
+	                (0, _api.authGoogle)(access_token).then(function (resp) {
+	                    var apiToken = resp.token;
+	                    _storage2.default.setItem('token', apiToken);
+	                    (0, _api.me)().then(function (userObject) {
+	                        _this4.loginUserByUserObject(userObject, apiToken, 'google');
+	                    });
 	                }).catch(function () {
 	                    return _this4.setState({ loading: false, error: errorMessage });
 	                });
@@ -31582,7 +31581,6 @@
 	                reject({ noInternet: xhr.status === 0 });
 	            }
 	        };
-	
 	        xhr.send(params);
 	    });
 	}
@@ -31611,8 +31609,8 @@
 	
 	function authGoogle(access_token) {
 	    return makeApiRequest({
-	        url: 'auth/google?access_token=' + access_token + '&json=true',
-	        frontend: true
+	        url: 'oauth/google-oauth2/?access_token=' + access_token + '&json=true',
+	        frontend: false
 	    });
 	}
 	
