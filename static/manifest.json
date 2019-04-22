@@ -10,7 +10,7 @@
         "default_icon": "icons/icon16.png",
         "default_popup": "popup.html"
     },
-    "version": "1.0.0",
+    "version": "0.3.12",
     "permissions": [
         "tabs",
         "http://*/*",
@@ -26,12 +26,9 @@
         "storage"
     ],
     "homepage_url": "https://factr.com",
-    "background": {
-        "scripts": ["send_message.js"]
-    },
     "content_scripts": [
         {
-            "matches": ["http://localhost:5000/*", "*://factr.com/*"],
+            "matches": ["http://localhost:5000/*", "*://factr.com/*", "*://staging.factr.com/*"],
             "js": ["createBeacon.js"]
         }
     ],
