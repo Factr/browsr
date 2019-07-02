@@ -37,3 +37,6 @@ node_modules/
 *.pyc
 
 .chrome.pem
+
+# Output for uploading to Google/Mozilla extension stores
+output/
