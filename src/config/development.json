@@ -4,6 +4,10 @@
   "oauth": {
     "linkedin": {
       "client_id": "77knq3qp9daiuk"
+    },
+    "google": {
+      "client_id": "751719944516-4j2lu8s04emt18fsen3jsu8d6l2p6e0b.apps.googleusercontent.com",
+      "redirect_uri": "http://localhost:8000/oauth/google-oauth2/"
     }
   }
 }

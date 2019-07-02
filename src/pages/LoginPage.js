@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { findDOMNode } from 'react-dom'
-import { login, me, authLinkedIn, authGoogle } from '../api'
+import { login, me, authLinkedIn, authGoogle, makeApiRequest } from '../api'
 import classnames from 'classnames'
 import AnimateOpacity from 'components/AnimateOpacity'
 import URL from 'url-parse'
@@ -155,7 +155,41 @@ class LoginPage extends Component {
         )
     }
 
-    openGoogleOAuth() {
+    openFireFoxGoogleOAuth() {
+        this.setState({ loading: true, error: null })
+        const scopes = ["email", "profile"]
+        const params = [
+            'response_type=token',
+            `client_id=${config.oauth.google.client_id}`,
+            `redirect_uri=${config.oauth.google.redirect_uri}`,
+            `state=asdf355asdf`,
+            `scope=${encodeURIComponent(scopes.join(' '))}`
+        ]
+
+        browser.identity.launchWebAuthFlow(
+            { 'url': `https://accounts.google.com/o/oauth2/v2/auth?${params.join('&')}`, 'interactive': true }
+        ).then(redirect_url => {
+              const url = new URL(redirect_url, true)
+              const accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token')
+              const errorMessage = 'An error happened while authorizing you through LinkedIn'
+
+              if (accessToken) {
+                  authGoogle(accessToken)
+                      .then((resp) => {
+                          let apiToken = resp.token
+                          storage.setItem('token', apiToken)
+                          me().then((userObject)=>{
+                              this.loginUserByUserObject(userObject, apiToken, 'google')
+                          })
+                      })
+                      .catch(() => this.setState({ loading: false, error: errorMessage }))
+                } else {
+                  this.setState({ loading: false, error: null })
+              }
+        })
+    }
+
+    openGoogleGoogleOAuth() {
         this.setState({ loading: true, error: null })
         chrome.identity.getAuthToken({ 'interactive': true }, access_token => {
             const errorMessage = 'An error happened while authorizing you through Google'
@@ -169,6 +203,15 @@ class LoginPage extends Component {
                 })
                 .catch(() => this.setState({ loading: false, error: errorMessage }))
         })
+    }
+
+    openGoogleOAuth() {
+        // Firefox doesn't support chrome.identity.getAuthToken, so need to use different auth flow
+        if (typeof chrome.identity.getAuthToken === "function") {
+            this.openGoogleGoogleOAuth()
+        } else if (browser && typeof browser.identity.launchWebAuthFlow === 'function') {
+            this.openFireFoxGoogleOAuth()
+        }
     }
 
     openHumanitarianIDOAuth() {

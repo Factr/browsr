@@ -1,4 +1,10 @@
 {
     "apiUrl": "https://staging-centr.factr.com",
-    "frontendUrl": "https://staging.factr.com"
+    "frontendUrl": "https://staging.factr.com",
+    "oauth": {
+        "google": {
+            "client_id": "751719944516-0gn5giqvkcclhgbeqhfm0kemot1ssipp.apps.googleusercontent.com",
+            "redirect_uri": "https://staging.factr.com/auth/google"
+        }
+    }
 }

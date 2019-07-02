@@ -1,5 +1,11 @@
 {
     "apiUrl": "https://centr.factr.com",
     "frontendUrl": "https://factr.com",
-    "appId": "lfkimcbknmlhjihcekgpkhefiegcobnk"
+    "appId": "lfkimcbknmlhjihcekgpkhefiegcobnk",
+    "oauth": {
+        "google": {
+            "client_id": "751719944516-6832qebdjamkuci81sd0uu8bjfv4aj35.apps.googleusercontent.com",
+            "redirect_uri": "https://centr.factr.com/oauth/google-oauth2/"
+        }
+    }
 }

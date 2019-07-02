@@ -24,13 +24,13 @@ function generateHeaders(contentType = 'application/json; charset=UTF-8') {
     return result
 }
 
-function makeApiRequest(path = {}, method = 'GET', opts = {}, contentType) {
+export function makeApiRequest(path = {}, method = 'GET', opts = {}, contentType) {
     const url = typeof path === 'string' ? path : path.url
     //noinspection JSUnresolvedVariable
 
     const newOpts = merge({}, {
         method: method,
-        url: generateRoute(url, path.frontend),
+        url: generateRoute(url, path.frontend, path.fullUrl),
         headers: generateHeaders(contentType),
     }, opts)
 
