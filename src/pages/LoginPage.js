@@ -6,7 +6,7 @@ import AnimateOpacity from 'components/AnimateOpacity'
 import URL from 'url-parse'
 import config from '../config'
 import storage from 'storage'
-import { trackEvent, identify } from '../analytics'
+import { trackEvent, identify, trackEventCentr } from '../analytics'
 
 require('./LoginPage.less')
 
@@ -16,6 +16,14 @@ const urls = {
     resetPassword: `${baseUrl}/forgot-password`
 }
 const CHROME_EXTENSION_REDIRECT_URI = `https://${config.appId}.chromiumapp.org`
+
+function getBrowser() {
+    if (typeof chrome !== "undefined" && typeof browser !== "undefined") {
+        return "Firefox";
+    } else {
+        return "Chrome";
+    }
+}
 
 function LoginWith({ name, iconClassName, onClick, disabled }) {
     return (
@@ -279,6 +287,7 @@ class LoginPage extends Component {
         //noinspection JSUnresolvedVariable
         identify(userObject)
         trackEvent('logged in', { provider })
+        trackEventCentr(`downloaded ${getBrowser()} extension`)
 
         storage.setItem('last_used_email', userObject.email)
         storage.setItem('user', JSON.stringify(userObject))

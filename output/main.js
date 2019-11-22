@@ -31180,6 +31180,14 @@
 	};
 	var CHROME_EXTENSION_REDIRECT_URI = 'https://' + _config2.default.appId + '.chromiumapp.org';
 	
+	function getBrowser() {
+	    if (typeof chrome !== "undefined" && typeof browser !== "undefined") {
+	        return "Firefox";
+	    } else {
+	        return "Chrome";
+	    }
+	}
+	
 	function LoginWith(_ref) {
 	    var name = _ref.name,
 	        iconClassName = _ref.iconClassName,
@@ -31369,9 +31377,38 @@
 	            });
 	        }
 	    }, {
-	        key: 'openGoogleOAuth',
-	        value: function openGoogleOAuth() {
+	        key: 'openFireFoxGoogleOAuth',
+	        value: function openFireFoxGoogleOAuth() {
 	            var _this4 = this;
+	
+	            this.setState({ loading: true, error: null });
+	            var scopes = ["email", "profile"];
+	            var params = ['response_type=token', 'client_id=' + _config2.default.oauth.google.client_id, 'redirect_uri=' + _config2.default.oauth.google.redirect_uri, 'state=asdf355asdf', 'scope=' + encodeURIComponent(scopes.join(' '))];
+	
+	            browser.identity.launchWebAuthFlow({ 'url': 'https://accounts.google.com/o/oauth2/v2/auth?' + params.join('&'), 'interactive': true }).then(function (redirect_url) {
+	                var url = new _urlParse2.default(redirect_url, true);
+	                var accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token');
+	                var errorMessage = 'An error happened while authorizing you through LinkedIn';
+	
+	                if (accessToken) {
+	                    (0, _api.authGoogle)(accessToken).then(function (resp) {
+	                        var apiToken = resp.token;
+	                        _storage2.default.setItem('token', apiToken);
+	                        (0, _api.me)().then(function (userObject) {
+	                            _this4.loginUserByUserObject(userObject, apiToken, 'google');
+	                        });
+	                    }).catch(function () {
+	                        return _this4.setState({ loading: false, error: errorMessage });
+	                    });
+	                } else {
+	                    _this4.setState({ loading: false, error: null });
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'openGoogleGoogleOAuth',
+	        value: function openGoogleGoogleOAuth() {
+	            var _this5 = this;
 	
 	            this.setState({ loading: true, error: null });
 	            chrome.identity.getAuthToken({ 'interactive': true }, function (access_token) {
@@ -31380,17 +31417,27 @@
 	                    var apiToken = resp.token;
 	                    _storage2.default.setItem('token', apiToken);
 	                    (0, _api.me)().then(function (userObject) {
-	                        _this4.loginUserByUserObject(userObject, apiToken, 'google');
+	                        _this5.loginUserByUserObject(userObject, apiToken, 'google');
 	                    });
 	                }).catch(function () {
-	                    return _this4.setState({ loading: false, error: errorMessage });
+	                    return _this5.setState({ loading: false, error: errorMessage });
 	                });
 	            });
 	        }
 	    }, {
+	        key: 'openGoogleOAuth',
+	        value: function openGoogleOAuth() {
+	            // Firefox doesn't support chrome.identity.getAuthToken, so need to use different auth flow
+	            if (typeof chrome.identity.getAuthToken === "function") {
+	                this.openGoogleGoogleOAuth();
+	            } else if (browser && typeof browser.identity.launchWebAuthFlow === 'function') {
+	                this.openFireFoxGoogleOAuth();
+	            }
+	        }
+	    }, {
 	        key: 'openHumanitarianIDOAuth',
 	        value: function openHumanitarianIDOAuth() {
-	            var _this5 = this;
+	            var _this6 = this;
 	
 	            // TODO: Finish Humanitarian ID OAuth Login
 	            this.setState({ loading: true, error: null });
@@ -31405,12 +31452,12 @@
 	                        var token = userObjectAndToken.token,
 	                            userObject = _objectWithoutProperties(userObjectAndToken, ['token']);
 	
-	                        _this5.loginUserByUserObject(userObject, token, 'humanitarian-id');
+	                        _this6.loginUserByUserObject(userObject, token, 'humanitarian-id');
 	                    }).catch(function () {
-	                        return _this5.setState({ loading: false, error: errorMessage });
+	                        return _this6.setState({ loading: false, error: errorMessage });
 	                    });
 	                } else {
-	                    _this5.setState({ loading: false, error: null });
+	                    _this6.setState({ loading: false, error: null });
 	                }
 	            });
 	        }
@@ -31429,7 +31476,7 @@
 	    }, {
 	        key: 'submitLoginForm',
 	        value: function submitLoginForm(e) {
-	            var _this6 = this;
+	            var _this7 = this;
 	
 	            e.preventDefault();
 	            this.setState({ loading: true });
@@ -31442,14 +31489,14 @@
 	                _storage2.default.setItem('token', token);
 	
 	                (0, _api.me)().then(function (userObject) {
-	                    return _this6.loginUserByUserObject(userObject, token);
+	                    return _this7.loginUserByUserObject(userObject, token);
 	                }).catch(function (err) {
-	                    _this6.setState({ loading: false });
-	                    _this6.onError(errorMessage);
+	                    _this7.setState({ loading: false });
+	                    _this7.onError(errorMessage);
 	                });
 	            }).catch(function () {
-	                _this6.setState({ loading: false });
-	                _this6.onError(errorMessage);
+	                _this7.setState({ loading: false });
+	                _this7.onError(errorMessage);
 	            });
 	        }
 	    }, {
@@ -31460,6 +31507,7 @@
 	            //noinspection JSUnresolvedVariable
 	            (0, _analytics.identify)(userObject);
 	            (0, _analytics.trackEvent)('logged in', { provider: provider });
+	            (0, _analytics.trackEventCentr)('downloaded ' + getBrowser() + ' extension');
 	
 	            _storage2.default.setItem('last_used_email', userObject.email);
 	            _storage2.default.setItem('user', JSON.stringify(userObject));
@@ -31500,6 +31548,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.makeApiRequest = makeApiRequest;
 	exports.me = me;
 	exports.login = login;
 	exports.authLinkedIn = authLinkedIn;
@@ -31557,7 +31606,7 @@
 	
 	    var newOpts = (0, _lodash.merge)({}, {
 	        method: method,
-	        url: generateRoute(url, path.frontend),
+	        url: generateRoute(url, path.frontend, path.fullUrl),
 	        headers: generateHeaders(contentType)
 	    }, opts);
 	
@@ -48790,7 +48839,7 @@
 /* 527 */
 /***/ (function(module, exports) {
 
-	module.exports = {"apiUrl":"https://centr.factr.com","frontendUrl":"https://factr.com","appId":"lfkimcbknmlhjihcekgpkhefiegcobnk"}
+	module.exports = {"apiUrl":"http://dev-centr.factr.com:8000","frontendUrl":"http://localhost:5000","oauth":{"linkedin":{"client_id":"77knq3qp9daiuk"},"google":{"client_id":"751719944516-4j2lu8s04emt18fsen3jsu8d6l2p6e0b.apps.googleusercontent.com","redirect_uri":"http://localhost:8000/oauth/google-oauth2/"}}}
 
 /***/ }),
 /* 528 */
@@ -52985,7 +53034,7 @@
 
 /***/ }),
 /* 554 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
@@ -52997,6 +53046,10 @@
 	
 	exports.trackEvent = trackEvent;
 	exports.identify = identify;
+	exports.trackEventCentr = trackEventCentr;
+	
+	var _api = __webpack_require__(522);
+	
 	exports.default = window.mixpanel;
 	
 	// Tracking events
@@ -53030,6 +53083,12 @@
 	            $last_login: new Date()
 	        }, userObject));
 	    }
+	}
+	
+	function trackEventCentr(event) {
+	    var meta = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	
+	    return (0, _api.makeApiRequest)('track', 'POST', { params: { event: event, meta: meta } });
 	}
 
 /***/ }),
@@ -53341,6 +53400,7 @@
 	
 	            (0, _api.postItem)(streamId, post).then(function (post) {
 	                (0, _analytics.trackEvent)('add post', post);
+	                (0, _analytics.trackEventCentr)('added post through extension');
 	                _this3.setState({ saving: false, showSuccess: true });
 	                _this3.closeWindow();
 	                _this3.clearStorage();
