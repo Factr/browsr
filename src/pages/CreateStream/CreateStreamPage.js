@@ -225,9 +225,9 @@ export default class CreateStreamPage extends Component {
                 </div>
                 <div className="b-page__section">
                     <span className="b-hint">
-                        Note: you’ll be able to add a cover image and edit the settings for this stream at
+                        Note: you’ll be able to add a cover image and edit the settings for this stream at
                         {' '}
-                        <a href="https://factr.com/streams" tabIndex="-1" target="_blank">Factr.com</a>
+                        <a href="https://factr.com/" tabIndex="-1" target="_blank">Factr.com</a>
                     </span>
                 </div>
                 <div className="b-page__section">

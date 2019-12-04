@@ -218,20 +218,25 @@ class CollectPage extends Component {
             <div className="b-page _collect _relative">
                 <form onSubmit={::this.onSubmit}>
                     <div className="b-form-input">
-                        <label className="b-form-input__label">Add To</label>
+                        <label className="b-form-input__label">Post To</label>
                         <div className="b-form-input__input">
                             <div className="b-row _v-center">
-                                <div className="b-row__column _fill">
+                                <div className="b-row__column">
                                     <StreamSelector
                                         onError={this.props.onError}
                                         onStreamChange={this.onStreamChange}
                                     />
                                 </div>
                                 <div className="b-row__column new-stream-buttom">
-                                    <a href="#"
+                                    <a 
+                                        href="#"
                                        className="b-new-stream-link"
                                        tabIndex={error ? "-1" : "0"}
-                                       onClick={::this.onNewStream}>+ New Stream</a>
+                                       onClick={::this.onNewStream}
+                                    >
+                                        <span className="icon add-icon">+</span>
+                                        <span>New stream</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
