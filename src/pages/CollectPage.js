@@ -9,6 +9,7 @@ import Message from "components/Message"
 import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
 import analytics, { trackEvent } from '../analytics'
 import storage from 'storage'
+import urlparse from 'url-parse';
 
 import StreamSelector from '../components/StreamSelector'
 
@@ -37,7 +38,8 @@ class CollectPage extends Component {
                 image_url: '',
                 description: '',
                 message: '',
-                url: ''
+                url: '',
+                hostname: '',
             }
         }
     }
@@ -74,12 +76,16 @@ class CollectPage extends Component {
         chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             getItemFromUrl(tabs[0].url)
                 .then(data => {
+                    const parsedUrl = urlparse(data.url);
+                    let { hostname } = parsedUrl;
+                    hostname = hostname.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
                     let post = {
                         title: data.title,
                         image_url: data.image_url,
                         description: data.description,
-                        url: data.url
-                    }
+                        url: data.url,
+                        hostname,
+                    };
                     //noinspection JSUnresolvedVariable
                     if (data.authors.length > 0) {
                         //noinspection JSUnresolvedVariable
@@ -156,11 +162,24 @@ class CollectPage extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const { post, stream } = this.state
+        const { stream } = this.state
         this.updateRecentStreams()
 
         const streamId = stream.id
         this.setState({ saving: true })
+
+        const post = {
+            message: this.state.post.message,
+            attachments: [{
+                title: this.state.post.title,
+                description: this.state.post.description,
+                url: this.state.post.url,
+                source_name: this.state.post.hostname,
+                image_url: this.state.post.image_url,
+                file: null,
+                localFile: null,
+            }],
+        };
 
         postItem(streamId, post)
             .then(post => {
