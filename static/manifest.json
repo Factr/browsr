@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "Factr",
+    "name": "Add to Factr",
     "icons": {
         "128": "icons/icon128.png",
         "16": "icons/icon16.png",
@@ -10,7 +10,7 @@
         "default_icon": "icons/icon16.png",
         "default_popup": "popup.html"
     },
-    "version": "0.3.12",
+    "version": "0.3.14",
     "permissions": [
         "tabs",
         "http://*/*",
