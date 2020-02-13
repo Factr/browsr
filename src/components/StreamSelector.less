@@ -2,8 +2,8 @@
 
 .stream-selector {
     display: flex;
-    height: 36px;
-    width: 95%;
+    height: 50px;
+    width: 344px;
     border: 1px solid @inputBorderColor;
     border-radius: 4px;
     align-items: center;
@@ -43,11 +43,69 @@
         font-size: 14px;
     }
 
+    .stream-item {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        cursor: pointer;
+        box-sizing: content-box;
+        padding: 5px 17px 5px 16px;
+
+        .stream-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+            background-color: #1f2532;
+            border-radius: 2px;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 30px;
+            font-size: 15px;
+            
+            div {
+                height: 100%;
+                width: 100%;
+                background-size: cover;
+            }
+
+            svg {
+                fill: #ffffff;
+            }
+        }
+
+        .stream-info {
+            flex: 1;
+            margin-left: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .stream-name {
+            color: #5F6577;
+            font-size: 12px;
+            font-family: @font-family-medium;
+        }
+
+        .stream-owner {
+            color: #78909C;
+            font-size: 10px;
+        }
+    }
+
+    & > .stream-item {
+        padding: 10px;
+    }
+
     .dropdown-container {
         position: absolute;
         align-items: center;
-        top: 34px;
+        top: 48px;
         left: -1px;
+        right: -1px;
         display: flex;
         z-index: 2;
         flex-direction: column;
@@ -59,16 +117,21 @@
         .streams-container {
             overflow: scroll;
             height: 316px;
+            width: 100%;
         }
 
         .search-bar {
             display: flex;
             align-items: center;
-            width: 300px;
+            width: 314px;
+            border: 1px solid @inputBorderColor;
+            padding: 12px;
+            border-radius: 2px;
+            margin: 10px 0px;
 
             input {
                 border: none;
-                padding: 12px 10px;
+                padding: 0px 0px 0px 15px;
             }
 
             .icon-magnifier {
@@ -80,66 +143,58 @@
 
             .icon-cross-circle {
                 cursor: pointer;
+                font-size: 17px;
+                display: block;
+                line-height: 0;
+                margin-right: 0;
             }
         }
 
         .divider-top {
             margin: 10px 16px 0 16px;
+            padding-bottom: 5px;
             width: 300px;
             color: #A1B3BC;
             border-bottom: 1px solid @inputBorderColor;
         }
         .divider-bottom {
             margin: 0px 16px 10px 16px;
+            padding-bottom: 5px;
             width: 300px;
             color: #A1B3BC;
             border-bottom: 1px solid @inputBorderColor;
         }
         .divider-both {
             margin: 10px 16px 0 16px;
+            padding-bottom: 5px;
             width: 300px;
             color: #A1B3BC;
             border-bottom: 1px solid @inputBorderColor;
         }
         .divider-none {
             margin: 10px 16px 0 16px;
+            padding-bottom: 5px;
             width: 300px;
             color: #A1B3BC;
             border-bottom: 1px solid @inputBorderColor;
         }
 
-        .stream-list-item {
-            cursor: pointer;
-            box-sizing: content-box;
-            width: 300px;
-            height: 30px;
-            padding: 5px 17px 5px 16px;
-
-            .stream-name {
-                color: #5F6577;
-                font-size: 12px;
-                font-family: @font-family-medium;
-            }
-
-            .stream-owner {
-                color: #78909C;
-                font-size: 10px;
-            }
-
+        .stream-item {
             &:hover {
                 background-color: #1f2532;
                 color: white;
-
+    
                 .stream-name {
                     color: white;
-
+    
                 }
-
+    
                 .stream-owner {
                     color: white;
                 }
             }
         }
+
     }
 
     .icon {
