@@ -25,7 +25,6 @@ class CollectPage extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             stream: null,
             saving: false,
@@ -42,6 +41,10 @@ class CollectPage extends Component {
                 hostname: '',
             }
         }
+
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onNewStream = this.onNewStream.bind(this);
     }
 
     async addImageProcess(src) {
@@ -236,7 +239,7 @@ class CollectPage extends Component {
 
         return (
             <div className="b-page _collect _relative">
-                <form onSubmit={::this.onSubmit}>
+                <form onSubmit={this.onSubmit}>
                     <div className="b-form-input">
                         <label className="b-form-input__label">Post To</label>
                         <div className="b-form-input__input">
@@ -252,7 +255,7 @@ class CollectPage extends Component {
                                         href="#"
                                        className="b-new-stream-link"
                                        tabIndex={error ? "-1" : "0"}
-                                       onClick={::this.onNewStream}
+                                       onClick={this.onNewStream}
                                     >
                                         <span className="icon add-icon">+</span>
                                         <span>New stream</span>
@@ -266,7 +269,7 @@ class CollectPage extends Component {
                         <div className="b-form-input__input">
                             <textarea ref="message" name="message"
                                       value={post.message}
-                                      onChange={::this.onInputChange}
+                                      onChange={this.onInputChange}
                                       autoFocus
                                       className="b-input _message"
                                       disabled={!!error}
@@ -320,7 +323,7 @@ class CollectPage extends Component {
                                     <input ref="description" name="title"
                                           type="text"
                                           value={post.title}
-                                          onChange={::this.onInputChange}
+                                          onChange={this.onInputChange}
                                           autoFocus
                                           className="b-input title"
                                           disabled={!!error}
@@ -332,7 +335,7 @@ class CollectPage extends Component {
                                 <div className="b-form-input__input" id="description">
                                 <textarea ref="description" name="description"
                                       value={post.description}
-                                      onChange={::this.onInputChange}
+                                      onChange={this.onInputChange}
                                       autoFocus
                                       className="b-input description"
                                       disabled={!!error}

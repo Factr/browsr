@@ -31129,6 +31129,8 @@
 	    value: true
 	});
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(337);
@@ -31225,6 +31227,37 @@
 	            error: null,
 	            oauthFocused: true
 	        };
+	
+	        _this.goToResetPassword = _this.goToResetPassword.bind(_this);
+	
+	        if (!(typeof _this.goToResetPassword === 'function')) {
+	            throw new TypeError('Value of "this.goToResetPassword" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.goToResetPassword));
+	        }
+	
+	        _this.openGoogleOAuth = _this.openGoogleOAuth.bind(_this);
+	
+	        if (!(typeof _this.openGoogleOAuth === 'function')) {
+	            throw new TypeError('Value of "this.openGoogleOAuth" violates contract.\n\nExpected:\n() => any\n\nGot:\n' + _inspect(_this.openGoogleOAuth));
+	        }
+	
+	        _this.openLinkedInOAuth = _this.openLinkedInOAuth.bind(_this);
+	
+	        if (!(typeof _this.openLinkedInOAuth === 'function')) {
+	            throw new TypeError('Value of "this.openLinkedInOAuth" violates contract.\n\nExpected:\n() => any\n\nGot:\n' + _inspect(_this.openLinkedInOAuth));
+	        }
+	
+	        _this.submitLoginForm = _this.submitLoginForm.bind(_this);
+	
+	        if (!(typeof _this.submitLoginForm === 'function')) {
+	            throw new TypeError('Value of "this.submitLoginForm" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.submitLoginForm));
+	        }
+	
+	        _this.goToWebSite = _this.goToWebSite.bind(_this);
+	
+	        if (!(typeof _this.goToWebSite === 'function')) {
+	            throw new TypeError('Value of "this.goToWebSite" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.goToWebSite));
+	        }
+	
 	        return _this;
 	    }
 	
@@ -31255,38 +31288,17 @@
 	                    ' ',
 	                    _react2.default.createElement(
 	                        'a',
-	                        { href: '#', onClick: this.goToResetPassword.bind(this) },
+	                        { href: '#', onClick: this.goToResetPassword },
 	                        'reset your password'
 	                    ),
 	                    '.'
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: (0, _classnames2.default)("oauth-options", {
-	                            focused: oauthFocused
-	                        }),
-	                        onClick: function onClick() {
-	                            return _this2.handleFocus(true);
-	                        }
-	                    },
-	                    _react2.default.createElement(LoginWith, { name: 'Google', onClick: this.openGoogleOAuth.bind(this),
-	                        iconClassName: 'google', disabled: isLoading }),
-	                    _react2.default.createElement(LoginWith, { name: 'LinkedIn', onClick: this.openLinkedInOAuth.bind(this),
-	                        iconClassName: 'linkedin', disabled: isLoading }),
-	                    false && _react2.default.createElement(LoginWith, { name: 'Humanitarian ID',
-	                        iconClassName: 'hid', disabled: isLoading })
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'form-or' },
-	                    'OR'
 	                ),
 	                _react2.default.createElement(
 	                    'form',
 	                    { className: (0, _classnames2.default)("login-form default-form", {
 	                            focused: !oauthFocused
 	                        }),
-	                        onSubmit: this.submitLoginForm.bind(this)
+	                        onSubmit: this.submitLoginForm
 	                    },
 	                    _react2.default.createElement(
 	                        'div',
@@ -31341,7 +31353,7 @@
 	                        null,
 	                        _react2.default.createElement(
 	                            'a',
-	                            { href: '#', onClick: this.goToWebSite.bind(this) },
+	                            { href: '#', onClick: this.goToWebSite },
 	                            'Create one.'
 	                        )
 	                    )
@@ -31537,6 +31549,70 @@
 	    onChange: _react.PropTypes.func.isRequired
 	};
 	exports.default = LoginPage;
+	
+	function _inspect(input, depth) {
+	    var maxDepth = 4;
+	    var maxKeys = 15;
+
+	    if (depth === undefined) {
+	        depth = 0;
+	    }
+
+	    depth += 1;
+
+	    if (input === null) {
+	        return 'null';
+	    } else if (input === undefined) {
+	        return 'void';
+	    } else if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
+	        return typeof input === 'undefined' ? 'undefined' : _typeof(input);
+	    } else if (Array.isArray(input)) {
+	        if (input.length > 0) {
+	            if (depth > maxDepth) return '[...]';
+
+	            var first = _inspect(input[0], depth);
+
+	            if (input.every(function (item) {
+	                return _inspect(item, depth) === first;
+	            })) {
+	                return first.trim() + '[]';
+	            } else {
+	                return '[' + input.slice(0, maxKeys).map(function (item) {
+	                    return _inspect(item, depth);
+	                }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']';
+	            }
+	        } else {
+	            return 'Array';
+	        }
+	    } else {
+	        var keys = Object.keys(input);
+
+	        if (!keys.length) {
+	            if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	                return input.constructor.name;
+	            } else {
+	                return 'Object';
+	            }
+	        }
+
+	        if (depth > maxDepth) return '{...}';
+	        var indent = '  '.repeat(depth - 1);
+	        var entries = keys.slice(0, maxKeys).map(function (key) {
+	            return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	        }).join('\n  ' + indent);
+
+	        if (keys.length >= maxKeys) {
+	            entries += '\n  ' + indent + '...';
+	        }
+
+	        if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	            return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
+	        } else {
+	            return '{\n  ' + indent + entries + '\n' + indent + '}';
+	        }
+	    }
+	}
+
 	module.exports = exports['default'];
 
 /***/ }),
@@ -48845,7 +48921,7 @@
 /* 527 */
 /***/ (function(module, exports) {
 
-	module.exports = {"apiUrl":"http://dev-centr.factr.com:8000","frontendUrl":"http://localhost:5000","oauth":{"linkedin":{"client_id":"77knq3qp9daiuk"},"google":{"client_id":"751719944516-4j2lu8s04emt18fsen3jsu8d6l2p6e0b.apps.googleusercontent.com","redirect_uri":"http://localhost:8000/oauth/google-oauth2/"}}}
+	module.exports = {"apiUrl":"https://centr.factr.com","frontendUrl":"https://factr.com","appId":"lfkimcbknmlhjihcekgpkhefiegcobnk","oauth":{"google":{"client_id":"751719944516-6832qebdjamkuci81sd0uu8bjfv4aj35.apps.googleusercontent.com","redirect_uri":"https://centr.factr.com/oauth/google-oauth2/"}}}
 
 /***/ }),
 /* 528 */
@@ -53116,6 +53192,8 @@
 	    value: true
 	});
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -53159,6 +53237,10 @@
 	var _storage = __webpack_require__(528);
 	
 	var _storage2 = _interopRequireDefault(_storage);
+	
+	var _urlParse = __webpack_require__(551);
+	
+	var _urlParse2 = _interopRequireDefault(_urlParse);
 	
 	var _StreamSelector = __webpack_require__(616);
 	
@@ -53243,9 +53325,29 @@
 	                image_url: '',
 	                description: '',
 	                message: '',
-	                url: ''
+	                url: '',
+	                hostname: ''
 	            }
 	        };
+	
+	        _this.onInputChange = _this.onInputChange.bind(_this);
+	
+	        if (!(typeof _this.onInputChange === 'function')) {
+	            throw new TypeError('Value of "this.onInputChange" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.onInputChange));
+	        }
+	
+	        _this.onSubmit = _this.onSubmit.bind(_this);
+	
+	        if (!(typeof _this.onSubmit === 'function')) {
+	            throw new TypeError('Value of "this.onSubmit" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.onSubmit));
+	        }
+	
+	        _this.onNewStream = _this.onNewStream.bind(_this);
+	
+	        if (!(typeof _this.onNewStream === 'function')) {
+	            throw new TypeError('Value of "this.onNewStream" violates contract.\n\nExpected:\n(any) => any\n\nGot:\n' + _inspect(_this.onNewStream));
+	        }
+	
 	        return _this;
 	    }
 	
@@ -53347,13 +53449,19 @@
 	
 	            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
 	                (0, _api.getItemFromUrl)(tabs[0].url).then(function (data) {
+	                    var parsedUrl = (0, _urlParse2.default)(data.url);
+	                    var hostname = parsedUrl.hostname;
+	
+	                    hostname = hostname.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0];
 	                    var post = {
 	                        title: data.title,
 	                        image_url: data.image_url,
 	                        description: data.description,
-	                        url: data.url
-	                        //noinspection JSUnresolvedVariable
-	                    };if (data.authors.length > 0) {
+	                        url: data.url,
+	                        hostname: hostname
+	                    };
+	                    //noinspection JSUnresolvedVariable
+	                    if (data.authors.length > 0) {
 	                        //noinspection JSUnresolvedVariable
 	                        post.author = data.authors.join(', ');
 	                    }
@@ -53395,14 +53503,25 @@
 	            var _this3 = this;
 	
 	            e.preventDefault();
-	            var _state = this.state,
-	                post = _state.post,
-	                stream = _state.stream;
+	            var stream = this.state.stream;
 	
 	            this.updateRecentStreams();
 	
 	            var streamId = stream.id;
 	            this.setState({ saving: true });
+	
+	            var post = {
+	                message: this.state.post.message,
+	                attachments: [{
+	                    title: this.state.post.title,
+	                    description: this.state.post.description,
+	                    url: this.state.post.url,
+	                    source_name: this.state.post.hostname,
+	                    image_url: this.state.post.image_url,
+	                    file: null,
+	                    localFile: null
+	                }]
+	            };
 	
 	            (0, _api.postItem)(streamId, post).then(function (post) {
 	                (0, _analytics.trackEvent)('add post', post);
@@ -53448,13 +53567,13 @@
 	        value: function render() {
 	            var _this4 = this;
 	
-	            var _state2 = this.state,
-	                loadingImages = _state2.loadingImages,
-	                stream = _state2.stream,
-	                saving = _state2.saving,
-	                showSuccess = _state2.showSuccess,
-	                imageRemoved = _state2.imageRemoved,
-	                post = _state2.post;
+	            var _state = this.state,
+	                loadingImages = _state.loadingImages,
+	                stream = _state.stream,
+	                saving = _state.saving,
+	                showSuccess = _state.showSuccess,
+	                imageRemoved = _state.imageRemoved,
+	                post = _state.post;
 	            var error = this.props.error;
 	
 	
@@ -53466,7 +53585,7 @@
 	                { className: 'b-page _collect _relative' },
 	                _react2.default.createElement(
 	                    'form',
-	                    { onSubmit: this.onSubmit.bind(this) },
+	                    { onSubmit: this.onSubmit },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'b-form-input' },
@@ -53498,7 +53617,7 @@
 	                                            href: '#',
 	                                            className: 'b-new-stream-link',
 	                                            tabIndex: error ? "-1" : "0",
-	                                            onClick: this.onNewStream.bind(this)
+	                                            onClick: this.onNewStream
 	                                        },
 	                                        _react2.default.createElement(
 	                                            'span',
@@ -53528,7 +53647,7 @@
 	                            { className: 'b-form-input__input' },
 	                            _react2.default.createElement('textarea', { ref: 'message', name: 'message',
 	                                value: post.message,
-	                                onChange: this.onInputChange.bind(this),
+	                                onChange: this.onInputChange,
 	                                autoFocus: true,
 	                                className: 'b-input _message',
 	                                disabled: !!error,
@@ -53605,7 +53724,7 @@
 	                                    _react2.default.createElement('input', { ref: 'description', name: 'title',
 	                                        type: 'text',
 	                                        value: post.title,
-	                                        onChange: this.onInputChange.bind(this),
+	                                        onChange: this.onInputChange,
 	                                        autoFocus: true,
 	                                        className: 'b-input title',
 	                                        disabled: !!error,
@@ -53625,7 +53744,7 @@
 	                                    { className: 'b-form-input__input', id: 'description' },
 	                                    _react2.default.createElement('textarea', { ref: 'description', name: 'description',
 	                                        value: post.description,
-	                                        onChange: this.onInputChange.bind(this),
+	                                        onChange: this.onInputChange,
 	                                        autoFocus: true,
 	                                        className: 'b-input description',
 	                                        disabled: !!error,
@@ -53663,6 +53782,70 @@
 	    error: _propTypes2.default.object
 	};
 	exports.default = CollectPage;
+	
+	function _inspect(input, depth) {
+	    var maxDepth = 4;
+	    var maxKeys = 15;
+
+	    if (depth === undefined) {
+	        depth = 0;
+	    }
+
+	    depth += 1;
+
+	    if (input === null) {
+	        return 'null';
+	    } else if (input === undefined) {
+	        return 'void';
+	    } else if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
+	        return typeof input === 'undefined' ? 'undefined' : _typeof(input);
+	    } else if (Array.isArray(input)) {
+	        if (input.length > 0) {
+	            if (depth > maxDepth) return '[...]';
+
+	            var first = _inspect(input[0], depth);
+
+	            if (input.every(function (item) {
+	                return _inspect(item, depth) === first;
+	            })) {
+	                return first.trim() + '[]';
+	            } else {
+	                return '[' + input.slice(0, maxKeys).map(function (item) {
+	                    return _inspect(item, depth);
+	                }).join(', ') + (input.length >= maxKeys ? ', ...' : '') + ']';
+	            }
+	        } else {
+	            return 'Array';
+	        }
+	    } else {
+	        var keys = Object.keys(input);
+
+	        if (!keys.length) {
+	            if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	                return input.constructor.name;
+	            } else {
+	                return 'Object';
+	            }
+	        }
+
+	        if (depth > maxDepth) return '{...}';
+	        var indent = '  '.repeat(depth - 1);
+	        var entries = keys.slice(0, maxKeys).map(function (key) {
+	            return (/^([A-Z_$][A-Z0-9_$]*)$/i.test(key) ? key : JSON.stringify(key)) + ': ' + _inspect(input[key], depth) + ';';
+	        }).join('\n  ' + indent);
+
+	        if (keys.length >= maxKeys) {
+	            entries += '\n  ' + indent + '...';
+	        }
+
+	        if (input.constructor && input.constructor.name && input.constructor.name !== 'Object') {
+	            return input.constructor.name + ' {\n  ' + indent + entries + '\n' + indent + '}';
+	        } else {
+	            return '{\n  ' + indent + entries + '\n' + indent + '}';
+	        }
+	    }
+	}
+
 	module.exports = exports['default'];
 
 /***/ }),

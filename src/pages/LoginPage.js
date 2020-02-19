@@ -46,12 +46,17 @@ class LoginPage extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             loading: false,
             error: null,
             oauthFocused: true,
         }
+
+        this.goToResetPassword = this.goToResetPassword.bind(this);
+        this.openGoogleOAuth = this.openGoogleOAuth.bind(this);
+        this.openLinkedInOAuth = this.openLinkedInOAuth.bind(this);
+        this.submitLoginForm = this.submitLoginForm.bind(this);
+        this.goToWebSite = this.goToWebSite.bind(this);
     }
 
     handleFocus = (focus) => {
@@ -71,17 +76,17 @@ class LoginPage extends Component {
                         <br/>
                         Try again or
                         {' '}
-                        <a href="#" onClick={::this.goToResetPassword}>reset your password</a>.
+                        <a href="#" onClick={this.goToResetPassword}>reset your password</a>.
                     </div>
                 }
-                <div className={classnames("oauth-options", {
+                {/* <div className={classnames("oauth-options", {
                     focused: oauthFocused,
                 })}
                     onClick={() => this.handleFocus(true)}
                 >
-                    <LoginWith name="Google" onClick={::this.openGoogleOAuth}
+                    <LoginWith name="Google" onClick={this.openGoogleOAuth}
                         iconClassName="google" disabled={isLoading}/>
-                    <LoginWith name="LinkedIn" onClick={::this.openLinkedInOAuth}
+                    <LoginWith name="LinkedIn" onClick={this.openLinkedInOAuth}
                         iconClassName="linkedin" disabled={isLoading}/>
 
                     {
@@ -91,12 +96,12 @@ class LoginPage extends Component {
                     }
                 </div>
 
-                <div className="form-or">OR</div>
+                <div className="form-or">OR</div> */}
 
                 <form className={classnames("login-form default-form", {
                     focused: !oauthFocused,
                     })}
-                    onSubmit={::this.submitLoginForm}
+                    onSubmit={this.submitLoginForm}
                 >
                     <div className="input-field">
                         <input placeholder="Email Address" ref="email" type="text" name="email"
@@ -125,7 +130,7 @@ class LoginPage extends Component {
                     </div>
                 </form>
                 <p>
-                    Don't have an account yet? <b><a href="#" onClick={::this.goToWebSite}>Create one.</a></b>
+                    Don't have an account yet? <b><a href="#" onClick={this.goToWebSite}>Create one.</a></b>
                 </p>
             </div>
         )
