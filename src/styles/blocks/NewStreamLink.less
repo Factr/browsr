@@ -1,6 +1,24 @@
 .b-new-stream-link {
-  text-decoration: none;
-  padding: 5px;
+  text-decoration: none !important;
+  outline: none;
+  color: @colorGray2 !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+
+  .add-icon {
+    display: block;
+    height: 18px;
+    width: 18px;
+    color: @colorGray2;
+    border: 1px solid @colorGray2;
+    border-radius: 50%;
+    font-size: 20px;
+    line-height: 8px;
+    text-align: center;
+    margin-right: 6px;
+  }
 
   &:hover,
   &:focus {

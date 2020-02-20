@@ -101,7 +101,12 @@ export function postItem(streamId, params) {
 
 export function getStreams() {
     const route = `stream/contributable?limit=1000&mobile=true&nano_serializer=true`
-    return makeApiRequest(route, 'GET', { params: 'nano_serializer'})
+    return makeApiRequest(route, 'GET')
+}
+
+export function getRecentStreams(params) {
+    const route = !params ? 'user/recent_streams' : `user/recent_streams?sort=${params.sort ? params.sort : ''}&limit=${params.limit ? params.limit : ''}`;
+    return makeApiRequest(route, 'GET')
 }
 
 export function getItemFromUrl(url) {

@@ -1,3 +1,5 @@
+import { makeApiRequest } from "./api"
+
 export default window.mixpanel
 
 // Tracking events
@@ -28,4 +30,8 @@ export function identify(userObject) {
         })
     }
 
+}
+
+export function trackEventCentr(event, meta = {}) {
+    return makeApiRequest('track', 'POST', { params: { event, meta } });
 }

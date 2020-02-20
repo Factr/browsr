@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import onClickOutside from "react-onclickoutside"
-import isEqual from 'lodash/isequal'
 import isEmpty from 'lodash/isEmpty'
-
+import React, { Component } from 'react'
+import onClickOutside from "react-onclickoutside"
 import storage from 'storage'
-import { getStreams } from '../api'
+
+import { getRecentStreams, getStreams } from '../api'
+import InboxIcon from './InboxIcon';
 
 require('./StreamSelector.less')
 
@@ -38,41 +37,48 @@ class StreamSelector extends Component {
 
     componentDidMount() {
         if (storage.getItem('streams') === null) {
-                this.setState({ loadingStreams: true })
-            }
+            this.setState({ loadingStreams: true })
+        }
         this.updateStreams()
     }
 
     updateStreams = () => {
-        getStreams()
-            .then(data => {
-                const streams = data.results.sort((a, b) => a.name.localeCompare(b.name))
+        const { onError } = this.props;
 
-                storage.setItem("streams", streams)
+        getStreams().then(data => {
+            const streams = data.results.sort((a, b) => a.name.localeCompare(b.name))
 
-                if (storage.getItem('stream') === null) {
-                    // set current stream to inbox
-                    const inbox = streams.find(stream => stream.personal && !stream.public)
-                    storage.setItem('stream', inbox)
-                    this.setState({ selectedStream: inbox})
-                }
+            storage.setItem("streams", streams)
 
-                // remove deleted streams from recent streams
-                const streamIds = streams.map(stream => stream.id)
-                const recentStreams = storage.getItem('recentStreams')
-                                             .filter(stream => streamIds.includes(stream.id))
-                storage.setItem('recentStreams', recentStreams)
+            if (storage.getItem('stream') === null) {
+                // set current stream to inbox
+                const inbox = streams.find(stream => stream.personal && !stream.public)
+                storage.setItem('stream', inbox)
+                this.setState({ selectedStream: inbox})
+            }
 
-                this.setState({ streams: streams, loadingStreams: false })
+            this.setState({ streams: streams, loadingStreams: false })
+        }).catch(error => {
+            this.setState({ loadingStreams: false })
+            onError({
+                error,
+                message: "Could not load your streams.<br />Please try again later.",
+                closeBtn: true,
             })
-            .catch(actualError => {
-                this.setState({ loadingStreams: false })
-                this.props.onError({
-                    actualError,
-                    message: "Could not load your streams.<br />Please try again later.",
-                    closeBtn: true,
-                })
+        });
+
+        getRecentStreams({sort: 'desc', limit: 5 }).then(data => {
+            const recentStreams = data;
+            storage.setItem('recentStreams', recentStreams);
+            this.setState({ recentStreams });
+        }).catch(error => {
+            this.setState({ loadingStreams: false })
+            onError({
+                error,
+                message: "Could not load your streams.<br />Please try again later.",
+                closeBtn: true,
             })
+        });
     }
 
     toggleDropDown = () => {
@@ -132,10 +138,21 @@ class StreamSelector extends Component {
             <div
                 key={stream.id}
                 onClick={() => this.handleStreamItemClick(stream)}
-                className="stream-list-item"
+                className="stream-item"
             >
-                <span className="stream-name">{stream.name}</span><br/>
-                <span className="stream-owner">{stream.owner_name}</span>
+                <div className="stream-icon" style={{ borderRadius: (!stream.is_inbox && stream.personal) ? '50%' : 2 }}>
+                    { stream.is_inbox && <InboxIcon /> }
+                    { !stream.is_inbox && stream.image_url && <div style={{ backgroundImage: `url(${stream.image_url})` }} /> }
+                    { !stream.is_inbox && !stream.image_url && stream.name[0].toUpperCase()}
+                </div>
+                <div className="stream-info">
+                    <span className="stream-name">{stream.name}</span>
+                    <span className="stream-owner">
+                        { !stream.is_inbox && !stream.personal && stream.owner.name }
+                        { !stream.is_inbox && !stream.personal && '  •  '}
+                        { stream.public ? 'Public' : 'Private' }
+                    </span>
+                </div>
             </div>
         )
     }
@@ -159,11 +176,24 @@ class StreamSelector extends Component {
     }
 
     renderStreams = () => {
-        const { streams, recentStreams, numRecent, searchText } = this.state
+        const { streams, numRecent, searchText } = this.state
 
+        const personalStreams = streams.filter((stream) => (
+            stream.is_inbox || (!stream.is_inbox && stream.personal)
+        ));
+        const recentStreams = this.state.recentStreams.filter((stream) => !(
+            stream.is_inbox || (!stream.is_inbox && stream.personal)
+        ));
+        const usersStreams = streams.filter((stream) => (
+            ![...personalStreams, ...recentStreams].filter((existingStream) => existingStream.id === stream.id).length
+        ));
+        
         if (searchText === '') {
             return (
               <div className="streams-container">
+                  {
+                      this.renderStreamsList(personalStreams)
+                  }
                   {
                       !isEmpty(recentStreams) &&
                       this.renderDivider('RECENT', 'top')
@@ -176,7 +206,7 @@ class StreamSelector extends Component {
                       this.renderDivider('YOUR STREAMS', 'top')
                   }
                   {
-                      this.renderStreamsList(streams)
+                      this.renderStreamsList(usersStreams)
                   }
               </div>
             )
@@ -203,9 +233,6 @@ class StreamSelector extends Component {
                     this.renderSearchBar()
                 }
                 {
-                    this.renderDivider('', 'bottom')
-                }
-                {
                     this.renderStreams()
                 }
             </div>
@@ -222,7 +249,7 @@ class StreamSelector extends Component {
                 {
                     selectedStream &&
                     !loadingStreams &&
-                    <span className="selected-stream">{this.truncateName(selectedStream.name)}</span>
+                    this.renderStreamItem(selectedStream)
                 }
                 {
                     loadingStreams &&

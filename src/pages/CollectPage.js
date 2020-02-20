@@ -7,8 +7,9 @@ import _ from 'lodash'
 import classnames from "classnames"
 import Message from "components/Message"
 import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
-import analytics, { trackEvent } from '../analytics'
+import analytics, { trackEvent, trackEventCentr } from '../analytics'
 import storage from 'storage'
+import urlparse from 'url-parse';
 
 import StreamSelector from '../components/StreamSelector'
 
@@ -24,7 +25,6 @@ class CollectPage extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             stream: null,
             saving: false,
@@ -37,9 +37,14 @@ class CollectPage extends Component {
                 image_url: '',
                 description: '',
                 message: '',
-                url: ''
+                url: '',
+                hostname: '',
             }
         }
+
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onNewStream = this.onNewStream.bind(this);
     }
 
     async addImageProcess(src) {
@@ -74,12 +79,16 @@ class CollectPage extends Component {
         chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             getItemFromUrl(tabs[0].url)
                 .then(data => {
+                    const parsedUrl = urlparse(data.url);
+                    let { hostname } = parsedUrl;
+                    hostname = hostname.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
                     let post = {
                         title: data.title,
                         image_url: data.image_url,
                         description: data.description,
-                        url: data.url
-                    }
+                        url: data.url,
+                        hostname,
+                    };
                     //noinspection JSUnresolvedVariable
                     if (data.authors.length > 0) {
                         //noinspection JSUnresolvedVariable
@@ -156,15 +165,29 @@ class CollectPage extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const { post, stream } = this.state
+        const { stream } = this.state
         this.updateRecentStreams()
 
         const streamId = stream.id
         this.setState({ saving: true })
 
+        const post = {
+            message: this.state.post.message,
+            attachments: [{
+                title: this.state.post.title,
+                description: this.state.post.description,
+                url: this.state.post.url,
+                source_name: this.state.post.hostname,
+                image_url: this.state.post.image_url,
+                file: null,
+                localFile: null,
+            }],
+        };
+
         postItem(streamId, post)
             .then(post => {
                 trackEvent('add post', post)
+                trackEventCentr('added post through extension')
                 this.setState({ saving: false, showSuccess: true })
                 this.closeWindow()
                 this.clearStorage()
@@ -216,22 +239,27 @@ class CollectPage extends Component {
 
         return (
             <div className="b-page _collect _relative">
-                <form onSubmit={::this.onSubmit}>
+                <form onSubmit={this.onSubmit}>
                     <div className="b-form-input">
-                        <label className="b-form-input__label">Add To</label>
+                        <label className="b-form-input__label">Post To</label>
                         <div className="b-form-input__input">
                             <div className="b-row _v-center">
-                                <div className="b-row__column _fill">
+                                <div className="b-row__column">
                                     <StreamSelector
                                         onError={this.props.onError}
                                         onStreamChange={this.onStreamChange}
                                     />
                                 </div>
                                 <div className="b-row__column new-stream-buttom">
-                                    <a href="#"
+                                    <a 
+                                        href="#"
                                        className="b-new-stream-link"
                                        tabIndex={error ? "-1" : "0"}
-                                       onClick={::this.onNewStream}>+ New Stream</a>
+                                       onClick={this.onNewStream}
+                                    >
+                                        <span className="icon add-icon">+</span>
+                                        <span>New stream</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -241,7 +269,7 @@ class CollectPage extends Component {
                         <div className="b-form-input__input">
                             <textarea ref="message" name="message"
                                       value={post.message}
-                                      onChange={::this.onInputChange}
+                                      onChange={this.onInputChange}
                                       autoFocus
                                       className="b-input _message"
                                       disabled={!!error}
@@ -295,7 +323,7 @@ class CollectPage extends Component {
                                     <input ref="description" name="title"
                                           type="text"
                                           value={post.title}
-                                          onChange={::this.onInputChange}
+                                          onChange={this.onInputChange}
                                           autoFocus
                                           className="b-input title"
                                           disabled={!!error}
@@ -307,7 +335,7 @@ class CollectPage extends Component {
                                 <div className="b-form-input__input" id="description">
                                 <textarea ref="description" name="description"
                                       value={post.description}
-                                      onChange={::this.onInputChange}
+                                      onChange={this.onInputChange}
                                       autoFocus
                                       className="b-input description"
                                       disabled={!!error}
