@@ -79,7 +79,7 @@ class LoginPage extends Component {
                         <a href="#" onClick={this.goToResetPassword}>reset your password</a>.
                     </div>
                 }
-                {/* <div className={classnames("oauth-options", {
+                <div className={classnames("oauth-options", {
                     focused: oauthFocused,
                 })}
                     onClick={() => this.handleFocus(true)}
@@ -96,7 +96,7 @@ class LoginPage extends Component {
                     }
                 </div>
 
-                <div className="form-or">OR</div> */}
+                <div className="form-or">OR</div>
 
                 <form className={classnames("login-form default-form", {
                     focused: !oauthFocused,
