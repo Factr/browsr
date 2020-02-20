@@ -1,4 +1,4 @@
-var fsExtra = require('fs-extra')
+var ncp = require('ncp').ncp;
 var path = require("path")
 var exec = require("child_process").exec
 var webpack = require("webpack")
@@ -75,7 +75,6 @@ var compiler = webpack({
         modulesDirectories: [
             "src",
             "node_modules",
-            "static"
         ],
         extensions: ["", ".json", ".js"],
     },
@@ -105,7 +104,8 @@ compiler.plugin("done", function (a) {
         // both the chrome and mozilla extension testing. If you change any of
         // the files in the static folder you will need to run webpack again.
         console.log("Copying static folder into output...")
-        fsExtra.copy('./static', './output/', (err) => {
+        ncp.limit = 16;
+        ncp('./src/static', './output/', (err) => {
             if (err) {
                 console.log("Error while copying static folder: ".red, err)
             } else {
