@@ -40,3 +40,4 @@ node_modules/
 
 # Output for uploading to Google/Mozilla extension stores
 output/
+output.zip
