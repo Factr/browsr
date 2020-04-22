@@ -2,7 +2,11 @@
 Browser extension for [Factr](https://factr.com) supporting Firefox and Chrome.  Factr is customized, real-time knowledge-sharing, letting your organization know more and act faster.
 
 Requirements:
-    1. Node version - >= 6.9.1
+1. Node version - >= 6.9.1
+2. NPM version >= 6.13.0
+
+## Steps to build for production:
+1. Run `npm run build [dev/staging]` to start. To run with production config leave out `[dev/staging]`. Config files can be found in `src/config`
 
 ## Development
 
@@ -15,7 +19,3 @@ For hot reloading on Firefox you need to install web-ext command line tools and 
 
 ### Updating static files
 Some files aren't bundled by webpack but still must be present in the output folder when uploading an unpacked extension. These files are stored in the static folder and include the icons used for the extension, manifest.json file, and popup.html. A custom line of code is written in the webpack config to copy the contents of the static folder into the output folder after every build. When files in the static directory are changed webpack must recompile for the changes to take affect.
-
-
-#### Steps to build:
-1. Run `npm run [watch/build] [dev/staging]` to start. To run with production config leave out argument. Config files can be found in `src/config`
