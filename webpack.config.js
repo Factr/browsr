@@ -1,9 +1,10 @@
-var ncp = require('ncp').ncp;
-var path = require("path")
-var exec = require("child_process").exec
-var webpack = require("webpack")
-var ExtractTextPlugin = require("extract-text-webpack-plugin")
-var _ = require('lodash')
+const fsExtra = require('fs-extra');
+const path = require("path")
+const exec = require("child_process").exec
+const webpack = require("webpack")
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const _ = require('lodash')
 require('colors')
 
 const BROWSR_ENV = {
@@ -12,7 +13,7 @@ const BROWSR_ENV = {
     [process.argv.includes('staging')]: 'staging',
 }.true
 
-var compiler = webpack({
+const compiler = webpack({
     entry: {
         main: ["babel-polyfill", "./src/app.js"],
     },
@@ -34,6 +35,7 @@ var compiler = webpack({
     plugins: [
         new ExtractTextPlugin("styles.css"),
         new webpack.DefinePlugin({ BROWSR_ENV: JSON.stringify(BROWSR_ENV) }),
+        new CopyWebpackPlugin([{ from: './src/static'} ]),
     ],
     module: {
         loaders: [
@@ -56,7 +58,7 @@ var compiler = webpack({
                         "transform-object-assign",
                         "transform-object-rest-spread",
                         "transform-export-extensions",
-                        "add-module-exports"
+                        "add-module-exports",
                     ],
                     "presets": [
                         "es2015",
@@ -97,21 +99,6 @@ compiler.plugin("done", function (a) {
         })
     } else {
         console.log(`#${++compilationNumber} Successful webpack compilation in ${compilationTime.toFixed(1)}s`.green)
-
-
-        // We manually copy the manifest.json, popup.html and icon files into
-        // the output folder so we can upload the output folder directly into
-        // both the chrome and mozilla extension testing. If you change any of
-        // the files in the static folder you will need to run webpack again.
-        console.log("Copying static folder into output...")
-        ncp.limit = 16;
-        ncp('./src/static', './output/', (err) => {
-            if (err) {
-                console.log("Error while copying static folder: ".red, err)
-            } else {
-                console.log("Success copying static folder.".green)
-            }
-        })
     }
 })
 
