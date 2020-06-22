@@ -34,7 +34,7 @@ class Terms extends Component {
             <div className="terms">
                 <div className="row">
                     <div className="title">
-                        Can we add cookies to your browser to store your Factr profile information so that you don't have to log in every time?
+                        Can we use cookies to store your Factr credentials to keep you logged in?
                     </div>
                     <Switch
                         onChange={this.toggleCookies}
@@ -44,7 +44,7 @@ class Terms extends Component {
                 </div>
                 <div className="row">
                     <div className="title">
-                        Can we collect anonymous data on your current tab URL so we can generate an image/description preview when you want to post from the extension?
+                        Can we collect anonymized data from the site you're linking, so we can show an image/description preview in the post you create?
                     </div>
                     <Switch
                         onChange={this.toggleTab}
@@ -54,10 +54,10 @@ class Terms extends Component {
                 </div>
                 <div className="privacy-disclaimer">
                     <span>
-                        Unfortunately, without cookies and the ability to collect data on the current URL, Add to Factr will not work because we need to store the user credentials to post to your Factr account.
+                        Unfortunately, declining either permission will prevent “Add to Factr” from working.&nbsp;
                     </span>
                     <span>
-                        Full details about the data we collect and what we do with it, along with details over cookies we create are provided in our
+                        For full details about the cookies we create and  the data we collect check out our
                         <a href="#" onClick={this.openPrivacy}>&nbsp;Privacy Policy</a>
                     </span>
                 </div>
