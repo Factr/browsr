@@ -22,7 +22,7 @@ export default function Message({ text = "No text", iconClassName, icon, error, 
                     }
                     { icon }
                 </div>
-                <div className="b-status-message__title" dangerouslySetInnerHTML={{ __html: text }} />
+                <div className="b-status-message__title">{text}</div>
                 {
                     buttons &&
                     <div className="b-status-message__buttons">

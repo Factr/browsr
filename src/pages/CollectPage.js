@@ -7,11 +7,12 @@ import _ from 'lodash'
 import classnames from "classnames"
 import Message from "components/Message"
 import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
-import analytics, { trackEvent, trackEventCentr } from '../analytics'
+import { trackEvent, trackEventCentr } from '../analytics'
 import storage from 'storage'
 import urlparse from 'url-parse';
 
 import StreamSelector from '../components/StreamSelector'
+import Terms from './Terms';
 
 require("react-tagsinput/react-tagsinput.css")
 require("./CollectPage.less")
@@ -231,7 +232,8 @@ class CollectPage extends Component {
                 saving,
                 showSuccess,
                 imageRemoved,
-                post } = this.state
+                post,
+        } = this.state
         const { error } = this.props
 
         let tags = storage.getItem("tags") || []

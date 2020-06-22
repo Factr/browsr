@@ -1,4 +1,3 @@
-const fsExtra = require('fs-extra');
 const path = require("path")
 const exec = require("child_process").exec
 const webpack = require("webpack")

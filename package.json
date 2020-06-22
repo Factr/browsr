@@ -51,6 +51,7 @@
     "react-input-autosize": "^1.1.0",
     "react-onclickoutside": "^6.7.1",
     "react-redux": "^5.0.2",
+    "react-switch": "^5.0.1",
     "react-tagsinput": "^3.13.6",
     "redux": "^3.6.0",
     "redux-act": "^1.0.0",
@@ -60,6 +61,9 @@
     "reselect": "^2.5.4",
     "source-map-support": "^0.4.0",
     "url-parse": "^1.1.6"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.2.9"
   },
   "scripts": {
     "watch": "node ./webpack.config.js --watch",

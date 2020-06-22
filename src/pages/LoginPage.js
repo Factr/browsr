@@ -51,28 +51,198 @@ class LoginPage extends Component {
             error: null,
             oauthFocused: true,
         }
-
-        this.goToResetPassword = this.goToResetPassword.bind(this);
-        this.openGoogleOAuth = this.openGoogleOAuth.bind(this);
-        this.openLinkedInOAuth = this.openLinkedInOAuth.bind(this);
-        this.submitLoginForm = this.submitLoginForm.bind(this);
-        this.goToWebSite = this.goToWebSite.bind(this);
     }
 
     handleFocus = (focus) => {
         this.setState({ oauthFocused: focus})
     }
 
+    openLinkedInOAuth = () => {
+        const params = [
+            'response_type=code',
+            `client_id=${config.oauth.linkedin.client_id}`,
+            `redirect_uri=${CHROME_EXTENSION_REDIRECT_URI}`,
+            `state=asdf355asdf`
+        ]
+
+        this.setState({ loading: true, error: null })
+
+        chrome.identity.launchWebAuthFlow(
+            { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
+            redirect_url => {
+                const url = new URL(redirect_url, true)
+                const code = url.query.code
+                const errorMessage = 'An error happened while authorizing you through LinkedIn'
+
+                if (code) {
+                    authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
+                        .then(userObjectAndToken => {
+                            const { token, ...userObject } = userObjectAndToken
+
+                            this.loginUserByUserObject(userObject, token, 'linkedin')
+                        })
+                        .catch(() => this.setState({ loading: false, error: errorMessage }))
+                  } else {
+                    this.setState({ loading: false, error: null })
+                }
+            }
+        )
+    }
+
+    openFireFoxGoogleOAuth = () => {
+        this.setState({ loading: true, error: null })
+        const scopes = ["email", "profile"]
+        const params = [
+            'response_type=token',
+            `client_id=${config.oauth.google.client_id}`,
+            `redirect_uri=${config.oauth.google.redirect_uri}`,
+            `state=asdf355asdf`,
+            `scope=${encodeURIComponent(scopes.join(' '))}`
+        ]
+
+        browser.identity.launchWebAuthFlow(
+            { 'url': `https://accounts.google.com/o/oauth2/v2/auth?${params.join('&')}`, 'interactive': true }
+        ).then(redirect_url => {
+              const url = new URL(redirect_url, true)
+              const accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token')
+              const errorMessage = 'An error happened while authorizing you through LinkedIn'
+
+              if (accessToken) {
+                  authGoogle(accessToken)
+                      .then((resp) => {
+                          let apiToken = resp.token
+                          storage.setItem('token', apiToken)
+                          me().then((userObject)=>{
+                              this.loginUserByUserObject(userObject, apiToken, 'google')
+                          })
+                      })
+                      .catch(() => this.setState({ loading: false, error: errorMessage }))
+                } else {
+                  this.setState({ loading: false, error: null })
+              }
+        })
+    }
+
+    openGoogleGoogleOAuth = () => {
+        this.setState({ loading: true, error: null })
+        chrome.identity.getAuthToken({ 'interactive': true }, access_token => {
+            const errorMessage = 'An error happened while authorizing you through Google'
+            authGoogle(access_token)
+                .then((resp) => {
+                    let apiToken = resp.token
+                    storage.setItem('token', apiToken)
+                    me().then((userObject)=>{
+                        this.loginUserByUserObject(userObject, apiToken, 'google')
+                    })
+                })
+                .catch(() => this.setState({ loading: false, error: errorMessage }))
+        })
+    }
+
+    openGoogleOAuth = () => {
+        // Firefox doesn't support chrome.identity.getAuthToken, so need to use different auth flow
+        if (typeof chrome.identity.getAuthToken === "function") {
+            this.openGoogleGoogleOAuth()
+        } else if (browser && typeof browser.identity.launchWebAuthFlow === 'function') {
+            this.openFireFoxGoogleOAuth()
+        }
+    }
+
+    openHumanitarianIDOAuth = () => {
+        // TODO: Finish Humanitarian ID OAuth Login
+        this.setState({ loading: true, error: null })
+
+        chrome.identity.launchWebAuthFlow(
+            { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
+            redirect_url => {
+                const url = new URL(redirect_url, true)
+                const code = url.query.code
+                const errorMessage = 'An error happened while authorizing you through LinkedIn'
+
+                if (code) {
+                    authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
+                        .then(userObjectAndToken => {
+                            const { token, ...userObject } = userObjectAndToken
+
+                            this.loginUserByUserObject(userObject, token, 'humanitarian-id')
+                        })
+                        .catch(() => this.setState({ loading: false, error: errorMessage }))
+                } else {
+                    this.setState({ loading: false, error: null })
+                }
+            }
+        )
+    }
+
+    goToWebSite = (e) => {
+        e.preventDefault()
+        chrome.tabs.create({ url: urls.site })
+    }
+
+    goToResetPassword = (e) => {
+        e.preventDefault()
+        chrome.tabs.create({ url: urls.resetPassword })
+    }
+
+    submitLoginForm = (e) => {
+        e.preventDefault()
+        this.setState({ loading: true })
+
+        const params = { username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value }
+        const errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in."
+
+        login(params)
+            .then(response => {
+                const token = response.token
+                storage.setItem('token', token)
+
+                me()
+                    .then(userObject => this.loginUserByUserObject(userObject, token))
+                    .catch(err => {
+                        this.setState({ loading: false })
+                        this.onError(errorMessage)
+                    })
+            })
+            .catch(() => {
+                this.setState({ loading: false })
+                this.onError(errorMessage)
+            })
+    }
+
+    loginUserByUserObject = (userObject, token, provider = 'password') => {
+        //noinspection JSUnresolvedVariable
+        identify(userObject)
+        trackEvent('logged in', { provider })
+        trackEventCentr(`downloaded ${getBrowser()} extension`)
+
+        storage.setItem('last_used_email', userObject.email)
+        storage.setItem('user', JSON.stringify(userObject))
+        storage.setItem('token', token)
+
+        this.setState({ loading: false })
+        this.onChange({ user: userObject, token })
+    }
+
+    onError = (errorMessage) => {
+        this.setState({
+            error: errorMessage,
+        })
+    }
+
+    onChange = (change) => {
+        this.props.onChange(change)
+    }
+
     render() {
-        const { loading: isLoading, oauthFocused } = this.state
+        const { loading: isLoading, oauthFocused, error } = this.state;
 
         return (
             <div className="login">
                 <h1 className="login__heading">Login to get started.</h1>
                 {
-                    this.state.error &&
+                    error &&
                     <div className="login__error-outer">
-                        <span className="login__error-message" dangerouslySetInnerHTML={{ __html: this.state.error }}/>
+                        <span className="login__error-message">{error}</span>
                         <br/>
                         Try again or
                         {' '}
@@ -134,182 +304,6 @@ class LoginPage extends Component {
                 </p>
             </div>
         )
-    }
-
-    openLinkedInOAuth() {
-        const params = [
-            'response_type=code',
-            `client_id=${config.oauth.linkedin.client_id}`,
-            `redirect_uri=${CHROME_EXTENSION_REDIRECT_URI}`,
-            `state=asdf355asdf`
-        ]
-
-        this.setState({ loading: true, error: null })
-
-        chrome.identity.launchWebAuthFlow(
-            { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
-            redirect_url => {
-                const url = new URL(redirect_url, true)
-                const code = url.query.code
-                const errorMessage = 'An error happened while authorizing you through LinkedIn'
-
-                if (code) {
-                    authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
-                        .then(userObjectAndToken => {
-                            const { token, ...userObject } = userObjectAndToken
-
-                            this.loginUserByUserObject(userObject, token, 'linkedin')
-                        })
-                        .catch(() => this.setState({ loading: false, error: errorMessage }))
-                  } else {
-                    this.setState({ loading: false, error: null })
-                }
-            }
-        )
-    }
-
-    openFireFoxGoogleOAuth() {
-        this.setState({ loading: true, error: null })
-        const scopes = ["email", "profile"]
-        const params = [
-            'response_type=token',
-            `client_id=${config.oauth.google.client_id}`,
-            `redirect_uri=${config.oauth.google.redirect_uri}`,
-            `state=asdf355asdf`,
-            `scope=${encodeURIComponent(scopes.join(' '))}`
-        ]
-
-        browser.identity.launchWebAuthFlow(
-            { 'url': `https://accounts.google.com/o/oauth2/v2/auth?${params.join('&')}`, 'interactive': true }
-        ).then(redirect_url => {
-              const url = new URL(redirect_url, true)
-              const accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token')
-              const errorMessage = 'An error happened while authorizing you through LinkedIn'
-
-              if (accessToken) {
-                  authGoogle(accessToken)
-                      .then((resp) => {
-                          let apiToken = resp.token
-                          storage.setItem('token', apiToken)
-                          me().then((userObject)=>{
-                              this.loginUserByUserObject(userObject, apiToken, 'google')
-                          })
-                      })
-                      .catch(() => this.setState({ loading: false, error: errorMessage }))
-                } else {
-                  this.setState({ loading: false, error: null })
-              }
-        })
-    }
-
-    openGoogleGoogleOAuth() {
-        this.setState({ loading: true, error: null })
-        chrome.identity.getAuthToken({ 'interactive': true }, access_token => {
-            const errorMessage = 'An error happened while authorizing you through Google'
-            authGoogle(access_token)
-                .then((resp) => {
-                    let apiToken = resp.token
-                    storage.setItem('token', apiToken)
-                    me().then((userObject)=>{
-                        this.loginUserByUserObject(userObject, apiToken, 'google')
-                    })
-                })
-                .catch(() => this.setState({ loading: false, error: errorMessage }))
-        })
-    }
-
-    openGoogleOAuth() {
-        // Firefox doesn't support chrome.identity.getAuthToken, so need to use different auth flow
-        if (typeof chrome.identity.getAuthToken === "function") {
-            this.openGoogleGoogleOAuth()
-        } else if (browser && typeof browser.identity.launchWebAuthFlow === 'function') {
-            this.openFireFoxGoogleOAuth()
-        }
-    }
-
-    openHumanitarianIDOAuth() {
-        // TODO: Finish Humanitarian ID OAuth Login
-        this.setState({ loading: true, error: null })
-
-        chrome.identity.launchWebAuthFlow(
-            { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
-            redirect_url => {
-                const url = new URL(redirect_url, true)
-                const code = url.query.code
-                const errorMessage = 'An error happened while authorizing you through LinkedIn'
-
-                if (code) {
-                    authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
-                        .then(userObjectAndToken => {
-                            const { token, ...userObject } = userObjectAndToken
-
-                            this.loginUserByUserObject(userObject, token, 'humanitarian-id')
-                        })
-                        .catch(() => this.setState({ loading: false, error: errorMessage }))
-                } else {
-                    this.setState({ loading: false, error: null })
-                }
-            }
-        )
-    }
-
-    goToWebSite(e) {
-        e.preventDefault()
-        chrome.tabs.create({ url: urls.site })
-    }
-
-    goToResetPassword(e) {
-        e.preventDefault()
-        chrome.tabs.create({ url: urls.resetPassword })
-    }
-
-    submitLoginForm(e) {
-        e.preventDefault()
-        this.setState({ loading: true })
-
-        const params = { username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value }
-        const errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in."
-
-        login(params)
-            .then(response => {
-                const token = response.token
-                storage.setItem('token', token)
-
-                me()
-                    .then(userObject => this.loginUserByUserObject(userObject, token))
-                    .catch(err => {
-                        this.setState({ loading: false })
-                        this.onError(errorMessage)
-                    })
-            })
-            .catch(() => {
-                this.setState({ loading: false })
-                this.onError(errorMessage)
-            })
-    }
-
-    loginUserByUserObject(userObject, token, provider = 'password') {
-        //noinspection JSUnresolvedVariable
-        identify(userObject)
-        trackEvent('logged in', { provider })
-        trackEventCentr(`downloaded ${getBrowser()} extension`)
-
-        storage.setItem('last_used_email', userObject.email)
-        storage.setItem('user', JSON.stringify(userObject))
-        storage.setItem('token', token)
-
-        this.setState({ loading: false })
-        this.onChange({ user: userObject, token })
-    }
-
-    onError(errorMessage) {
-        this.setState({
-            error: errorMessage,
-        })
-    }
-
-    onChange(change) {
-        this.props.onChange(change)
     }
 }
 

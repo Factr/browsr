@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from "react"
-import { findDOMNode } from "react-dom"
 import LoginPage from "./LoginPage"
 import CollectPage from "./CollectPage"
 import CreateStreamPageConnected from "./CreateStream/index.js"
@@ -7,6 +6,7 @@ import Message from "components/Message"
 import classnames from "classnames"
 import { trackEvent, identify } from '../analytics'
 import storage from 'storage'
+import Terms from "./Terms"
 
 window.storage = storage
 
@@ -19,7 +19,7 @@ class TryAgainButton extends Component {
         loading: false,
     }
 
-    onClick() {
+    onClick = () => {
         this.setState({ loading: true })
 
         this.props.fn()
@@ -32,7 +32,7 @@ class TryAgainButton extends Component {
             <button autoFocus
                     className={classnames("btn btn-primary", { "_loading": this.state.loading })}
                     disabled={this.state.loading}
-                    onClick={::this.onClick}>
+                    onClick={this.onClick}>
                 <span className="__title">Try again</span>
                 { this.state.loading && <span className="loading" /> }
             </button>
@@ -43,14 +43,14 @@ class TryAgainButton extends Component {
 class Layout extends Component {
     constructor(props) {
         super(props)
-    }
-
-    state = {
-        token: storage.getItem('token'),
-        user: JSON.parse(storage.getItem('user')),
-        isCreatingStream: false,
-        appShown: false,
-        error: null,
+        this.state = {
+            token: storage.getItem('token'),
+            user: JSON.parse(storage.getItem('user')),
+            acceptedTerms: storage.getItem('acceptedTerms'),
+            isCreatingStream: false,
+            appShown: false,
+            error: null,
+        };
     }
 
     componentDidMount() {
@@ -63,6 +63,110 @@ class Layout extends Component {
         } else {
             identify(this.state.user)
         }
+    }
+
+    openCreatingStream = () => {
+        this.setState({ isCreatingStream: true })
+    }
+
+    closeCreatingStream = (stream) => {
+        if (stream)
+            storage.setItem('stream', stream)
+            this.setState({ isCreatingStream: false }, () => {
+        })
+    }
+
+    onChange = (state) => {
+        this.setState(state)
+    }
+
+    onError = (error) => {
+        console.error("ERROR:", error.actualError)
+        if (error.actualError.noInternet) {
+            this.setState({ error: { ...error, message: "No internet connection.", closeBtn: true } })
+        } else {
+            this.setState({ error })
+        }
+    }
+
+    onLogOut = (e) => {
+        e && typeof e.preventDefault === "function" && e.preventDefault()
+
+        this.logOut()
+
+        trackEvent('logged out')
+    }
+
+    logOut = () => {
+        storage.clear();
+        this.setState({ user: null, token: null, error: null });
+    }
+
+    handleTermsSubmit = () => {
+        this.setState({ acceptedTerms: true });
+        storage.setItem('acceptedTerms', 'true');
+    }
+
+    renderNavMenu() {
+        const { user } = this.state
+
+        if (user) {
+            return (
+                <div className="logged-in">
+                    <div>Logged in as {user.first_name + ' ' + user.last_name}.
+                        <a href="#" onClick={this.onLogOut} tabIndex="-1"> Logout.</a>
+                    </div>
+                </div>
+            )
+        }
+
+        return null
+    }
+
+    renderBody() {
+        const { user, token, isCreatingStream, error, acceptedTerms } = this.state
+
+        if (!acceptedTerms) {
+            return (
+                <Terms onSubmit={this.handleTermsSubmit} />
+            )
+        }
+
+        if (!token) {
+            return (
+                <div>
+                    <LoginPage
+                        onChange={this.onChange}
+                        error={error}
+                    />
+                </div>
+            )
+        }
+
+        if (!user) {
+            return null
+        }
+
+        return (
+            <div style={{width: '100%'}}>
+                {
+                    isCreatingStream
+                        ? (
+                            <CreateStreamPageConnected
+                                onDone={this.closeCreatingStream}
+                                onError={this.onError}
+                                error={error}
+                            />
+                        ) : (
+                            <CollectPage user={user}
+                                openCreatingStream={this.openCreatingStream}
+                                onError={this.onError}
+                                error={error}
+                            />
+                        )
+                }
+            </div>
+        )
     }
 
     renderErrorButtons(error) {
@@ -116,95 +220,6 @@ class Layout extends Component {
             </div>
         )
 
-    }
-
-    openCreatingStream() {
-        this.setState({ isCreatingStream: true })
-    }
-
-    closeCreatingStream(stream) {
-        if (stream)
-            storage.setItem('stream', stream)
-            this.setState({ isCreatingStream: false }, () => {
-            // Focus tags field
-            // findDOMNode(this).querySelector('#tags input').focus()
-        })
-    }
-
-    renderBody() {
-        const { user, token, isCreatingStream } = this.state
-
-        if (!token) {
-            return (
-                <div>
-                    <LoginPage onChange={::this.onChange} error={this.state.error}/>
-                </div>
-            )
-        }
-
-        if (!user) {
-            return null
-        }
-
-        return (
-            <div style={{width: '100%'}}>
-                {
-                    isCreatingStream
-                        ? <CreateStreamPageConnected onDone={::this.closeCreatingStream}
-                                                     onError={::this.onError}
-                                                     error={this.state.error}/>
-                        : <CollectPage user={user}
-                                       openCreatingStream={::this.openCreatingStream}
-                                       onError={::this.onError}
-                                       error={this.state.error}/>
-                }
-            </div>
-        )
-    }
-
-    renderNavMenu() {
-        const { user, token } = this.state
-
-        if (user) {
-            //noinspection JSUnresolvedVariable
-            return (
-                <div className="logged-in">
-                    <div>Logged in as {user.first_name + ' ' + user.last_name}.
-                        <a href="#" onClick={::this.onLogOut} tabIndex="-1"> Logout.</a>
-                    </div>
-
-                </div>
-            )
-        }
-
-        return null
-    }
-
-    onChange(state) {
-        this.setState(state)
-    }
-
-    onError(error) {
-        console.error("ERROR:", error.actualError)
-        if (error.actualError.noInternet) {
-            this.setState({ error: { ...error, message: "No internet connection.", closeBtn: true } })
-        } else {
-            this.setState({ error })
-        }
-    }
-
-    onLogOut(e) {
-        e && typeof e.preventDefault === "function" && e.preventDefault()
-
-        this.logOut()
-
-        trackEvent('logged out')
-    }
-
-    logOut() {
-        storage.clear()
-
-        this.onChange({ user: null, token: null, error: null })
     }
 }
 
