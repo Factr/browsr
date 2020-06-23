@@ -46,7 +46,7 @@ class Layout extends Component {
         this.state = {
             token: storage.getItem('token'),
             user: JSON.parse(storage.getItem('user')),
-            acceptedTerms: storage.getItem('acceptedTerms'),
+            acceptedTerms: JSON.parse(storage.getItem('acceptedTerms')),
             isCreatingStream: false,
             appShown: false,
             error: null,
@@ -54,6 +54,7 @@ class Layout extends Component {
     }
 
     componentDidMount() {
+        this.setState({ acceptedTerms: JSON.parse(storage.getItem('acceptedTerms')) });
         setTimeout(() => {
             this.setState({ appShown: true }, () => trackEvent('opened extension'))
         }, 150)

@@ -25,7 +25,7 @@ class Terms extends Component {
 
     openPrivacy = (e) => {
         e.preventDefault();
-        chrome.tabs.create({ url: 'https://factr.com/privacy-policy' });
+        chrome.tabs.create({ url: 'https://blog.factr.com/privacy-policy-add-to-factr/' });
     }
 
     render() {

@@ -91,36 +91,44 @@ class LoginPage extends Component {
 
     openFireFoxGoogleOAuth = () => {
         this.setState({ loading: true, error: null })
+        const redirectUrl = browser.identity.getRedirectURL();
         const scopes = ["email", "profile"]
         const params = [
             'response_type=token',
             `client_id=${config.oauth.google.client_id}`,
-            `redirect_uri=${config.oauth.google.redirect_uri}`,
+            `redirect_uri=${redirectUrl}`,
+            // `redirect_uri=${config.oauth.google.redirect_uri}`,
             `state=asdf355asdf`,
-            `scope=${encodeURIComponent(scopes.join(' '))}`
+            `scope=openid ${encodeURIComponent(scopes.join(' '))}`,
         ]
 
-        browser.identity.launchWebAuthFlow(
-            { 'url': `https://accounts.google.com/o/oauth2/v2/auth?${params.join('&')}`, 'interactive': true }
-        ).then(redirect_url => {
-              const url = new URL(redirect_url, true)
-              const accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token')
-              const errorMessage = 'An error happened while authorizing you through LinkedIn'
-
-              if (accessToken) {
-                  authGoogle(accessToken)
-                      .then((resp) => {
-                          let apiToken = resp.token
-                          storage.setItem('token', apiToken)
-                          me().then((userObject)=>{
-                              this.loginUserByUserObject(userObject, apiToken, 'google')
+        try {
+            browser.identity.launchWebAuthFlow(
+                { 'url': `https://accounts.google.com/o/oauth2/v2/auth?${params.join('&')}`, 'interactive': true }
+            ).then((redirect_url) => {
+                  const url = new URL(redirect_url, true)
+                  const accessToken = new URLSearchParams(url.hash.substring(1)).get('access_token')
+                  const errorMessage = 'An error happened while authorizing you through LinkedIn'
+    
+                  if (accessToken) {
+                      authGoogle(accessToken)
+                          .then((resp) => {
+                              const apiToken = resp.token
+                              storage.setItem('token', apiToken)
+                              me().then((userObject)=>{
+                                  this.loginUserByUserObject(userObject, apiToken, 'google')
+                              })
                           })
-                      })
-                      .catch(() => this.setState({ loading: false, error: errorMessage }))
-                } else {
-                  this.setState({ loading: false, error: null })
-              }
-        })
+                          .catch(() => this.setState({ loading: false, error: errorMessage }))
+                    } else {
+                      this.setState({ loading: false, error: null })
+                  }
+            })
+        } catch (e) {
+            console.log(e);
+            this.setState({ loading: false, error: e });
+        }
+
     }
 
     openGoogleGoogleOAuth = () => {
@@ -146,32 +154,6 @@ class LoginPage extends Component {
         } else if (browser && typeof browser.identity.launchWebAuthFlow === 'function') {
             this.openFireFoxGoogleOAuth()
         }
-    }
-
-    openHumanitarianIDOAuth = () => {
-        // TODO: Finish Humanitarian ID OAuth Login
-        this.setState({ loading: true, error: null })
-
-        chrome.identity.launchWebAuthFlow(
-            { 'url': `https://www.linkedin.com/oauth/v2/authorization?${params.join('&')}`, 'interactive': true },
-            redirect_url => {
-                const url = new URL(redirect_url, true)
-                const code = url.query.code
-                const errorMessage = 'An error happened while authorizing you through LinkedIn'
-
-                if (code) {
-                    authLinkedIn(code, CHROME_EXTENSION_REDIRECT_URI)
-                        .then(userObjectAndToken => {
-                            const { token, ...userObject } = userObjectAndToken
-
-                            this.loginUserByUserObject(userObject, token, 'humanitarian-id')
-                        })
-                        .catch(() => this.setState({ loading: false, error: errorMessage }))
-                } else {
-                    this.setState({ loading: false, error: null })
-                }
-            }
-        )
     }
 
     goToWebSite = (e) => {

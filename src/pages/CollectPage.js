@@ -12,7 +12,6 @@ import storage from 'storage'
 import urlparse from 'url-parse';
 
 import StreamSelector from '../components/StreamSelector'
-import Terms from './Terms';
 
 require("react-tagsinput/react-tagsinput.css")
 require("./CollectPage.less")
