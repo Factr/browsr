@@ -10,13 +10,12 @@
         "default_icon": "icons/icon16.png",
         "default_popup": "popup.html"
     },
-    "version": "0.4.1",
+    "version": "0.4.2",
     "permissions": [
         "http://*/*",
         "https://*/*",
         "activeTab",
         "tabs",
-        "cookies",
         "https://www.linkedin.com/oauth/v2/authorization",
         "identity",
         "storage"

@@ -39,7 +39,7 @@ class Terms extends Component {
             <div className="terms">
                 <div className="row">
                     <div className="title">
-                        Can we track your activity to help improve the extension?
+                        Can we monitor that you're able to succesfully download and post via the extension?
                     </div>
                     <Switch
                         onChange={this.toggleCookies}
@@ -49,7 +49,7 @@ class Terms extends Component {
                 </div>
                 <div className="row">
                     <div className="title">
-                        Can we collect anonymized data from the site you're linking, so we can show an image/description preview in the post you create?
+                        Can we collect anonymized data from the site you're linking, so we can show an image/description preview in the post you create?**
                     </div>
                     <Switch
                         onChange={this.toggleTab}
@@ -59,7 +59,7 @@ class Terms extends Component {
                 </div>
                 <div className="privacy-disclaimer">
                     <span>
-                        Unfortunately, declining the ability to see the current tab URL will prevent “Add to Factr” from working.&nbsp;
+                        **Unfortunately, declining the ability to see the current tab URL will prevent “Add to Factr” from working.&nbsp;
                     </span>
                     <span>
                         For full details about the data we collect check out our
