@@ -4,7 +4,6 @@ import CollectPage from "./CollectPage"
 import CreateStreamPageConnected from "./CreateStream/index.js"
 import Message from "components/Message"
 import classnames from "classnames"
-import { trackEvent, identify } from '../analytics'
 import storage from 'storage'
 import Terms from "./Terms"
 
@@ -46,7 +45,8 @@ class Layout extends Component {
         this.state = {
             token: storage.getItem('token'),
             user: JSON.parse(storage.getItem('user')),
-            acceptedTerms: JSON.parse(storage.getItem('acceptedTerms')),
+            cookies: JSON.parse(storage.getItem('cookies')),
+            currentTab: JSON.parse(storage.getItem('currentTab')),
             isCreatingStream: false,
             appShown: false,
             error: null,
@@ -54,15 +54,13 @@ class Layout extends Component {
     }
 
     componentDidMount() {
-        this.setState({ acceptedTerms: JSON.parse(storage.getItem('acceptedTerms')) });
-        setTimeout(() => {
-            this.setState({ appShown: true }, () => trackEvent('opened extension'))
-        }, 150)
+        this.setState({
+            cookies: JSON.parse(storage.getItem('cookies')),
+            currentTab: JSON.parse(storage.getItem('currentTab')),
+        });
 
         if (!this.state.user) {
             this.logOut()
-        } else {
-            identify(this.state.user)
         }
     }
 
@@ -92,10 +90,7 @@ class Layout extends Component {
 
     onLogOut = (e) => {
         e && typeof e.preventDefault === "function" && e.preventDefault()
-
         this.logOut()
-
-        trackEvent('logged out')
     }
 
     logOut = () => {
@@ -103,9 +98,11 @@ class Layout extends Component {
         this.setState({ user: null, token: null, error: null });
     }
 
-    handleTermsSubmit = () => {
-        this.setState({ acceptedTerms: true });
-        storage.setItem('acceptedTerms', 'true');
+    handleTermsSubmit = ({ cookies, currentTab }) => {
+        storage.setItem('cookies', cookies ? 'true' : null);
+        storage.setItem('currentTab', currentTab ? 'true': null);
+
+        this.setState({ cookies, currentTab });
     }
 
     renderNavMenu() {
@@ -125,9 +122,9 @@ class Layout extends Component {
     }
 
     renderBody() {
-        const { user, token, isCreatingStream, error, acceptedTerms } = this.state
+        const { user, token, isCreatingStream, error, currentTab } = this.state
 
-        if (!acceptedTerms) {
+        if (!currentTab) {
             return (
                 <Terms onSubmit={this.handleTermsSubmit} />
             )

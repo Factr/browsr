@@ -1,6 +1,5 @@
 import { createAction } from 'redux-act'
 import { createActionAsync } from 'redux-act-async'
-import { trackEvent } from '../../analytics'
 import { formatResponseError, streamInternalToExternal } from './utils'
 import { createStream } from '../../api'
 import _ from 'lodash'
@@ -12,9 +11,7 @@ export const sendGeneral = createActionAsync('SEND_STREAM_GENERAL',
         const params = streamInternalToExternal(internalStream)
         _.forEach(params, (value, key) => formData.append(key, value))
         
-        const saveOk = data => {
-            trackEvent('created stream', data)
-            
+        const saveOk = (data) => {            
             return data
         }
     

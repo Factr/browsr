@@ -6,7 +6,7 @@ import AnimateOpacity from 'components/AnimateOpacity'
 import URL from 'url-parse'
 import config from '../config'
 import storage from 'storage'
-import { trackEvent, identify, trackEventCentr } from '../analytics'
+import { trackEventCentr } from '../analytics'
 
 require('./LoginPage.less')
 
@@ -191,11 +191,11 @@ class LoginPage extends Component {
             })
     }
 
-    loginUserByUserObject = (userObject, token, provider = 'password') => {
-        //noinspection JSUnresolvedVariable
-        identify(userObject)
-        trackEvent('logged in', { provider })
-        trackEventCentr(`downloaded ${getBrowser()} extension`)
+    loginUserByUserObject = (userObject, token) => {
+        const canTrack = storage.getItem('cookies');
+        if (canTrack) {
+            trackEventCentr(`downloaded ${getBrowser()} extension`)
+        }
 
         storage.setItem('last_used_email', userObject.email)
         storage.setItem('user', JSON.stringify(userObject))

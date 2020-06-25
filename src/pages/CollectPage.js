@@ -7,7 +7,7 @@ import _ from 'lodash'
 import classnames from "classnames"
 import Message from "components/Message"
 import AnimatedSuccessIcon from "components/AnimatedSuccessIcon"
-import { trackEvent, trackEventCentr } from '../analytics'
+import { trackEventCentr } from '../analytics'
 import storage from 'storage'
 import urlparse from 'url-parse';
 
@@ -186,8 +186,12 @@ class CollectPage extends Component {
 
         postItem(streamId, post)
             .then(post => {
-                trackEvent('add post', post)
-                trackEventCentr('added post through extension')
+                const canTrack = storage.getItem('cookies');
+
+                if (canTrack) {
+                    trackEventCentr('added post through extension')
+                }
+
                 this.setState({ saving: false, showSuccess: true })
                 this.closeWindow()
                 this.clearStorage()

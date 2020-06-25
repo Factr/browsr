@@ -28,13 +28,18 @@ class Terms extends Component {
         chrome.tabs.create({ url: 'https://blog.factr.com/privacy-policy-add-to-factr/' });
     }
 
+    handleSubmit = () => {
+        const { cookies, currentTab } = this.state;
+        this.props.onSubmit({ cookies, currentTab });
+    }
+
     render() {
         const { cookies, currentTab } = this.state;
         return (
             <div className="terms">
                 <div className="row">
                     <div className="title">
-                        Can we use cookies to store your Factr credentials to keep you logged in?
+                        Can we track your activity to help improve the extension?
                     </div>
                     <Switch
                         onChange={this.toggleCookies}
@@ -54,20 +59,20 @@ class Terms extends Component {
                 </div>
                 <div className="privacy-disclaimer">
                     <span>
-                        Unfortunately, declining either permission will prevent “Add to Factr” from working.&nbsp;
+                        Unfortunately, declining the ability to see the current tab URL will prevent “Add to Factr” from working.&nbsp;
                     </span>
                     <span>
-                        For full details about the cookies we create and  the data we collect check out our
+                        For full details about the data we collect check out our
                         <a href="#" onClick={this.openPrivacy}>&nbsp;Privacy Policy</a>
                     </span>
                 </div>
                 <div className="button-container">
                     <button
                         className={cx('btn btn-gold', 'submit-button', {
-                            _disabled: !(cookies && currentTab)
+                            _disabled: !currentTab
                         })}
-                        onClick={this.props.onSubmit}
-                        disabled={!(cookies && currentTab)}
+                        onClick={this.handleSubmit}
+                        disabled={!currentTab}
                     >
                         <span className="__title">Continue</span>
                     </button>
