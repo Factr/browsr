@@ -92,12 +92,12 @@ class LoginPage extends Component {
     openFireFoxGoogleOAuth = () => {
         this.setState({ loading: true, error: null })
         const redirectUrl = browser.identity.getRedirectURL();
+        console.log(redirectUrl)
         const scopes = ["email", "profile"]
         const params = [
             'response_type=token',
             `client_id=${config.oauth.google.client_id}`,
             `redirect_uri=${redirectUrl}`,
-            // `redirect_uri=${config.oauth.google.redirect_uri}`,
             `state=asdf355asdf`,
             `scope=openid ${encodeURIComponent(scopes.join(' '))}`,
         ]
@@ -171,7 +171,7 @@ class LoginPage extends Component {
         this.setState({ loading: true })
 
         const params = { username: findDOMNode(this.refs.email).value, password: findDOMNode(this.refs.password).value }
-        const errorMessage = "Something went&nbsp;wrong when&nbsp;attempting to&nbsp;log&nbsp;you&nbsp;in."
+        const errorMessage = "Something went wrong when attempting to log you in."
 
         login(params)
             .then(response => {
@@ -231,24 +231,18 @@ class LoginPage extends Component {
                         <a href="#" onClick={this.goToResetPassword}>reset your password</a>.
                     </div>
                 }
-                {/* <div className={classnames("oauth-options", {
+                <div className={classnames("oauth-options", {
                     focused: oauthFocused,
                 })}
                     onClick={() => this.handleFocus(true)}
                 >
                     <LoginWith name="Google" onClick={this.openGoogleOAuth}
                         iconClassName="google" disabled={isLoading}/>
-                    <LoginWith name="LinkedIn" onClick={this.openLinkedInOAuth}
-                        iconClassName="linkedin" disabled={isLoading}/>
-
-                    {
-                        false &&
-                        <LoginWith name="Humanitarian ID"
-                                   iconClassName="hid" disabled={isLoading}/>
-                    }
+                    {/* <LoginWith name="LinkedIn" onClick={this.openLinkedInOAuth}
+                        iconClassName="linkedin" disabled={isLoading}/> */}
                 </div>
 
-                <div className="form-or">OR</div> */}
+                <div className="form-or">OR</div>
 
                 <form className={classnames("login-form default-form", {
                     focused: !oauthFocused,

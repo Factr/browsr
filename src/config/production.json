@@ -4,7 +4,7 @@
     "appId": "lfkimcbknmlhjihcekgpkhefiegcobnk",
     "oauth": {
         "google": {
-            "client_id": "751719944516-6832qebdjamkuci81sd0uu8bjfv4aj35.apps.googleusercontent.com",
+            "client_id": "705909838243-4qfejvglkjjmpgdl0u1fju5pnb9ovoa3.apps.googleusercontent.com",
             "redirect_uri": "https://centr.factr.com/oauth/google-oauth2/"
         }
     }
